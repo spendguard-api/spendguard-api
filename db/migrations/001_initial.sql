@@ -1,0 +1,3 @@
+-- SpendGuard API — Initial Database Migration
+-- Tables: api_keys, policies, policy_rules, checks, violations, duplicate_guard, usage_events
+-- TODO: Loop 2

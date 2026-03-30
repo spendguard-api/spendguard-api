@@ -1,0 +1,3 @@
+-- SpendGuard API — Performance Indexes Migration
+-- Indexes on: fingerprint, agent_id, policy_id, timestamp, idempotency_key
+-- TODO: Loop 2
