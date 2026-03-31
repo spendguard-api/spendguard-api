@@ -18,7 +18,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, model_validator
 
 
 class ActionType(str, Enum):
@@ -58,7 +58,13 @@ class CheckRequest(BaseModel):
 
     agent_id: str = Field(..., description="ID of the agent making the request")
     policy_id: str = Field(..., description="Policy to evaluate against")
-    action_type: ActionType = Field(..., description="The type of financial action")
+    action_type: ActionType | None = Field(
+        default=None,
+        description=(
+            "The type of financial action. Optional if reason_text is provided — "
+            "the intent classifier will resolve it."
+        ),
+    )
     amount: float = Field(
         ..., ge=0, description="Dollar amount of the action (must be >= 0)"
     )
@@ -94,6 +100,17 @@ class CheckRequest(BaseModel):
     )
 
     model_config = {"extra": "forbid"}
+
+    @model_validator(mode="after")
+    def require_action_type_or_reason_text(self) -> "CheckRequest":
+        """Either action_type or reason_text must be provided (D018)."""
+        if self.action_type is None and (self.reason_text is None or not self.reason_text.strip()):
+            raise ValueError(
+                "Either action_type or reason_text is required. "
+                "Provide action_type directly, or provide reason_text "
+                "so the intent classifier can resolve it."
+            )
+        return self
 
 
 class CheckResponse(BaseModel):
