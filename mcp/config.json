@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "spendguard": {
+      "command": "/Users/mikhaelmirahmadi/Claude/Projects/MICRO API CLAUDE/SpendGaurd GITHUB CLONE 2/.venv/bin/python",
+      "args": [
+        "/Users/mikhaelmirahmadi/Claude/Projects/MICRO API CLAUDE/SpendGaurd GITHUB CLONE 2/mcp/server.py"
+      ],
+      "env": {
+        "SPENDGUARD_API_URL": "https://spendguard-api-production.up.railway.app",
+        "SPENDGUARD_API_KEY": "sg_live_mike_prod_001"
+      }
+    }
+  }
+}

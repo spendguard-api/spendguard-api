@@ -75,6 +75,14 @@ class MockSupabaseTable:
         return self
 
     def lt(self, column: str, value: Any) -> "MockSupabaseTable":
+        if "filters" not in self._query_chain:
+            self._query_chain["filters"] = []
+        self._query_chain["filters"].append(("lt", column, value))
+        return self
+
+    def delete(self) -> "MockSupabaseTable":
+        self._query_chain = {"filters": []}
+        self._is_delete = True
         return self
 
     def order(self, column: str, desc: bool = False) -> "MockSupabaseTable":
@@ -87,6 +95,16 @@ class MockSupabaseTable:
     def execute(self) -> MagicMock:
         result = MagicMock()
 
+        # Handle delete
+        if getattr(self, "_is_delete", False):
+            filtered = self._apply_filters(list(self.rows))
+            self.rows = [r for r in self.rows if r not in filtered]
+            result.data = filtered
+            result.count = len(filtered)
+            self._query_chain = {}
+            self._is_delete = False
+            return result
+
         # If this was an insert, return the inserted row
         if hasattr(self, "_last_inserted"):
             result.data = [self._last_inserted]
@@ -94,15 +112,8 @@ class MockSupabaseTable:
             delattr(self, "_last_inserted")
             return result
 
-        # Apply eq filters
-        filtered = list(self.rows)
-        for f in self._query_chain.get("filters", []):
-            op, col, val = f
-            if op == "eq":
-                filtered = [r for r in filtered if r.get(col) == val]
-            elif op == "gt":
-                filtered = [r for r in filtered if r.get(col, "") > val]
-
+        # Apply filters
+        filtered = self._apply_filters(list(self.rows))
         limit = self._query_chain.get("_limit")
         if limit:
             filtered = filtered[:limit]
@@ -111,6 +122,18 @@ class MockSupabaseTable:
         result.count = len(filtered)
         self._query_chain = {}
         return result
+
+    def _apply_filters(self, rows: list[dict]) -> list[dict]:
+        filtered = rows
+        for f in self._query_chain.get("filters", []):
+            op, col, val = f
+            if op == "eq":
+                filtered = [r for r in filtered if r.get(col) == val]
+            elif op == "gt":
+                filtered = [r for r in filtered if r.get(col, "") > val]
+            elif op == "lt":
+                filtered = [r for r in filtered if r.get(col, "") < val]
+        return filtered
 
 
 class MockSupabase:
@@ -158,10 +181,6 @@ def mock_db():
 @pytest.fixture()
 def client(mock_db):
     """FastAPI TestClient with mocked Supabase."""
-    # Reset rate limiter between tests
-    from api.rate_limit import get_limiter
-    get_limiter().reset()
-
     with patch("db.client.supabase", mock_db), \
          patch("services.policy_loader.supabase", mock_db, create=True), \
          patch("services.audit_logger.supabase", mock_db, create=True), \

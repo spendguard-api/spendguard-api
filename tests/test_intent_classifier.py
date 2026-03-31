@@ -483,9 +483,6 @@ class TestEndpointWithClassifier:
             "created_at": datetime.now(timezone.utc).isoformat(),
         })
 
-        from api.rate_limit import get_limiter
-        get_limiter().reset()
-
         with patch("db.client.supabase", mock_db), \
              patch("services.policy_loader.supabase", mock_db, create=True), \
              patch("services.audit_logger.supabase", mock_db, create=True), \
@@ -533,9 +530,6 @@ class TestEndpointWithClassifier:
             "metadata": None,
             "created_at": datetime.now(timezone.utc).isoformat(),
         })
-
-        from api.rate_limit import get_limiter
-        get_limiter().reset()
 
         with patch("db.client.supabase", mock_db), \
              patch("services.policy_loader.supabase", mock_db, create=True), \

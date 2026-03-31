@@ -1,7 +1,7 @@
 """
-Rate limiting for SpendGuard API.
+Persistent rate limiting for SpendGuard API.
 
-In-memory sliding window rate limiter.
+Supabase-backed sliding window rate limiter. Survives Railway restarts.
 
 Two modes:
 - Authenticated: per API key, default 100 RPM (configurable via api_keys.rate_limit_rpm)
@@ -18,75 +18,75 @@ from __future__ import annotations
 
 import logging
 import time
-from collections import defaultdict
 from datetime import datetime, timezone
 
 from fastapi import HTTPException, Request
 
 logger = logging.getLogger(__name__)
 
-# Default limits (from CLAUDE.md and .env)
+# Default limits
 DEFAULT_AUTH_RPM = 100
 DEFAULT_DEMO_RPM = 10
 WINDOW_SECONDS = 60
 
 
-class RateLimiter:
-    """In-memory sliding window rate limiter."""
+def _get_supabase():
+    """Lazy import of the Supabase client."""
+    from db.client import supabase
+    return supabase
 
-    def __init__(self) -> None:
-        # key → list of request timestamps (epoch seconds)
-        self._requests: dict[str, list[float]] = defaultdict(list)
 
-    def check(self, key: str, limit: int) -> tuple[bool, int, int, int]:
-        """
-        Check if a request is within the rate limit.
+def _record_and_count(limiter_key: str, limit: int) -> tuple[bool, int, int, int]:
+    """
+    Record a request and count events in the window.
 
-        Args:
-            key: The rate limit key (API key ID or IP address).
-            limit: Maximum requests per minute.
+    Inserts a row, counts recent events, and cleans up old ones.
+    Returns (allowed, remaining, limit, reset_timestamp).
 
-        Returns:
-            Tuple of (allowed, remaining, limit, reset_timestamp).
-        """
-        now = time.time()
-        window_start = now - WINDOW_SECONDS
+    On database error: fails open (allows the request).
+    """
+    now = time.time()
+    reset_at = int(now + WINDOW_SECONDS)
 
-        # Prune old timestamps
-        self._requests[key] = [
-            ts for ts in self._requests[key] if ts > window_start
-        ]
+    try:
+        supabase = _get_supabase()
 
-        current_count = len(self._requests[key])
+        # Insert this request event
+        supabase.table("rate_limit_events").insert({
+            "limiter_key": limiter_key,
+        }).execute()
+
+        # Count events in the last 60 seconds
+        cutoff = datetime.fromtimestamp(now - WINDOW_SECONDS, tz=timezone.utc).isoformat()
+        count_result = (
+            supabase.table("rate_limit_events")
+            .select("id", count="exact")
+            .eq("limiter_key", limiter_key)
+            .gt("created_at", cutoff)
+            .execute()
+        )
+        current_count = count_result.count if count_result.count is not None else len(count_result.data)
+
+        # Cleanup: delete events older than 120 seconds to prevent bloat
+        cleanup_cutoff = datetime.fromtimestamp(now - 120, tz=timezone.utc).isoformat()
+        try:
+            supabase.table("rate_limit_events").delete().eq(
+                "limiter_key", limiter_key
+            ).lt("created_at", cleanup_cutoff).execute()
+        except Exception as e:
+            logger.warning("Rate limit cleanup failed (non-critical): %s", e)
+
         remaining = max(0, limit - current_count)
 
-        # Reset time = earliest timestamp + window, or now + window if empty
-        if self._requests[key]:
-            reset_at = int(self._requests[key][0] + WINDOW_SECONDS)
-        else:
-            reset_at = int(now + WINDOW_SECONDS)
-
-        if current_count >= limit:
+        if current_count > limit:
             return False, 0, limit, reset_at
-
-        # Record this request
-        self._requests[key].append(now)
-        remaining = max(0, limit - current_count - 1)
 
         return True, remaining, limit, reset_at
 
-    def reset(self) -> None:
-        """Clear all rate limit state. Used in testing."""
-        self._requests.clear()
-
-
-# Global rate limiter instance
-_limiter = RateLimiter()
-
-
-def get_limiter() -> RateLimiter:
-    """Get the global rate limiter instance."""
-    return _limiter
+    except Exception as e:
+        # Fail open — allow the request if DB is down
+        logger.error("Rate limit DB error (failing open): %s", e)
+        return True, limit, limit, reset_at
 
 
 async def check_rate_limit_auth(request: Request) -> None:
@@ -95,15 +95,13 @@ async def check_rate_limit_auth(request: Request) -> None:
 
     Uses the API key ID from request.state (set by auth middleware).
     Limit is from api_keys.rate_limit_rpm (default 100).
-
-    Raises HTTPException 429 if rate limit exceeded.
     """
     key_id = getattr(request.state, "api_key_id", None)
     if not key_id:
-        return  # No auth = skip (handled by demo limiter)
+        return
 
     limit = getattr(request.state, "rate_limit_rpm", DEFAULT_AUTH_RPM)
-    allowed, remaining, rate_limit, reset_at = _limiter.check(f"key:{key_id}", limit)
+    allowed, remaining, rate_limit, reset_at = _record_and_count(f"key:{key_id}", limit)
 
     if not allowed:
         request_id = getattr(request.state, "request_id", "unknown")
@@ -136,14 +134,11 @@ async def check_rate_limit_demo(request: Request) -> None:
     Rate limit check for unauthenticated (demo) requests.
 
     Uses client IP address. Fixed limit of 10 RPM.
-
-    Raises HTTPException 429 if rate limit exceeded.
     """
-    # Get client IP
     client_ip = request.client.host if request.client else "unknown"
     limit = DEFAULT_DEMO_RPM
 
-    allowed, remaining, rate_limit, reset_at = _limiter.check(f"ip:{client_ip}", limit)
+    allowed, remaining, rate_limit, reset_at = _record_and_count(f"ip:{client_ip}", limit)
 
     if not allowed:
         request_id = getattr(request.state, "request_id", "unknown")
