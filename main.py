@@ -35,9 +35,9 @@ app = FastAPI(
         "Real-time authorization API for agent-initiated financial actions. "
         "Returns allow, block, or escalate before any financial action executes."
     ),
-    docs_url="/docs",
-    redoc_url="/redoc",
-    openapi_url="/openapi.json",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json",
 )
 
 # -- CORS Middleware --

@@ -75,7 +75,7 @@
         el.classList.remove('visible');
       }
     }
-    footerEl.style.display = 'none';
+    footerEl.classList.add('demo-footer-hidden');
 
     fetch('/v1/simulate', {
       method: 'POST',
@@ -145,7 +145,7 @@
 
     // Show footer after last result animates in
     setTimeout(function () {
-      footerEl.style.display = 'flex';
+      footerEl.classList.remove('demo-footer-hidden');
     }, results.length * 150 + 200);
   }
 

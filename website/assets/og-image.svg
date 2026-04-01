@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" fill="none">
+  <rect width="1200" height="630" fill="#FFFFFF"/>
+  <!-- Shield icon -->
+  <path d="M556 260 L600 246 L644 260 L644 310 C644 340 600 365 600 365 C600 365 556 340 556 310 Z" stroke="#2563EB" stroke-width="4" fill="none"/>
+  <path d="M578 295 L593 310 L622 280" stroke="#2563EB" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Brand name -->
+  <text x="600" y="420" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="48"><tspan fill="#1E293B">Spend</tspan><tspan fill="#2563EB">Guard</tspan></text>
+  <!-- Tagline -->
+  <text x="600" y="465" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-weight="400" font-size="20" fill="#64748B">Real-time authorization for AI agent financial actions</text>
+</svg>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — SpendGuard</title>
+  <meta name="description" content="How SpendGuard handles your data, your rights, and our security practices.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="/">
+      <svg class="nav-logo" viewBox="0 0 180 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 6 L18 2 L32 6 L32 18 C32 26 18 34 18 34 C18 34 4 26 4 18 Z" stroke="#2563EB" stroke-width="2" fill="none"/>
+        <path d="M11 17 L16 22 L25 12" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <text x="42" y="24" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="20"><tspan fill="#1E293B">Spend</tspan><tspan fill="#2563EB">Guard</tspan></text>
+      </svg>
+    </a>
+    <div class="nav-links">
+      <a href="/#features">Product</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/api/docs" target="_blank" rel="noopener">Docs</a>
+    </div>
+    <div class="nav-ctas">
+      <a href="/#demo" class="btn btn-secondary">Try Demo</a>
+      <a href="/#pricing" class="btn btn-primary">Get API Key</a>
+    </div>
+    <button class="nav-hamburger" id="nav-toggle" type="button" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="/#features">Product</a>
+  <a href="/#pricing">Pricing</a>
+  <a href="/#demo">Try Demo</a>
+  <a href="/api/docs" target="_blank">Docs</a>
+</div>
+
+<section class="legal-page">
+  <div class="container">
+    <div class="legal-content">
+      <h1>Privacy Policy</h1>
+      <p class="legal-updated">Last updated: April 1, 2026</p>
+
+      <h2>1. Information We Collect</h2>
+      <p>When you use SpendGuard, we collect the following types of information:</p>
+      <ul>
+        <li><strong>Account Information:</strong> Email address and name provided during signup</li>
+        <li><strong>API Usage Data:</strong> Check requests, authorization decisions, timestamps, agent identifiers, action types, amounts, and counterparty identifiers</li>
+        <li><strong>Payment Information:</strong> Payment processing is handled entirely by Stripe. We never see, store, or process your credit card numbers or bank details</li>
+      </ul>
+
+      <h2>2. How We Use Information</h2>
+      <p>We use the information we collect to:</p>
+      <ul>
+        <li>Provide and operate the SpendGuard authorization service</li>
+        <li>Enforce rate limits and prevent abuse</li>
+        <li>Generate and maintain immutable audit logs</li>
+        <li>Process billing and manage your subscription</li>
+        <li>Improve the accuracy and performance of the Service</li>
+        <li>Communicate with you about your account or the Service</li>
+      </ul>
+
+      <h2>3. What We Do NOT Collect</h2>
+      <p>SpendGuard is designed to process action metadata only. We do NOT collect, process, or store:</p>
+      <ul>
+        <li>Financial account numbers or bank details</li>
+        <li>Credit card or debit card numbers</li>
+        <li>Social security numbers or government IDs</li>
+        <li>Customer personally identifiable information (PII)</li>
+        <li>Transaction contents or financial documents</li>
+      </ul>
+      <p>The data we process consists of action metadata: amounts, action types, agent identifiers, policy identifiers, and counterparty identifiers. These are operational identifiers, not personal financial data.</p>
+
+      <h2>4. Data Retention</h2>
+      <p>Audit logs (check decisions and violations) are retained according to your plan tier:</p>
+      <ul>
+        <li><strong>Free:</strong> 30 days</li>
+        <li><strong>Pro:</strong> 90 days</li>
+        <li><strong>Growth:</strong> Unlimited retention</li>
+      </ul>
+      <p>Account data is retained while your account is active. Upon account closure, we will delete your account data within 30 days, subject to any legal retention requirements.</p>
+
+      <h2>5. Third-Party Services</h2>
+      <p>SpendGuard uses the following third-party services to operate:</p>
+      <ul>
+        <li><strong>Supabase:</strong> Database hosting and management (PostgreSQL)</li>
+        <li><strong>Stripe:</strong> Payment processing and subscription management</li>
+        <li><strong>Railway:</strong> Application hosting and infrastructure</li>
+        <li><strong>OpenAI:</strong> Text embeddings for semantic classification only — no financial data, amounts, or customer identifiers are sent to OpenAI. Only ambiguous action description text is processed</li>
+      </ul>
+
+      <h2>6. Security</h2>
+      <p>We take security seriously and implement the following measures:</p>
+      <ul>
+        <li>API keys are stored as SHA-256 hashes — raw keys are never stored</li>
+        <li>All data is encrypted in transit using TLS</li>
+        <li>Supabase provides encryption at rest for all database storage</li>
+        <li>Audit logs are append-only — they cannot be modified or deleted</li>
+        <li>Rate limiting prevents abuse and brute-force attacks</li>
+        <li>Raw API keys are never logged in application logs</li>
+      </ul>
+
+      <h2>7. Your Rights (GDPR)</h2>
+      <p>If you are located in the European Economic Area, you have the following rights:</p>
+      <ul>
+        <li><strong>Right to Access:</strong> Request a copy of the data we hold about you</li>
+        <li><strong>Right to Rectification:</strong> Request correction of inaccurate data</li>
+        <li><strong>Right to Erasure:</strong> Request deletion of your data</li>
+        <li><strong>Right to Portability:</strong> Request your data in a machine-readable format</li>
+        <li><strong>Right to Object:</strong> Object to processing of your data</li>
+      </ul>
+      <p>To exercise any of these rights, contact us at <a href="mailto:privacy@spendguardapi.com">privacy@spendguardapi.com</a>.</p>
+
+      <h2>8. Your Rights (CCPA)</h2>
+      <p>If you are a California resident, you have the right to:</p>
+      <ul>
+        <li>Know what personal information we collect about you</li>
+        <li>Request deletion of your personal information</li>
+        <li>Opt out of the sale of personal information</li>
+      </ul>
+      <p>We do not sell personal information to third parties.</p>
+
+      <h2>9. Cookies</h2>
+      <p>The SpendGuard website does not use cookies, tracking pixels, or analytics scripts. We do not track your browsing behavior across websites. The API itself does not use cookies.</p>
+
+      <h2>10. Changes to This Policy</h2>
+      <p>We may update this Privacy Policy from time to time. We will notify you of material changes via email or a prominent notice on our website. Continued use of the Service after changes constitutes acceptance of the updated policy.</p>
+
+      <h2>11. Contact</h2>
+      <p>For questions about this Privacy Policy or to exercise your data rights, contact us at <a href="mailto:privacy@spendguardapi.com">privacy@spendguardapi.com</a>.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">&copy; 2026 SpendGuard. All rights reserved. <a href="/" style="color:var(--text-on-dark-muted);margin-left:16px">Home</a> <a href="/terms" style="color:var(--text-on-dark-muted);margin-left:16px">Terms of Service</a></div>
+  </div>
+</footer>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

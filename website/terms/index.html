@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service — SpendGuard</title>
+  <meta name="description" content="Terms and conditions for using the SpendGuard API authorization service.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="/">
+      <svg class="nav-logo" viewBox="0 0 180 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 6 L18 2 L32 6 L32 18 C32 26 18 34 18 34 C18 34 4 26 4 18 Z" stroke="#2563EB" stroke-width="2" fill="none"/>
+        <path d="M11 17 L16 22 L25 12" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <text x="42" y="24" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="20"><tspan fill="#1E293B">Spend</tspan><tspan fill="#2563EB">Guard</tspan></text>
+      </svg>
+    </a>
+    <div class="nav-links">
+      <a href="/#features">Product</a>
+      <a href="/#pricing">Pricing</a>
+      <a href="/api/docs" target="_blank" rel="noopener">Docs</a>
+    </div>
+    <div class="nav-ctas">
+      <a href="/#demo" class="btn btn-secondary">Try Demo</a>
+      <a href="/#pricing" class="btn btn-primary">Get API Key</a>
+    </div>
+    <button class="nav-hamburger" id="nav-toggle" type="button" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+<div class="nav-mobile" id="nav-mobile">
+  <a href="/#features">Product</a>
+  <a href="/#pricing">Pricing</a>
+  <a href="/#demo">Try Demo</a>
+  <a href="/api/docs" target="_blank">Docs</a>
+</div>
+
+<section class="legal-page">
+  <div class="container">
+    <div class="legal-content">
+      <h1>Terms of Service</h1>
+      <p class="legal-updated">Last updated: April 1, 2026</p>
+
+      <h2>1. Acceptance of Terms</h2>
+      <p>By accessing or using the SpendGuard API ("Service"), you agree to be bound by these Terms of Service. If you do not agree to these terms, do not use the Service.</p>
+
+      <h2>2. Description of Service</h2>
+      <p>SpendGuard is a real-time authorization API for AI agent financial actions. The Service evaluates planned financial actions (refunds, credits, discounts, vendor payments) against user-defined policies and returns one of three decisions: allow, block, or escalate.</p>
+
+      <h2>3. Nature of Service and Accuracy Disclaimer</h2>
+      <p>SpendGuard is an automated authorization service that evaluates financial actions against user-defined policies. The Service employs deterministic, rule-based logic as its primary decision engine, supplemented by an AI-assisted semantic classification layer for ambiguous inputs.</p>
+      <p>While SpendGuard is engineered with multiple safeguards — including deterministic rule evaluation, duplicate detection, and immutable audit logging — no automated system, including those incorporating artificial intelligence components, can guarantee 100% accuracy in all circumstances.</p>
+      <p>The AI-assisted semantic classification layer is designed to resolve ambiguous action types only and does not override rule-based decisions. However, as with any system involving automated classification, edge cases may arise where inputs are interpreted differently than intended.</p>
+      <p>SpendGuard is a decision-support and policy-enforcement tool. It is not a substitute for human judgment on high-value, high-risk, or unusual financial transactions. Customers are responsible for:</p>
+      <ul>
+        <li>Defining appropriate policies and rules for their use case</li>
+        <li>Testing policies thoroughly using the simulation endpoint before production deployment</li>
+        <li>Implementing appropriate human review processes for transactions that warrant additional oversight</li>
+        <li>Monitoring audit logs and adjusting policies as needed</li>
+      </ul>
+      <p>SpendGuard is provided to assist and augment your financial controls, not to replace them entirely.</p>
+
+      <h2>4. API Usage and Acceptable Use</h2>
+      <p>You agree to use the Service only for lawful purposes. You may not:</p>
+      <ul>
+        <li>Attempt to circumvent rate limits or abuse the Service</li>
+        <li>Use the Service to facilitate illegal financial activity</li>
+        <li>Reverse-engineer, decompile, or disassemble the Service</li>
+        <li>Share your API key with unauthorized parties</li>
+      </ul>
+
+      <h2>5. Account and API Key Security</h2>
+      <p>You are responsible for maintaining the security of your API key. SpendGuard stores only SHA-256 hashes of API keys — raw keys are never stored and cannot be retrieved after initial creation. You must notify us immediately if you suspect unauthorized use of your API key.</p>
+
+      <h2>6. Billing and Payments</h2>
+      <p>Plans are billed monthly via Stripe. The Free tier includes 1,000 checks per month at no cost. Paid plans (Pro and Growth) are charged monthly. Overages on the Pro plan are billed at $0.005 per check above the plan limit. Non-payment may result in service suspension.</p>
+
+      <h2>7. Service Availability</h2>
+      <p>SpendGuard provides the Service on a best-effort basis. We aim for high availability but do not guarantee uninterrupted service. We will make reasonable efforts to notify customers of planned maintenance windows in advance.</p>
+
+      <h2>8. Data Handling</h2>
+      <p>SpendGuard processes action metadata including amounts, action types, agent identifiers, and counterparty identifiers. We do NOT process or store financial account numbers, bank details, social security numbers, or personally identifiable information (PII). For full details, see our <a href="/privacy">Privacy Policy</a>.</p>
+
+      <h2>9. Limitation of Liability and No Warranty</h2>
+      <p class="legal-caps">THE SERVICE IS PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.</p>
+      <p class="legal-caps">SPENDGUARD DOES NOT WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED, ERROR-FREE, OR THAT ALL AUTHORIZATION DECISIONS WILL BE CORRECT IN EVERY CIRCUMSTANCE. THE DETERMINISTIC RULE ENGINE IS DESIGNED TO PRODUCE CONSISTENT RESULTS FOR IDENTICAL INPUTS, BUT THE OVERALL SYSTEM — INCLUDING NETWORK CONDITIONS, DATABASE AVAILABILITY, AND SEMANTIC CLASSIFICATION — INVOLVES COMPONENTS THAT MAY EXPERIENCE FAILURES OR PRODUCE UNEXPECTED RESULTS.</p>
+      <p class="legal-caps">IN NO EVENT SHALL SPENDGUARD, ITS OFFICERS, DIRECTORS, EMPLOYEES, OR AGENTS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF REVENUE, LOSS OF PROFITS, LOSS OF BUSINESS, OR FINANCIAL LOSSES ARISING FROM:</p>
+      <ul>
+        <li>Authorization decisions made by the Service</li>
+        <li>Failure of the Service to block a transaction that should have been blocked</li>
+        <li>Incorrect classification of an action type by the semantic layer</li>
+        <li>Service downtime or unavailability</li>
+        <li>Customer-defined policies that do not adequately cover their intended use case</li>
+      </ul>
+      <p class="legal-caps">THE TOTAL LIABILITY OF SPENDGUARD FOR ANY CLAIMS ARISING FROM THE USE OF THE SERVICE SHALL NOT EXCEED THE AMOUNT PAID BY THE CUSTOMER IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM.</p>
+      <p>Customers acknowledge that SpendGuard serves as one layer in a comprehensive financial control framework and agree to maintain appropriate additional safeguards commensurate with the risk profile of their financial operations.</p>
+
+      <h2>10. Termination</h2>
+      <p>Either party may terminate the Service at any time. SpendGuard may suspend or terminate access for violation of these terms or abuse of the Service. Upon termination, your API key will be deactivated. Audit log data will be retained per the applicable plan terms.</p>
+
+      <h2>11. Changes to Terms</h2>
+      <p>We may update these Terms from time to time. We will notify you of material changes via email or a notice on our website. Continued use of the Service after changes constitutes acceptance of the updated terms.</p>
+
+      <h2>12. Governing Law</h2>
+      <p>These Terms shall be governed by and construed in accordance with the laws of the State of California, United States, without regard to its conflict of law provisions.</p>
+
+      <h2>13. Contact</h2>
+      <p>For questions about these Terms, contact us at <a href="mailto:support@spendguardapi.com">support@spendguardapi.com</a>.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">&copy; 2026 SpendGuard. All rights reserved. <a href="/" style="color:var(--text-on-dark-muted);margin-left:16px">Home</a> <a href="/privacy" style="color:var(--text-on-dark-muted);margin-left:16px">Privacy Policy</a></div>
+  </div>
+</footer>
+
+<script src="/js/main.js"></script>
+</body>
+</html>
