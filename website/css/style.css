@@ -308,10 +308,10 @@ ul { list-style: none; }
   margin-top: 24px;
 }
 
-/* --- Integrations Logo Carousel --- */
-.integrations {
-  margin-top: 40px;
-  text-align: center;
+/* --- Integrations Logo Grid --- */
+.integrations-section {
+  padding: 60px 0;
+  background: var(--bg-secondary);
 }
 .integrations-label {
   font-size: 0.75rem;
@@ -319,58 +319,58 @@ ul { list-style: none; }
   color: var(--text-secondary);
   text-transform: uppercase;
   letter-spacing: 2px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+  text-align: center;
 }
-.logo-carousel {
-  overflow: hidden;
-  position: relative;
-  width: 100%;
-  padding: 16px 0;
+.integrations-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
 }
-.logo-carousel::before,
-.logo-carousel::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100px;
-  z-index: 2;
-  pointer-events: none;
-}
-.logo-carousel::before {
-  left: 0;
-  background: linear-gradient(to right, var(--bg-secondary), transparent);
-}
-.logo-carousel::after {
-  right: 0;
-  background: linear-gradient(to left, var(--bg-secondary), transparent);
-}
-.logo-track {
+.integration-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px 16px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  width: max-content;
-  animation: logo-scroll 30s linear infinite;
-  gap: 48px;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.25s ease;
+  cursor: default;
 }
-.logo-item {
-  flex-shrink: 0;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-weight: 700;
-  font-size: 1.125rem;
-  color: #64748B;
-  white-space: nowrap;
-  letter-spacing: -0.02em;
-  transition: color 0.2s ease;
+.integration-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.1);
+  transform: translateY(-3px);
 }
-.logo-item:hover {
-  color: var(--text-primary);
-  opacity: 1;
+.integration-icon {
+  width: 36px;
+  height: 36px;
 }
-@keyframes logo-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+.integration-card:hover .integration-icon path,
+.integration-card:hover .integration-icon circle,
+.integration-card:hover .integration-icon rect {
+  stroke: var(--accent);
 }
-
+.integration-card:hover .integration-icon path[fill="#64748B"] {
+  fill: var(--accent);
+}
+.integration-name {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.integration-card:hover .integration-name {
+  color: var(--accent);
+}
+@media (max-width: 1024px) {
+  .integrations-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 640px) {
+  .integrations-grid { grid-template-columns: repeat(3, 1fr); }
+}
 /* --- Section Commons --- */
 .section {
   padding: 80px 0;
