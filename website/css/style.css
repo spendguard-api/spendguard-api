@@ -310,21 +310,22 @@ ul { list-style: none; }
 
 /* --- Integrations Logo Carousel --- */
 .integrations {
-  margin-top: 32px;
+  margin-top: 40px;
   text-align: center;
 }
 .integrations-label {
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--text-tertiary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 20px;
+  letter-spacing: 2px;
+  margin-bottom: 24px;
 }
 .logo-carousel {
   overflow: hidden;
   position: relative;
   width: 100%;
+  padding: 16px 0;
 }
 .logo-carousel::before,
 .logo-carousel::after {
@@ -332,7 +333,7 @@ ul { list-style: none; }
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 80px;
+  width: 100px;
   z-index: 2;
   pointer-events: none;
 }
@@ -346,21 +347,24 @@ ul { list-style: none; }
 }
 .logo-track {
   display: flex;
+  align-items: center;
   width: max-content;
-  animation: logo-scroll 25s linear infinite;
+  animation: logo-scroll 30s linear infinite;
+  gap: 48px;
 }
 .logo-item {
   flex-shrink: 0;
-  padding: 0 32px;
   font-family: 'Inter', system-ui, sans-serif;
-  font-weight: 600;
-  font-size: 0.9375rem;
-  color: var(--text-tertiary);
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: #64748B;
   white-space: nowrap;
+  letter-spacing: -0.02em;
   transition: color 0.2s ease;
 }
 .logo-item:hover {
-  color: var(--text-secondary);
+  color: var(--text-primary);
+  opacity: 1;
 }
 @keyframes logo-scroll {
   0% { transform: translateX(0); }
