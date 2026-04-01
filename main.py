@@ -138,9 +138,13 @@ app.include_router(keys_router, prefix="/v1")
 import os
 from fastapi.staticfiles import StaticFiles
 
-_website_dir = os.path.join(os.path.dirname(__file__), "website")
+_base_dir = os.path.dirname(os.path.abspath(__file__))
+_website_dir = os.path.join(_base_dir, "website")
 if os.path.isdir(_website_dir):
     app.mount("/", StaticFiles(directory=_website_dir, html=True), name="website")
+    logger.info("Website mounted from: %s", _website_dir)
+else:
+    logger.warning("Website directory not found at: %s", _website_dir)
 
 
 # -- Lifecycle Events --
