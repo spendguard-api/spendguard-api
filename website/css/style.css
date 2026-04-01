@@ -308,69 +308,6 @@ ul { list-style: none; }
   margin-top: 24px;
 }
 
-/* --- Integrations Logo Grid --- */
-.integrations-section {
-  padding: 60px 0;
-  background: var(--bg-secondary);
-}
-.integrations-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 32px;
-  text-align: center;
-}
-.integrations-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 16px;
-}
-.integration-card {
-  background: var(--bg-primary);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 24px 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  transition: all 0.25s ease;
-  cursor: default;
-}
-.integration-card:hover {
-  border-color: var(--accent);
-  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.1);
-  transform: translateY(-3px);
-}
-.integration-icon {
-  width: 36px;
-  height: 36px;
-}
-.integration-card:hover .integration-icon path,
-.integration-card:hover .integration-icon circle,
-.integration-card:hover .integration-icon rect {
-  stroke: var(--accent);
-}
-.integration-card:hover .integration-icon path[fill="#64748B"] {
-  fill: var(--accent);
-}
-.integration-name {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-.integration-card:hover .integration-name {
-  color: var(--accent);
-}
-@media (max-width: 1024px) {
-  .integrations-grid { grid-template-columns: repeat(4, 1fr); }
-}
-@media (max-width: 640px) {
-  .integrations-grid { grid-template-columns: repeat(3, 1fr); }
-}
 /* --- Section Commons --- */
 .section {
   padding: 80px 0;
