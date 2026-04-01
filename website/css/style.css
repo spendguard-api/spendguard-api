@@ -721,23 +721,22 @@ ul { list-style: none; }
 /* --- Trust Bar --- */
 .trust-bar {
   display: flex;
-  gap: 24px;
+  align-items: center;
+  gap: 8px;
   margin-top: 32px;
   flex-wrap: wrap;
 }
 .trust-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--text-secondary);
-  background: var(--bg-secondary);
-  padding: 6px 14px;
-  border-radius: 100px;
-  border: 1px solid var(--border);
 }
-.trust-icon { font-size: 0.875rem; }
+.trust-item + .trust-item::before {
+  content: '·';
+  margin-right: 8px;
+  color: var(--border-hover);
+  font-weight: 700;
+}
 
 /* --- Testimonials --- */
 .testimonials-grid {
@@ -751,24 +750,30 @@ ul { list-style: none; }
   border-radius: 12px;
   padding: 32px;
   transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+  position: relative;
 }
 .testimonial-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 12px 30px rgba(37, 99, 235, 0.08);
+  border-color: var(--accent);
 }
 .testimonial-quote {
-  font-size: 3rem;
+  font-size: 3.5rem;
   line-height: 1;
   color: var(--accent);
-  font-family: Georgia, serif;
-  margin-bottom: 8px;
+  font-family: Georgia, 'Times New Roman', serif;
+  margin-bottom: 12px;
+  opacity: 0.3;
 }
 .testimonial-text {
   font-size: 0.9375rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-  font-style: italic;
-  margin-bottom: 20px;
+  color: var(--text-primary);
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+.testimonial-author {
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
 }
 .testimonial-name {
   font-size: 0.875rem;
@@ -778,6 +783,7 @@ ul { list-style: none; }
 .testimonial-company {
   font-size: 0.8125rem;
   color: var(--text-tertiary);
+  margin-top: 2px;
 }
 
 /* --- Demo Live Dot --- */
