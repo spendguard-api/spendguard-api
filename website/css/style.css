@@ -308,6 +308,65 @@ ul { list-style: none; }
   margin-top: 24px;
 }
 
+/* --- Integrations Logo Carousel --- */
+.integrations {
+  margin-top: 32px;
+  text-align: center;
+}
+.integrations-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+.logo-carousel {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+.logo-carousel::before,
+.logo-carousel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+.logo-carousel::before {
+  left: 0;
+  background: linear-gradient(to right, var(--bg-secondary), transparent);
+}
+.logo-carousel::after {
+  right: 0;
+  background: linear-gradient(to left, var(--bg-secondary), transparent);
+}
+.logo-track {
+  display: flex;
+  width: max-content;
+  animation: logo-scroll 25s linear infinite;
+}
+.logo-item {
+  flex-shrink: 0;
+  padding: 0 32px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--text-tertiary);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+.logo-item:hover {
+  color: var(--text-secondary);
+}
+@keyframes logo-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 /* --- Section Commons --- */
 .section {
   padding: 80px 0;
