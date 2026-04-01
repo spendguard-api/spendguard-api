@@ -21,7 +21,7 @@
       <svg class="nav-logo" viewBox="0 0 180 36" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M4 6 L18 2 L32 6 L32 18 C32 26 18 34 18 34 C18 34 4 26 4 18 Z" stroke="#2563EB" stroke-width="2" fill="none"/>
         <path d="M11 17 L16 22 L25 12" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        <text x="42" y="24" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="20" fill="#1E293B">SpendGuard</text>
+        <text x="42" y="24" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="20"><tspan fill="#1E293B">Spend</tspan><tspan fill="#2563EB">Guard</tspan></text>
       </svg>
     </a>
     <div class="nav-links">
@@ -134,7 +134,7 @@
      ============================================================ -->
 <section class="section" id="how-it-works">
   <div class="container">
-    <h2 class="section-title">How it works</h2>
+    <h2 class="section-title fade-in">How it works</h2>
     <p class="section-subtitle">Three steps from policy to decision.</p>
     <div class="steps">
       <div class="steps-line"></div>
@@ -194,24 +194,24 @@
      ============================================================ -->
 <section class="section section-alt" id="features">
   <div class="container">
-    <h2 class="section-title">Built for production</h2>
+    <h2 class="section-title fade-in">Built for production</h2>
     <p class="section-subtitle">Everything you need to control AI agent financial actions.</p>
     <div class="features-grid">
-      <div class="feature-card">
+      <div class="feature-card fade-in fade-in-delay-1">
         <div class="feature-icon">
           <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
         <h3>10 Rule Types</h3>
         <p>Amount limits, vendor allowlists, time restrictions, geography blocks, discount caps, duplicate guards, and more.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card fade-in fade-in-delay-2">
         <div class="feature-icon">
           <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         </div>
         <h3>Immutable Audit Log</h3>
         <p>Every decision logged with 14 fields. Append-only. Query by agent, action type, decision, or date range.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card fade-in fade-in-delay-3">
         <div class="feature-icon">
           <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
         </div>
@@ -225,14 +225,14 @@
         <h3>Duplicate Guard</h3>
         <p>SHA-256 fingerprint blocks repeated actions within configurable time windows. Stops agent retry loops.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card fade-in fade-in-delay-4">
         <div class="feature-icon">
           <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
         </div>
         <h3>Semantic Classification</h3>
         <p>Handles ambiguous inputs. "Make the customer whole" resolves to refund. The classifier resolves. Rules still decide.</p>
       </div>
-      <div class="feature-card">
+      <div class="feature-card fade-in fade-in-delay-5">
         <div class="feature-icon">
           <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11a9 9 0 0118 0"/><path d="M4 11V8"/><path d="M22 11v3"/><rect x="2" y="14" width="6" height="6" rx="1"/><rect x="16" y="14" width="6" height="6" rx="1"/></svg>
         </div>
@@ -248,7 +248,7 @@
      ============================================================ -->
 <section class="section" id="demo">
   <div class="container">
-    <h2 class="section-title">Try it live</h2>
+    <h2 class="section-title fade-in">Try it live</h2>
     <p class="section-subtitle">This calls the real API. No signup required. No data stored.</p>
     <div class="demo-widget">
       <div class="demo-header">
@@ -325,12 +325,29 @@
      ============================================================ -->
 <section class="section section-alt" id="pricing">
   <div class="container">
-    <h2 class="section-title">Simple, transparent pricing</h2>
+    <h2 class="section-title fade-in">Simple, transparent pricing</h2>
     <p class="section-subtitle">Start free. Scale as you grow.</p>
     <div class="pricing-grid">
       <div class="pricing-card">
-        <div class="pricing-name">Starter</div>
-        <div class="pricing-desc">For teams getting started</div>
+        <div class="pricing-name">Free</div>
+        <div class="pricing-desc">For exploring and testing</div>
+        <div class="pricing-price">
+          <span class="pricing-amount">$0</span>
+          <span class="pricing-period">/month</span>
+        </div>
+        <ul class="pricing-features">
+          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>1,000 checks/month</li>
+          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>1 policy</li>
+          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Community support</li>
+          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Audit log access</li>
+          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Simulation endpoint</li>
+        </ul>
+        <a href="/docs" class="btn btn-secondary">Start Free</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-popular">Most Popular</div>
+        <div class="pricing-name">Pro</div>
+        <div class="pricing-desc">For teams in production</div>
         <div class="pricing-price">
           <span class="pricing-amount">$49</span>
           <span class="pricing-period">/month</span>
@@ -340,12 +357,12 @@
           <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Up to 5 policies</li>
           <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Email support</li>
           <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Audit log access</li>
-          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Simulation endpoint</li>
+          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>MCP integration</li>
+          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Overage: $0.005/check</li>
         </ul>
-        <a href="#" class="btn btn-secondary">Get Started</a>
+        <a href="/docs" class="btn btn-primary">Get Started</a>
       </div>
-      <div class="pricing-card featured">
-        <div class="pricing-popular">Most Popular</div>
+      <div class="pricing-card">
         <div class="pricing-name">Growth</div>
         <div class="pricing-desc">For scaling teams</div>
         <div class="pricing-price">
@@ -356,26 +373,11 @@
           <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>100,000 checks/month</li>
           <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Unlimited policies</li>
           <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
-          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Audit log access</li>
-          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>MCP integration</li>
-          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Overage: $0.005/check</li>
-        </ul>
-        <a href="#" class="btn btn-primary">Get Started</a>
-      </div>
-      <div class="pricing-card">
-        <div class="pricing-name">Enterprise</div>
-        <div class="pricing-desc">For large organizations</div>
-        <div class="pricing-price">
-          <span class="pricing-amount">Custom</span>
-        </div>
-        <ul class="pricing-features">
-          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Unlimited checks</li>
           <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Custom SLA</li>
+          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>MCP integration</li>
           <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Dedicated support</li>
-          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Custom rule types</li>
-          <li><svg class="pricing-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>SSO (coming soon)</li>
         </ul>
-        <a href="#" class="btn btn-secondary">Contact Sales</a>
+        <a href="/docs" class="btn btn-secondary">Get Started</a>
       </div>
     </div>
     <p class="pricing-note">All plans include: API access, duplicate guard, policy versioning, semantic classification, immutable audit log</p>
@@ -392,7 +394,7 @@
         <svg class="footer-logo-white" viewBox="0 0 180 36" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M4 6 L18 2 L32 6 L32 18 C32 26 18 34 18 34 C18 34 4 26 4 18 Z" stroke="#2563EB" stroke-width="2" fill="none"/>
           <path d="M11 17 L16 22 L25 12" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <text x="42" y="24" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="20" fill="#F8FAFC">SpendGuard</text>
+          <text x="42" y="24" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="20"><tspan fill="#F8FAFC">Spend</tspan><tspan fill="#2563EB">Guard</tspan></text>
         </svg>
         <p>Real-time authorization for AI agent financial actions.</p>
         <div class="footer-social">
