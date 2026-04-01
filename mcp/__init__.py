@@ -1,1 +1,0 @@
-"""SpendGuard MCP server package."""
