@@ -133,6 +133,15 @@ app.include_router(violations_router, prefix="/v1", dependencies=auth_dependenci
 # Keys route — uses its own admin key check, NOT standard auth
 app.include_router(keys_router, prefix="/v1")
 
+# -- Marketing Website (static files) --
+# Mounted LAST so API routes always take priority
+import os
+from fastapi.staticfiles import StaticFiles
+
+_website_dir = os.path.join(os.path.dirname(__file__), "website")
+if os.path.isdir(_website_dir):
+    app.mount("/", StaticFiles(directory=_website_dir, html=True), name="website")
+
 
 # -- Lifecycle Events --
 @app.on_event("startup")
