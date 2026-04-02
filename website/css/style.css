@@ -716,6 +716,47 @@ ul { list-style: none; }
   .footer-grid { grid-template-columns: 1fr; gap: 32px; }
   .hero-ctas { flex-direction: column; }
   .hero-ctas .btn { width: 100%; }
+  .code-block pre { font-size: 0.75rem; padding: 12px; }
+  .code-block-header { padding: 8px 12px; }
+  .stat-value { font-size: 1.75rem; }
+}
+
+@media (max-width: 480px) {
+  .hero { padding: 100px 0 48px; }
+  .hero h1 { font-size: 1.75rem; }
+  .hero-subtitle { font-size: 0.9375rem; }
+  .hero-eyebrow { font-size: 0.6875rem; }
+  .section { padding: 48px 0; }
+  .section-title { font-size: 1.5rem; }
+  .section-subtitle { font-size: 0.9375rem; }
+  .stats { padding: 32px 0; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 0; }
+  .stat-value { font-size: 1.5rem; }
+  .stat-label { font-size: 0.75rem; }
+  .stats-tagline { font-size: 0.75rem; }
+  .code-block pre { font-size: 0.6875rem; padding: 10px; overflow-x: auto; }
+  .code-block-label { font-size: 0.625rem; }
+  .step h3 { font-size: 1rem; }
+  .step p { font-size: 0.8125rem; }
+  .feature-card { padding: 20px; }
+  .feature-card h3 { font-size: 1rem; }
+  .feature-card p { font-size: 0.8125rem; }
+  .demo-widget { border-radius: 12px; }
+  .demo-action { padding: 12px 16px; }
+  .demo-action-text { font-size: 0.8125rem; }
+  .demo-action-detail { font-size: 0.6875rem; }
+  .demo-header { padding: 14px 16px; }
+  .demo-policy-name { font-size: 0.8125rem; }
+  .demo-badge { font-size: 0.625rem; padding: 3px 8px; }
+  .pricing-card { padding: 24px; }
+  .pricing-amount { font-size: 2.25rem; }
+  .pricing-features li { font-size: 0.8125rem; }
+  .footer { padding: 48px 0 24px; }
+  .footer-grid { gap: 24px; }
+  .footer-brand p { font-size: 0.8125rem; }
+  .footer-col h4 { font-size: 0.8125rem; margin-bottom: 12px; }
+  .footer-col a { font-size: 0.8125rem; }
+  .container { padding: 0 16px; }
 }
 
 /* --- Scroll-triggered Fade-In --- */
