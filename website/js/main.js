@@ -1,13 +1,13 @@
 /* ============================================================
    SpendGuard — Main JavaScript
-   Nav scroll, smooth scroll, stat counters, copy buttons, mobile nav
+   Nav, scroll, counters, copy, code tabs, sticky CTA, fade-in
    ============================================================ */
 
 (function () {
   'use strict';
 
   // --- Nav scroll effect ---
-  const nav = document.getElementById('nav');
+  var nav = document.getElementById('nav');
   window.addEventListener('scroll', function () {
     if (window.scrollY > 10) {
       nav.classList.add('scrolled');
@@ -17,13 +17,12 @@
   });
 
   // --- Mobile nav toggle ---
-  const toggle = document.getElementById('nav-toggle');
-  const mobileNav = document.getElementById('nav-mobile');
+  var toggle = document.getElementById('nav-toggle');
+  var mobileNav = document.getElementById('nav-mobile');
   if (toggle && mobileNav) {
     toggle.addEventListener('click', function () {
       mobileNav.classList.toggle('open');
     });
-    // Close mobile nav when a link is clicked
     mobileNav.querySelectorAll('a').forEach(function (link) {
       link.addEventListener('click', function () {
         mobileNav.classList.remove('open');
@@ -49,47 +48,37 @@
   function animateCounters() {
     if (animated) return;
     animated = true;
-
     counters.forEach(function (counter) {
       var target = parseInt(counter.getAttribute('data-target'), 10);
       if (isNaN(target)) return;
-
-      var current = 0;
-      var duration = 1500; // ms
       var startTime = null;
-
       function step(timestamp) {
         if (!startTime) startTime = timestamp;
-        var progress = Math.min((timestamp - startTime) / duration, 1);
-        // Ease out quad
+        var progress = Math.min((timestamp - startTime) / 1500, 1);
         var eased = 1 - (1 - progress) * (1 - progress);
-        current = Math.round(eased * target);
-        counter.textContent = current;
+        counter.textContent = Math.round(eased * target);
         if (progress < 1) {
           requestAnimationFrame(step);
         } else {
           counter.textContent = target;
         }
       }
-
       requestAnimationFrame(step);
     });
   }
 
-  // Intersection Observer for stats
   var statsSection = document.getElementById('stats');
   if (statsSection && 'IntersectionObserver' in window) {
-    var observer = new IntersectionObserver(function (entries) {
+    var statsObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           animateCounters();
-          observer.unobserve(entry.target);
+          statsObserver.unobserve(entry.target);
         }
       });
     }, { threshold: 0.3 });
-    observer.observe(statsSection);
+    statsObserver.observe(statsSection);
   } else {
-    // Fallback: animate immediately
     animateCounters();
   }
 
@@ -104,11 +93,8 @@
         }
       });
     }, { threshold: 0.15 });
-    fadeEls.forEach(function (el) {
-      fadeObserver.observe(el);
-    });
+    fadeEls.forEach(function (el) { fadeObserver.observe(el); });
   } else {
-    // Fallback: show everything
     fadeEls.forEach(function (el) { el.classList.add('visible'); });
   }
 
@@ -116,11 +102,9 @@
   document.querySelectorAll('.code-block-copy').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var codeBlock = this.closest('.code-block');
-      var code = codeBlock.querySelector('code');
-      if (!code) return;
-
-      var text = code.textContent;
-      navigator.clipboard.writeText(text).then(function () {
+      var activeContent = codeBlock.querySelector('.code-tab-content.active code') || codeBlock.querySelector('code');
+      if (!activeContent) return;
+      navigator.clipboard.writeText(activeContent.textContent).then(function () {
         btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';
         setTimeout(function () {
           btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>';
@@ -128,5 +112,37 @@
       });
     });
   });
+
+  // --- Hero code tab switching ---
+  var codeTabs = document.querySelectorAll('.code-tab');
+  if (codeTabs.length) {
+    codeTabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var lang = this.getAttribute('data-lang');
+        var block = this.closest('.code-block');
+        block.querySelectorAll('.code-tab').forEach(function (t) { t.classList.remove('active'); });
+        block.querySelectorAll('.code-tab-content').forEach(function (p) { p.classList.remove('active'); });
+        this.classList.add('active');
+        var panel = document.getElementById('code-' + lang);
+        if (panel) panel.classList.add('active');
+      });
+    });
+  }
+
+  // --- Sticky mobile CTA (visible after scrolling past hero) ---
+  var stickyCta = document.getElementById('sticky-cta');
+  var heroSection = document.querySelector('.hero');
+  if (stickyCta && heroSection && 'IntersectionObserver' in window) {
+    var stickyObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          stickyCta.classList.remove('visible');
+        } else {
+          stickyCta.classList.add('visible');
+        }
+      });
+    }, { threshold: 0 });
+    stickyObserver.observe(heroSection);
+  }
 
 })();
