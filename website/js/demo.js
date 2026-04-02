@@ -119,13 +119,13 @@
         message = message.substring(0, 50) + '...';
       }
 
-      var badgeClass = decision === 'allow' ? 'allow' :
-                       decision === 'block' ? 'block' :
-                       decision === 'escalate' ? 'escalate' : '';
+      var badgeClass = decision === 'allow' ? 'badge-allow' :
+                       decision === 'block' ? 'badge-block' :
+                       decision === 'escalate' ? 'badge-escalate' : '';
 
       el.innerHTML =
-        '<span class="demo-result-message">' + escapeHtml(message) + '</span>' +
-        '<span class="decision-badge ' + badgeClass + '">' + decision.toUpperCase() + '</span>';
+        '<span class="text-xs text-slate-500 max-w-[200px] text-right hidden sm:block">' + escapeHtml(message) + '</span>' +
+        '<span class="text-xs font-bold uppercase px-3 py-1 rounded-full whitespace-nowrap ' + badgeClass + '">' + decision.toUpperCase() + '</span>';
 
       // Stagger the reveal
       setTimeout(function () {
@@ -139,9 +139,9 @@
     var escalated = summary.escalated || 0;
 
     summaryEl.innerHTML =
-      '<span class="demo-summary-item"><span class="demo-summary-dot allow"></span>' + allowed + ' allowed</span>' +
-      '<span class="demo-summary-item"><span class="demo-summary-dot block"></span>' + blocked + ' blocked</span>' +
-      '<span class="demo-summary-item"><span class="demo-summary-dot escalate"></span>' + escalated + ' escalated</span>';
+      '<span class="flex items-center gap-1.5 text-sm text-slate-500"><span class="w-2 h-2 rounded-full bg-green-500"></span>' + allowed + ' allowed</span>' +
+      '<span class="flex items-center gap-1.5 text-sm text-slate-500"><span class="w-2 h-2 rounded-full bg-red-500"></span>' + blocked + ' blocked</span>' +
+      '<span class="flex items-center gap-1.5 text-sm text-slate-500"><span class="w-2 h-2 rounded-full bg-amber-500"></span>' + escalated + ' escalated</span>';
 
     // Show footer after last result animates in
     setTimeout(function () {
