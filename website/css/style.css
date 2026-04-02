@@ -49,6 +49,7 @@ body {
   color: var(--text-primary);
   background: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 a { color: var(--accent); text-decoration: none; }
 a:hover { color: var(--accent-hover); }
@@ -116,6 +117,7 @@ ul { list-style: none; }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  overflow: hidden;
 }
 .nav-logo { height: 28px; width: auto; }
 .nav-links {
@@ -226,6 +228,7 @@ ul { list-style: none; }
   background: var(--bg-dark);
   border-radius: 12px;
   overflow: hidden;
+  max-width: 100%;
   font-family: 'JetBrains Mono', Consolas, monospace;
   font-size: 0.875rem;
   line-height: 1.6;
@@ -268,6 +271,7 @@ ul { list-style: none; }
   padding: 16px;
   overflow-x: auto;
   color: var(--text-on-dark);
+  max-width: 100%;
 }
 .code-block code { font-family: inherit; }
 .code-highlight-block { color: #FCA5A5; }
@@ -716,7 +720,8 @@ ul { list-style: none; }
   .footer-grid { grid-template-columns: 1fr; gap: 32px; }
   .hero-ctas { flex-direction: column; }
   .hero-ctas .btn { width: 100%; }
-  .code-block pre { font-size: 0.75rem; padding: 12px; }
+  .hero-code { min-width: 0; width: 100%; }
+  .code-block pre { font-size: 0.75rem; padding: 12px; word-break: break-all; }
   .code-block-header { padding: 8px 12px; }
   .stat-value { font-size: 1.75rem; }
 }
@@ -734,7 +739,8 @@ ul { list-style: none; }
   .stat-value { font-size: 1.5rem; }
   .stat-label { font-size: 0.75rem; }
   .stats-tagline { font-size: 0.75rem; }
-  .code-block pre { font-size: 0.6875rem; padding: 10px; overflow-x: auto; }
+  .code-block pre { font-size: 0.6875rem; padding: 10px; overflow-x: auto; word-break: break-all; }
+  .hero-code { min-width: 0; width: 100%; }
   .code-block-label { font-size: 0.625rem; }
   .step h3 { font-size: 1rem; }
   .step p { font-size: 0.8125rem; }
