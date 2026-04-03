@@ -1,0 +1,183 @@
+---
+title: "Use Case: AI Refund Agent"
+description: "End-to-end walkthrough of an AI customer support agent handling refunds with SpendGuard."
+---
+
+## The Scenario
+
+You have an AI customer support agent that handles refund requests. Customers chat with the agent, and when a refund is appropriate, the agent issues it automatically.
+
+**The problem:** Without guardrails, the agent could refund $5,000 on a $20 order, issue refunds on year-old purchases, or process the same refund twice if the customer asks again.
+
+**The solution:** SpendGuard sits between the agent and the refund action. Before the agent issues any refund, it checks with SpendGuard first.
+
+---
+
+## Step 1: Create Your Refund Policy
+
+Start with the [AI Support Refund Policy template](/guides/policy-templates#template-1-ai-support-refund-policy) and customize it:
+
+```bash
+curl -X POST https://spendguardapi.com/v1/policies \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $SPENDGUARD_API_KEY" \
+  -d '{
+    "policy_id": "support_refund_policy",
+    "name": "AI Support Refund Policy",
+    "description": "Controls refunds issued by our AI support agent",
+    "rules": [
+      {
+        "rule_id": "r1",
+        "rule_type": "max_amount",
+        "description": "Block refunds over $500",
+        "parameters": { "limit": 500, "currency": "USD" }
+      },
+      {
+        "rule_id": "r2",
+        "rule_type": "refund_age_limit",
+        "description": "No refunds after 30 days",
+        "parameters": { "max_days": 30 }
+      },
+      {
+        "rule_id": "r3",
+        "rule_type": "escalate_if",
+        "description": "Escalate refunds over $200",
+        "parameters": { "amount_above": 200, "action_types": ["refund"] }
+      },
+      {
+        "rule_id": "r4",
+        "rule_type": "duplicate_guard",
+        "description": "Block duplicate refunds within 10 minutes",
+        "parameters": { "window_minutes": 10 }
+      }
+    ]
+  }'
+```
+
+---
+
+## Step 2: Wire the Agent to Check Before Refunding
+
+In your agent's refund flow, add a SpendGuard check before executing the refund:
+
+```python
+import requests
+
+SPENDGUARD_URL = "https://spendguardapi.com"
+SPENDGUARD_KEY = "sg_live_your_key_here"
+
+def process_refund(agent_id, customer_id, amount, days_since_purchase):
+    """Check with SpendGuard, then process if allowed."""
+
+    # Step 1: Ask SpendGuard
+    check = requests.post(
+        f"{SPENDGUARD_URL}/v1/checks",
+        headers={
+            "X-API-Key": SPENDGUARD_KEY,
+            "Content-Type": "application/json",
+        },
+        json={
+            "agent_id": agent_id,
+            "policy_id": "support_refund_policy",
+            "action_type": "refund",
+            "amount": amount,
+            "currency": "USD",
+            "counterparty": customer_id,
+            "metadata": {
+                "days_since_purchase": days_since_purchase,
+            },
+        },
+    ).json()
+
+    decision = check["decision"]
+
+    # Step 2: Act on the decision
+    if decision == "allow":
+        execute_refund(customer_id, amount)
+        return f"Refund of ${amount} processed for {customer_id}."
+
+    elif decision == "escalate":
+        create_escalation_ticket(customer_id, amount, check["message"])
+        return f"This refund needs manager approval. I've created a ticket."
+
+    elif decision == "block":
+        return f"I can't process this refund: {check['message']}"
+```
+
+---
+
+## Step 3: See It In Action
+
+### Scenario A: $50 refund, 5 days old → Allow
+
+The agent checks a small, recent refund:
+
+```json
+{
+  "decision": "allow",
+  "confidence": "high",
+  "message": "Action is within policy. Proceed."
+}
+```
+
+The agent processes the refund automatically.
+
+### Scenario B: $300 refund, 10 days old → Escalate
+
+The amount is above the $200 escalation threshold:
+
+```json
+{
+  "decision": "escalate",
+  "confidence": "high",
+  "reason_code": "escalation_threshold_exceeded",
+  "message": "Refund of $300.00 exceeds the escalation threshold of $200.00.",
+  "violated_rule_id": "r3"
+}
+```
+
+The agent tells the customer: "This refund needs manager approval. I've created a ticket for you."
+
+### Scenario C: $750 refund → Block
+
+The amount exceeds the $500 max:
+
+```json
+{
+  "decision": "block",
+  "confidence": "high",
+  "reason_code": "max_amount_exceeded",
+  "message": "Amount $750.00 exceeds the policy limit of $500.00.",
+  "violated_rule_id": "r1"
+}
+```
+
+The agent tells the customer: "I'm unable to process a refund of this size. Please contact our support team directly."
+
+### Scenario D: Same refund submitted twice → Block (Duplicate)
+
+The customer asks for the same refund again within 10 minutes:
+
+```json
+{
+  "decision": "block",
+  "confidence": "high",
+  "reason_code": "duplicate_action_detected",
+  "message": "This action was already submitted recently."
+}
+```
+
+The agent recognizes this is a duplicate and doesn't process it again.
+
+---
+
+## Step 4: Monitor Your Agent
+
+Check the violations log to see what your agent has been blocked or escalated on:
+
+```bash
+curl "https://spendguardapi.com/v1/violations?agent_id=support-agent-v1&limit=10" \
+  -H "X-API-Key: $SPENDGUARD_API_KEY"
+```
+
+This gives you a complete audit trail of every decision that wasn't a simple "allow."

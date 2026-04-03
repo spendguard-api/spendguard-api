@@ -1,0 +1,434 @@
+---
+title: "Rule Types"
+description: "All 10 rule types available in SpendGuard, with parameters and triggering examples."
+---
+
+SpendGuard policies are built from rules. Each rule has a `rule_type` that determines what it checks. You can combine any number of rules in a single policy.
+
+**Decision precedence:** If multiple rules fire, block wins over escalate, and escalate wins over allow.
+
+---
+
+## 1. max_amount
+
+**What it does:** Blocks any action where the dollar amount exceeds a limit.
+
+**Decision:** block
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `limit` | number | Maximum allowed amount |
+| `currency` | string | Currency code (e.g., "USD") |
+
+**Example rule:**
+
+```json
+{
+  "rule_id": "r1",
+  "rule_type": "max_amount",
+  "description": "Block transactions over $500",
+  "parameters": {
+    "limit": 500,
+    "currency": "USD"
+  }
+}
+```
+
+**Triggering example:** A $750 refund would return:
+
+```json
+{
+  "decision": "block",
+  "reason_code": "max_amount_exceeded",
+  "message": "Amount $750.00 exceeds the policy limit of $500.00.",
+  "violated_rule_id": "r1"
+}
+```
+
+---
+
+## 2. refund_age_limit
+
+**What it does:** Blocks refunds on purchases older than a specified number of days. Only applies when `action_type` is `refund`.
+
+**Decision:** block
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `max_days` | integer | Maximum days since purchase |
+
+**Requires metadata:** `days_since_purchase` (integer) must be included in the check request's `metadata` field. If missing, the rule does not trigger.
+
+**Example rule:**
+
+```json
+{
+  "rule_id": "r2",
+  "rule_type": "refund_age_limit",
+  "description": "No refunds after 30 days",
+  "parameters": {
+    "max_days": 30
+  }
+}
+```
+
+**Triggering example:** A refund with `metadata.days_since_purchase = 45` would return:
+
+```json
+{
+  "decision": "block",
+  "reason_code": "refund_age_limit_exceeded",
+  "message": "Refund requested for an order 45 days old. Policy limit is 30 days.",
+  "violated_rule_id": "r2"
+}
+```
+
+---
+
+## 3. blocked_categories
+
+**What it does:** Blocks actions in prohibited categories. Checks the `metadata.category` field and also scans `merchant_or_vendor` for matching substrings.
+
+**Decision:** block
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `categories` | array of strings | Category names to block |
+
+**Example rule:**
+
+```json
+{
+  "rule_id": "r3",
+  "rule_type": "blocked_categories",
+  "description": "Block gambling and luxury goods",
+  "parameters": {
+    "categories": ["gambling", "luxury_goods"]
+  }
+}
+```
+
+**Triggering example:** A check with `metadata.category = "gambling"` would return:
+
+```json
+{
+  "decision": "block",
+  "reason_code": "blocked_category",
+  "message": "Category 'gambling' is blocked by policy.",
+  "violated_rule_id": "r3"
+}
+```
+
+---
+
+## 4. vendor_allowlist
+
+**What it does:** Blocks payments to vendors not on the approved list. Only applies when `action_type` is `spend`. Checks the `counterparty` field against the allowed vendors list.
+
+**Decision:** block
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `vendors` | array of strings | Approved vendor/counterparty IDs |
+
+**Example rule:**
+
+```json
+{
+  "rule_id": "r4",
+  "rule_type": "vendor_allowlist",
+  "description": "Only approved vendors",
+  "parameters": {
+    "vendors": ["vendor_acme", "vendor_globex", "vendor_initech"]
+  }
+}
+```
+
+**Triggering example:** A spend check with `counterparty = "vendor_unknown"` would return:
+
+```json
+{
+  "decision": "block",
+  "reason_code": "vendor_not_on_allowlist",
+  "message": "Vendor 'vendor_unknown' is not on the approved vendor list.",
+  "violated_rule_id": "r4"
+}
+```
+
+---
+
+## 5. blocked_payment_rails
+
+**What it does:** Blocks specific payment methods. Checks the `payment_method` field (case-insensitive).
+
+**Decision:** block
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `rails` | array of strings | Payment methods to block (e.g., "wire", "crypto", "cash") |
+
+**Example rule:**
+
+```json
+{
+  "rule_id": "r5",
+  "rule_type": "blocked_payment_rails",
+  "description": "No wire or crypto payments",
+  "parameters": {
+    "rails": ["wire", "crypto"]
+  }
+}
+```
+
+**Triggering example:** A check with `payment_method = "wire"` would return:
+
+```json
+{
+  "decision": "block",
+  "reason_code": "blocked_payment_rail",
+  "message": "Payment method 'wire' is blocked by policy.",
+  "violated_rule_id": "r5"
+}
+```
+
+<Note>
+If `payment_method` is not included in the check request, this rule does not trigger. It only fires when a blocked method is explicitly provided.
+</Note>
+
+---
+
+## 6. discount_cap
+
+**What it does:** Blocks discounts above a percentage cap. Only applies when `action_type` is `discount`.
+
+**Decision:** block
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `max_percent` | number | Maximum allowed discount percentage |
+
+**Requires metadata:** `discount_percent` (number) must be included in the check request's `metadata` field. If missing, the rule does not trigger.
+
+**Example rule:**
+
+```json
+{
+  "rule_id": "r6",
+  "rule_type": "discount_cap",
+  "description": "Max 20% discount",
+  "parameters": {
+    "max_percent": 20
+  }
+}
+```
+
+**Triggering example:** A discount with `metadata.discount_percent = 35` would return:
+
+```json
+{
+  "decision": "block",
+  "reason_code": "discount_cap_exceeded",
+  "message": "Discount of 35% exceeds the policy cap of 20%.",
+  "violated_rule_id": "r6"
+}
+```
+
+---
+
+## 7. geography_block
+
+**What it does:** Blocks actions from certain countries. Checks `metadata.country` against the blocked list (case-insensitive).
+
+**Decision:** block
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `blocked_countries` | array of strings | ISO 3166-1 alpha-2 country codes (e.g., "RU", "KP") |
+
+**Requires metadata:** `country` (string) must be included in the check request's `metadata` field.
+
+**Example rule:**
+
+```json
+{
+  "rule_id": "r7",
+  "rule_type": "geography_block",
+  "description": "Block sanctioned countries",
+  "parameters": {
+    "blocked_countries": ["RU", "KP", "IR", "CU"]
+  }
+}
+```
+
+**Triggering example:** A check with `metadata.country = "RU"` would return:
+
+```json
+{
+  "decision": "block",
+  "reason_code": "blocked_geography",
+  "message": "Actions from country 'RU' are blocked by policy.",
+  "violated_rule_id": "r7"
+}
+```
+
+---
+
+## 8. time_restriction
+
+**What it does:** Blocks actions outside allowed days and/or hours (evaluated in UTC).
+
+**Decision:** block
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `allowed_days` | array of strings | Allowed day abbreviations: "mon", "tue", "wed", "thu", "fri", "sat", "sun" |
+| `allowed_hours_utc` | string | Time range in "HH:MM-HH:MM" format (e.g., "09:00-17:00") |
+
+**Example rule:**
+
+```json
+{
+  "rule_id": "r8",
+  "rule_type": "time_restriction",
+  "description": "Business hours only",
+  "parameters": {
+    "allowed_days": ["mon", "tue", "wed", "thu", "fri"],
+    "allowed_hours_utc": "09:00-17:00"
+  }
+}
+```
+
+**Triggering example:** A check at 3:00 AM UTC on a Tuesday would return:
+
+```json
+{
+  "decision": "block",
+  "reason_code": "time_restriction_violated",
+  "message": "Actions at 03:00 UTC are outside the allowed window of 09:00-17:00 UTC.",
+  "violated_rule_id": "r8"
+}
+```
+
+---
+
+## 9. duplicate_guard
+
+**What it does:** Blocks repeated identical actions within a configurable time window. An action is considered identical if it has the same `agent_id`, `action_type`, `amount`, and `counterparty`.
+
+**Decision:** block
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `window_minutes` | integer | How many minutes to look back for duplicates (default: 5) |
+
+**How it works:**
+1. SpendGuard computes a SHA-256 fingerprint from `agent_id|action_type|amount|counterparty`
+2. If the same fingerprint exists within the window, the check returns block
+3. If not, the fingerprint is recorded and the check proceeds to other rules
+
+**Example rule:**
+
+```json
+{
+  "rule_id": "r9",
+  "rule_type": "duplicate_guard",
+  "description": "Block duplicate actions within 10 minutes",
+  "parameters": {
+    "window_minutes": 10
+  }
+}
+```
+
+**Triggering example:** Submitting the same $50 refund to customer_123 twice within 10 minutes:
+
+```json
+{
+  "decision": "block",
+  "reason_code": "duplicate_action_detected",
+  "message": "This action was already submitted recently.",
+  "violated_rule_id": null
+}
+```
+
+<Note>
+The duplicate guard runs before all other rules. If it triggers, no other rules are evaluated.
+</Note>
+
+---
+
+## 10. escalate_if
+
+**What it does:** Escalates (does not block) actions above a dollar threshold for specific action types. Use this for "human approval required above $X" scenarios.
+
+**Decision:** escalate
+
+**Parameters:**
+
+| Parameter | Type | Description |
+|---|---|---|
+| `amount_above` | number | Dollar threshold for escalation |
+| `action_types` | array of strings | Which action types this applies to (e.g., ["refund", "credit"]) |
+
+**Example rule:**
+
+```json
+{
+  "rule_id": "r10",
+  "rule_type": "escalate_if",
+  "description": "Escalate refunds over $200",
+  "parameters": {
+    "amount_above": 200,
+    "action_types": ["refund"]
+  }
+}
+```
+
+**Triggering example:** A $300 refund would return:
+
+```json
+{
+  "decision": "escalate",
+  "reason_code": "escalation_threshold_exceeded",
+  "message": "Refund of $300.00 exceeds the escalation threshold of $200.00.",
+  "violated_rule_id": "r10"
+}
+```
+
+<Tip>
+If a `max_amount` rule and an `escalate_if` rule both fire on the same check, the block from `max_amount` wins. Block always takes precedence over escalate.
+</Tip>
+
+---
+
+## Quick Reference Table
+
+| Rule Type | Decision | Key Parameters | Applies To |
+|---|---|---|---|
+| `max_amount` | block | `limit`, `currency` | All action types |
+| `refund_age_limit` | block | `max_days` | refund only |
+| `blocked_categories` | block | `categories` | All (checks metadata + merchant) |
+| `vendor_allowlist` | block | `vendors` | spend only |
+| `blocked_payment_rails` | block | `rails` | All (checks payment_method) |
+| `discount_cap` | block | `max_percent` | discount only |
+| `geography_block` | block | `blocked_countries` | All (checks metadata.country) |
+| `time_restriction` | block | `allowed_days`, `allowed_hours_utc` | All action types |
+| `duplicate_guard` | block | `window_minutes` | All (runs first) |
+| `escalate_if` | escalate | `amount_above`, `action_types` | Specified types |

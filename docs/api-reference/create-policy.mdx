@@ -1,0 +1,106 @@
+---
+title: "Create Policy"
+description: "POST /v1/policies — Create a new financial authorization policy or a new version of an existing one."
+---
+
+## Endpoint
+
+```
+POST /v1/policies
+```
+
+**Authentication:** Required (`X-API-Key` header)
+
+---
+
+## Request Body
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `policy_id` | string | No | Custom policy ID. If provided and already exists, creates a new version. If omitted, auto-generated. |
+| `name` | string | Yes | Human-readable name for the policy |
+| `description` | string | No | What this policy is for |
+| `rules` | array | Yes | List of rule objects (minimum 1) |
+| `metadata` | object | No | Optional key-value metadata |
+
+### Rule Object
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `rule_id` | string | Yes | Unique identifier within the policy (e.g., "r1") |
+| `rule_type` | string | Yes | One of: `max_amount`, `refund_age_limit`, `blocked_categories`, `vendor_allowlist`, `blocked_payment_rails`, `discount_cap`, `geography_block`, `time_restriction`, `duplicate_guard`, `escalate_if` |
+| `description` | string | No | Human-readable description |
+| `parameters` | object | Yes | Rule-specific parameters (see [Rule Types](/guides/rule-types)) |
+
+---
+
+## Example Request
+
+```bash
+curl -X POST https://spendguardapi.com/v1/policies \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $SPENDGUARD_API_KEY" \
+  -d '{
+    "policy_id": "my_refund_policy",
+    "name": "My Refund Policy",
+    "description": "Controls AI agent refund authorization",
+    "rules": [
+      {
+        "rule_id": "r1",
+        "rule_type": "max_amount",
+        "description": "Block refunds over $500",
+        "parameters": { "limit": 500, "currency": "USD" }
+      },
+      {
+        "rule_id": "r2",
+        "rule_type": "escalate_if",
+        "description": "Escalate refunds over $200",
+        "parameters": { "amount_above": 200, "action_types": ["refund"] }
+      }
+    ]
+  }'
+```
+
+---
+
+## Response — 201 Created
+
+```json
+{
+  "policy_id": "my_refund_policy",
+  "name": "My Refund Policy",
+  "description": "Controls AI agent refund authorization",
+  "version": 1,
+  "rules": [
+    {
+      "rule_id": "r1",
+      "rule_type": "max_amount",
+      "description": "Block refunds over $500",
+      "parameters": { "limit": 500, "currency": "USD" }
+    },
+    {
+      "rule_id": "r2",
+      "rule_type": "escalate_if",
+      "description": "Escalate refunds over $200",
+      "parameters": { "amount_above": 200, "action_types": ["refund"] }
+    }
+  ],
+  "created_at": "2026-04-03T12:00:00Z",
+  "updated_at": "2026-04-03T12:00:00Z",
+  "metadata": null
+}
+```
+
+### Versioning
+
+If you POST with a `policy_id` that already exists, SpendGuard creates **version 2** (or 3, 4, etc.) instead of overwriting. The previous version is preserved permanently.
+
+---
+
+## Error Responses
+
+| Status | Code | When |
+|---|---|---|
+| 401 | `unauthorized` | Missing or invalid API key |
+| 422 | `validation_error` | Invalid rule_type, missing required fields, or empty rules array |
+| 500 | `internal_error` | Server error |

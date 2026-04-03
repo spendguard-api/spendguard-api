@@ -1,0 +1,162 @@
+---
+title: "Use Case: AI Discount Agent"
+description: "How an AI pricing agent uses SpendGuard to control discounts and pricing adjustments."
+---
+
+## The Scenario
+
+You have an AI sales or pricing agent that applies discounts to deals. When a customer asks for a better price or a sales rep triggers a discount flow, the agent evaluates and applies it.
+
+**The problem:** Without guardrails, the agent could give 90% discounts, apply discounts to enterprise contracts that require manual pricing, or stack multiple discounts on the same deal.
+
+**The solution:** SpendGuard caps discount depth, blocks discounts on restricted deal types, and escalates large deals to a sales manager.
+
+---
+
+## Step 1: Create Your Discount Policy
+
+Start with the [SaaS Discount Policy template](/guides/policy-templates#template-2-saas-discount-policy) and customize it:
+
+```bash
+curl -X POST https://spendguardapi.com/v1/policies \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $SPENDGUARD_API_KEY" \
+  -d '{
+    "policy_id": "saas_discount_policy",
+    "name": "SaaS Discount Policy",
+    "description": "Controls discounts applied by our pricing agent",
+    "rules": [
+      {
+        "rule_id": "r1",
+        "rule_type": "discount_cap",
+        "description": "Max 20% discount",
+        "parameters": { "max_percent": 20 }
+      },
+      {
+        "rule_id": "r2",
+        "rule_type": "max_amount",
+        "description": "Max $5,000 discount value",
+        "parameters": { "limit": 5000, "currency": "USD" }
+      },
+      {
+        "rule_id": "r3",
+        "rule_type": "escalate_if",
+        "description": "Escalate discounts on deals over $10,000",
+        "parameters": { "amount_above": 10000, "action_types": ["discount"] }
+      },
+      {
+        "rule_id": "r4",
+        "rule_type": "blocked_categories",
+        "description": "No automated discounts on enterprise contracts",
+        "parameters": { "categories": ["enterprise_contract", "government_contract"] }
+      },
+      {
+        "rule_id": "r5",
+        "rule_type": "duplicate_guard",
+        "description": "Block duplicate discounts within 30 minutes",
+        "parameters": { "window_minutes": 30 }
+      }
+    ]
+  }'
+```
+
+---
+
+## Step 2: Wire the Agent to Check Before Discounting
+
+```python
+def apply_discount(agent_id, customer_id, discount_amount, discount_percent, category=None):
+    """Check with SpendGuard before applying a discount."""
+
+    check = requests.post(
+        f"{SPENDGUARD_URL}/v1/checks",
+        headers={
+            "X-API-Key": SPENDGUARD_KEY,
+            "Content-Type": "application/json",
+        },
+        json={
+            "agent_id": agent_id,
+            "policy_id": "saas_discount_policy",
+            "action_type": "discount",
+            "amount": discount_amount,
+            "currency": "USD",
+            "counterparty": customer_id,
+            "metadata": {
+                "discount_percent": discount_percent,
+                "category": category,
+            },
+        },
+    ).json()
+
+    decision = check["decision"]
+
+    if decision == "allow":
+        execute_discount(customer_id, discount_amount)
+        return f"Discount of ${discount_amount} ({discount_percent}%) applied."
+
+    elif decision == "escalate":
+        notify_sales_manager(customer_id, discount_amount, check["message"])
+        return f"This discount needs sales manager approval: {check['message']}"
+
+    elif decision == "block":
+        return f"Discount blocked: {check['message']}"
+```
+
+---
+
+## Step 3: See It In Action
+
+### 15% discount on a $2,000 deal ($300 value) → Allow
+
+Within the 20% cap, under the $5,000 value limit, under the $10,000 escalation threshold:
+
+```json
+{ "decision": "allow", "message": "Action is within policy. Proceed." }
+```
+
+### 25% discount → Block
+
+Exceeds the 20% cap:
+
+```json
+{
+  "decision": "block",
+  "reason_code": "discount_cap_exceeded",
+  "message": "Discount of 25% exceeds the policy cap of 20%."
+}
+```
+
+### 15% discount on a $15,000 deal ($2,250 value) → Escalate
+
+The deal size exceeds the $10,000 escalation threshold:
+
+```json
+{
+  "decision": "escalate",
+  "reason_code": "escalation_threshold_exceeded",
+  "message": "Discount of $2250.00 exceeds the escalation threshold of $10000.00."
+}
+```
+
+### Discount on enterprise contract → Block
+
+The category is blocked:
+
+```json
+{
+  "decision": "block",
+  "reason_code": "blocked_category",
+  "message": "Category 'enterprise_contract' is blocked by policy."
+}
+```
+
+---
+
+## Key Insight: Two Rules, Two Limits
+
+Notice that the discount policy uses **both** `discount_cap` and `max_amount`:
+
+- `discount_cap` controls the **percentage** (no more than 20% off)
+- `max_amount` controls the **dollar value** (no more than $5,000 off)
+
+This means a 10% discount on a $100,000 deal ($10,000 value) would pass the percentage check but fail the dollar value check. Both protections work together.

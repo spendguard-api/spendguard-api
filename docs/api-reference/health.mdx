@@ -1,0 +1,49 @@
+---
+title: "Health Check"
+description: "GET /health — Check if the SpendGuard API is running."
+---
+
+## Endpoint
+
+```
+GET /health
+```
+
+**Authentication:** None required. This endpoint is always public.
+
+---
+
+## Example Request
+
+```bash
+curl https://spendguardapi.com/health
+```
+
+---
+
+## Response — 200 OK
+
+```json
+{
+  "status": "ok",
+  "version": "1.0.0",
+  "timestamp": "2026-04-03T12:00:00.000000+00:00"
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `status` | string | Always `"ok"` when the service is running |
+| `version` | string | API version |
+| `timestamp` | string | Current server time (UTC ISO 8601) |
+
+---
+
+## Usage
+
+Use this endpoint for:
+- **Uptime monitoring** — point your monitoring service (Pingdom, UptimeRobot, etc.) at this URL
+- **Deployment verification** — after deploying, check this endpoint to confirm the service is live
+- **Load balancer health checks** — configure your load balancer to poll this endpoint

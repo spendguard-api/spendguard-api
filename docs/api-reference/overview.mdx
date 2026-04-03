@@ -1,0 +1,100 @@
+---
+title: "API Overview"
+description: "Base URL, authentication, error format, and conventions for the SpendGuard API."
+---
+
+## Base URL
+
+```
+https://spendguardapi.com
+```
+
+All API endpoints are relative to this base URL.
+
+---
+
+## Authentication
+
+All endpoints except `GET /health` and `POST /v1/simulate` (demo mode) require an API key.
+
+Send your key in the `X-API-Key` header:
+
+```bash
+curl -H "X-API-Key: sg_live_your_key_here" https://spendguardapi.com/v1/policies/my_policy
+```
+
+See the [Authentication guide](/guides/authentication) for details.
+
+---
+
+## Error Format
+
+Every error response uses this exact structure:
+
+```json
+{
+  "error": {
+    "code": "snake_case_error_code",
+    "message": "Human-readable explanation.",
+    "request_id": "req_a1b2c3d4e5f6",
+    "timestamp": "2026-04-03T12:00:00.000Z"
+  }
+}
+```
+
+### Standard Error Codes
+
+| Code | HTTP Status | Description |
+|---|---|---|
+| `unauthorized` | 401 | Missing or invalid API key |
+| `api_key_inactive` | 401 | Key exists but is disabled |
+| `bad_request` | 400 | Malformed JSON or missing required fields |
+| `validation_error` | 422 | Valid JSON but fails business rules |
+| `policy_not_found` | 404 | Policy ID does not exist |
+| `check_not_found` | 404 | Check ID does not exist |
+| `rate_limit_exceeded` | 429 | Too many requests |
+| `duplicate_action_detected` | 200 | Duplicate guard triggered (returned as a block decision) |
+| `internal_error` | 500 | Unexpected server error |
+
+---
+
+## Rate Limits
+
+| Mode | Limit | Scope |
+|---|---|---|
+| Authenticated | 100 req/min | Per API key |
+| Demo (no auth) | 10 req/min | Per IP address |
+
+Rate limit headers are included in every response:
+- `X-RateLimit-Limit`
+- `X-RateLimit-Remaining`
+- `X-RateLimit-Reset`
+
+When rate limited, the response includes a `Retry-After` header.
+
+---
+
+## Request IDs
+
+Every response includes an `X-Request-ID` header (format: `req_` + 12 hex characters). Include this ID when contacting support.
+
+---
+
+## Content Type
+
+All request bodies must be JSON with `Content-Type: application/json`.
+
+---
+
+## Endpoints
+
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `POST` | `/v1/policies` | Required | Create a policy |
+| `GET` | `/v1/policies/{id}` | Required | Get a policy |
+| `POST` | `/v1/checks` | Required | Run an authorization check |
+| `GET` | `/v1/checks/{id}` | Required | Get a past check |
+| `GET` | `/v1/violations` | Required | List violations (audit log) |
+| `POST` | `/v1/simulate` | Optional | Simulate checks (no side effects) |
+| `POST` | `/v1/keys` | Admin key | Create an API key |
+| `GET` | `/health` | None | Health check |

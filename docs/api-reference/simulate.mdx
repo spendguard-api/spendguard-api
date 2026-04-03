@@ -1,0 +1,151 @@
+---
+title: "Simulate"
+description: "POST /v1/simulate — Run authorization checks with zero side effects. Nothing is written to any table."
+---
+
+## Endpoint
+
+```
+POST /v1/simulate
+```
+
+**Authentication:** Optional
+- **Without API key:** Demo mode — max 10 actions, response includes `"mode": "demo"`
+- **With API key:** Simulation mode — max 100 actions, response includes `"mode": "simulation"`
+
+---
+
+## Request Body
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `policy_id` | string | Yes | Policy to simulate against |
+| `actions` | array | Yes | Array of action objects to simulate (min 1, max 100) |
+
+Each action in the `actions` array has the same fields as a [check request](/api-reference/create-check):
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `agent_id` | string | Yes | Agent identifier |
+| `policy_id` | string | Yes | Policy ID (must match the top-level `policy_id`) |
+| `action_type` | string | No* | `refund`, `credit`, `discount`, or `spend` |
+| `amount` | number | Yes | Dollar amount (>= 0) |
+| `currency` | string | Yes | ISO 4217 currency code |
+| `counterparty` | string | Yes | Customer or vendor ID |
+| `reason_text` | string | No* | Required if `action_type` is omitted |
+| `payment_method` | string | No | Payment method |
+| `metadata` | object | No | Additional context |
+
+---
+
+## Example Request (Demo Mode — No Auth)
+
+```bash
+curl -X POST https://spendguardapi.com/v1/simulate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "policy_id": "demo_refund_policy",
+    "actions": [
+      {
+        "agent_id": "demo-agent",
+        "policy_id": "demo_refund_policy",
+        "action_type": "refund",
+        "amount": 50.00,
+        "currency": "USD",
+        "counterparty": "customer_001",
+        "metadata": { "days_since_purchase": 10 }
+      },
+      {
+        "agent_id": "demo-agent",
+        "policy_id": "demo_refund_policy",
+        "action_type": "refund",
+        "amount": 750.00,
+        "currency": "USD",
+        "counterparty": "customer_002"
+      }
+    ]
+  }'
+```
+
+---
+
+## Response — 200 OK
+
+```json
+{
+  "mode": "demo",
+  "policy_id": "demo_refund_policy",
+  "policy_version": 1,
+  "results": [
+    {
+      "check_id": "chk_abc123",
+      "decision": "allow",
+      "confidence": "high",
+      "reason_code": null,
+      "message": "Action is within policy. Proceed.",
+      "violated_rule_id": null,
+      "violated_rule_description": null,
+      "policy_version": 1,
+      "next_step": "Proceed with the action.",
+      "latency_ms": 3,
+      "timestamp": "2026-04-03T12:00:00Z"
+    },
+    {
+      "check_id": "chk_def456",
+      "decision": "block",
+      "confidence": "high",
+      "reason_code": "max_amount_exceeded",
+      "message": "Amount $750.00 exceeds the policy limit of $500.00.",
+      "violated_rule_id": "r1",
+      "violated_rule_description": "Refunds may not exceed $500 per transaction without escalation",
+      "policy_version": 1,
+      "next_step": "Reduce the amount to $500.00 or below, or escalate to a manager.",
+      "latency_ms": 2,
+      "timestamp": "2026-04-03T12:00:00Z"
+    }
+  ],
+  "summary": {
+    "total": 2,
+    "allowed": 1,
+    "blocked": 1,
+    "escalated": 0
+  }
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `mode` | string | `"demo"` (no auth) or `"simulation"` (with auth) |
+| `policy_id` | string | Policy that was evaluated |
+| `policy_version` | integer | Policy version used |
+| `results` | array | Individual decision for each action (same fields as check response) |
+| `summary.total` | integer | Total actions simulated |
+| `summary.allowed` | integer | Count of allow decisions |
+| `summary.blocked` | integer | Count of block decisions |
+| `summary.escalated` | integer | Count of escalate decisions |
+
+---
+
+## Side-Effect Guarantee
+
+Simulation **never writes** to any table:
+- No checks logged
+- No violations recorded
+- No duplicate guard fingerprints stored
+- No usage events emitted
+
+You can call it as many times as you want with zero impact on your data.
+
+---
+
+## Error Responses
+
+| Status | Code | When |
+|---|---|---|
+| 404 | `policy_not_found` | Policy ID does not exist |
+| 422 | `demo_limit_exceeded` | Demo mode with more than 10 actions |
+| 422 | `validation_error` | Invalid request body |
+| 429 | `rate_limit_exceeded` | Too many requests (demo: 10/min per IP) |
+| 500 | `internal_error` | Server error |

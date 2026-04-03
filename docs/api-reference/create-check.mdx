@@ -1,0 +1,147 @@
+---
+title: "Create Check"
+description: "POST /v1/checks — Run a real-time authorization check against a policy. Returns allow, block, or escalate."
+---
+
+## Endpoint
+
+```
+POST /v1/checks
+```
+
+**Authentication:** Required (`X-API-Key` header)
+
+This is the core endpoint. Your agent calls this before executing any financial action.
+
+---
+
+## Request Body
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `agent_id` | string | Yes | ID of the agent making the request |
+| `policy_id` | string | Yes | Policy to evaluate against |
+| `action_type` | string | No* | One of: `refund`, `credit`, `discount`, `spend`. *Required unless `reason_text` is provided. |
+| `amount` | number | Yes | Dollar amount of the action (>= 0) |
+| `currency` | string | Yes | ISO 4217 currency code (exactly 3 characters, e.g., "USD") |
+| `counterparty` | string | Yes | Customer ID, vendor ID, or counterparty identifier |
+| `payment_method` | string | No | Payment method (e.g., "card", "ach", "wire", "crypto") |
+| `merchant_or_vendor` | string | No | Merchant or vendor identifier |
+| `reason_text` | string | No* | Why this action is being taken. *Required if `action_type` is omitted — the intent classifier resolves it. |
+| `idempotency_key` | string | No | Unique key for safe retries (24-hour window) |
+| `metadata` | object | No | Additional context for rule evaluation |
+
+### Common Metadata Fields
+
+| Key | Type | Used By |
+|---|---|---|
+| `days_since_purchase` | integer | `refund_age_limit` rule |
+| `discount_percent` | number | `discount_cap` rule |
+| `country` | string | `geography_block` rule |
+| `category` | string | `blocked_categories` rule |
+
+<Note>
+Either `action_type` or `reason_text` must be provided. If both are missing, the API returns a 422 validation error.
+</Note>
+
+---
+
+## Example Request
+
+```bash
+curl -X POST https://spendguardapi.com/v1/checks \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $SPENDGUARD_API_KEY" \
+  -d '{
+    "agent_id": "support-agent-v1",
+    "policy_id": "my_refund_policy",
+    "action_type": "refund",
+    "amount": 300.00,
+    "currency": "USD",
+    "counterparty": "customer_789",
+    "metadata": {
+      "days_since_purchase": 5
+    }
+  }'
+```
+
+---
+
+## Response — 200 OK
+
+```json
+{
+  "check_id": "chk_a1b2c3d4e5f6",
+  "decision": "escalate",
+  "confidence": "high",
+  "reason_code": "escalation_threshold_exceeded",
+  "message": "Refund of $300.00 exceeds the escalation threshold of $200.00.",
+  "violated_rule_id": "r2",
+  "violated_rule_description": "Escalate refunds over $200",
+  "policy_version": 1,
+  "next_step": "Route to human approval before proceeding.",
+  "latency_ms": 11,
+  "timestamp": "2026-04-03T12:00:00Z"
+}
+```
+
+### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `check_id` | string | Unique check identifier (`chk_...`) |
+| `decision` | string | `allow`, `block`, or `escalate` |
+| `confidence` | string | `high`, `medium`, or `low` |
+| `reason_code` | string or null | Machine-readable reason (null on allow) |
+| `message` | string or null | Human-readable explanation |
+| `violated_rule_id` | string or null | Which rule triggered (null on allow) |
+| `violated_rule_description` | string or null | Description of the violated rule |
+| `policy_version` | integer | Which policy version was evaluated |
+| `next_step` | string or null | Recommended next action for the agent |
+| `latency_ms` | integer | Processing time in milliseconds |
+| `timestamp` | string | Decision timestamp (UTC ISO 8601) |
+
+---
+
+## Processing Flow
+
+1. Load the policy (latest version)
+2. If `action_type` is missing, resolve it via the intent classifier using `reason_text`
+3. Check for idempotency key hit (return cached response if found)
+4. Run duplicate guard (block if fingerprint matches within window)
+5. Evaluate all rules in the policy
+6. Log the decision to the immutable audit trail
+7. If block or escalate, log to violations table
+8. Return the response
+
+---
+
+## Idempotency
+
+Include an `idempotency_key` for safe retries:
+
+```json
+{
+  "agent_id": "support-agent-v1",
+  "policy_id": "my_refund_policy",
+  "action_type": "refund",
+  "amount": 300.00,
+  "currency": "USD",
+  "counterparty": "customer_789",
+  "idempotency_key": "refund-customer789-20260403"
+}
+```
+
+If the same `idempotency_key` is sent again within 24 hours, SpendGuard returns the original response without re-running rules or creating new audit records.
+
+---
+
+## Error Responses
+
+| Status | Code | When |
+|---|---|---|
+| 401 | `unauthorized` | Missing or invalid API key |
+| 404 | `policy_not_found` | Policy ID does not exist |
+| 422 | `validation_error` | Missing required fields, or both `action_type` and `reason_text` are absent |
+| 429 | `rate_limit_exceeded` | Too many requests |
+| 500 | `internal_error` | Server error |

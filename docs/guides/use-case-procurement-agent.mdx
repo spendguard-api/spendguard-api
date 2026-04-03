@@ -1,0 +1,170 @@
+---
+title: "Use Case: AI Procurement Agent"
+description: "How an AI procurement agent uses SpendGuard to control vendor payments and spending."
+---
+
+## The Scenario
+
+You have an AI procurement agent that approves and processes vendor payments. When a department requests a purchase, the agent evaluates it and processes the payment.
+
+**The problem:** Without guardrails, the agent could pay unapproved vendors, exceed budget limits, send payments to sanctioned countries, or process the same invoice twice.
+
+**The solution:** SpendGuard enforces your procurement policy on every payment. The agent checks before paying, and SpendGuard returns allow, block, or escalate.
+
+---
+
+## Step 1: Create Your Vendor Spend Policy
+
+Start with the [Vendor Spend Policy template](/guides/policy-templates#template-3-vendor-spend-policy) and customize it:
+
+```bash
+curl -X POST https://spendguardapi.com/v1/policies \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $SPENDGUARD_API_KEY" \
+  -d '{
+    "policy_id": "vendor_spend_policy",
+    "name": "Vendor Spend Policy",
+    "description": "Controls payments made by our procurement agent",
+    "rules": [
+      {
+        "rule_id": "r1",
+        "rule_type": "max_amount",
+        "description": "Block payments over $10,000",
+        "parameters": { "limit": 10000, "currency": "USD" }
+      },
+      {
+        "rule_id": "r2",
+        "rule_type": "vendor_allowlist",
+        "description": "Only approved vendors",
+        "parameters": {
+          "vendors": ["vendor_acme", "vendor_globex", "vendor_initech", "vendor_aws", "vendor_gcp"]
+        }
+      },
+      {
+        "rule_id": "r3",
+        "rule_type": "escalate_if",
+        "description": "Payments over $2,500 need finance approval",
+        "parameters": { "amount_above": 2500, "action_types": ["spend"] }
+      },
+      {
+        "rule_id": "r4",
+        "rule_type": "geography_block",
+        "description": "Block sanctioned countries",
+        "parameters": { "blocked_countries": ["RU", "KP", "IR", "CU"] }
+      },
+      {
+        "rule_id": "r5",
+        "rule_type": "duplicate_guard",
+        "description": "Block duplicate payments within 60 minutes",
+        "parameters": { "window_minutes": 60 }
+      }
+    ]
+  }'
+```
+
+---
+
+## Step 2: Wire the Agent to Check Before Paying
+
+```python
+def process_vendor_payment(agent_id, vendor_id, amount, country=None):
+    """Check with SpendGuard before processing a vendor payment."""
+
+    check = requests.post(
+        f"{SPENDGUARD_URL}/v1/checks",
+        headers={
+            "X-API-Key": SPENDGUARD_KEY,
+            "Content-Type": "application/json",
+        },
+        json={
+            "agent_id": agent_id,
+            "policy_id": "vendor_spend_policy",
+            "action_type": "spend",
+            "amount": amount,
+            "currency": "USD",
+            "counterparty": vendor_id,
+            "metadata": {
+                "country": country,
+            },
+        },
+    ).json()
+
+    decision = check["decision"]
+
+    if decision == "allow":
+        execute_payment(vendor_id, amount)
+        return f"Payment of ${amount} to {vendor_id} processed."
+
+    elif decision == "escalate":
+        create_finance_ticket(vendor_id, amount, check["message"])
+        return f"This payment needs finance team approval: {check['message']}"
+
+    elif decision == "block":
+        return f"Payment blocked: {check['message']}"
+```
+
+---
+
+## Step 3: See It In Action
+
+### $1,500 payment to approved vendor → Allow
+
+```json
+{ "decision": "allow", "message": "Action is within policy. Proceed." }
+```
+
+### $3,000 payment to approved vendor → Escalate
+
+Above the $2,500 threshold:
+
+```json
+{
+  "decision": "escalate",
+  "reason_code": "escalation_threshold_exceeded",
+  "message": "Spend of $3000.00 exceeds the escalation threshold of $2500.00."
+}
+```
+
+### $5,000 payment to unapproved vendor → Block
+
+Vendor is not on the allowlist:
+
+```json
+{
+  "decision": "block",
+  "reason_code": "vendor_not_on_allowlist",
+  "message": "Vendor 'vendor_unknown' is not on the approved vendor list."
+}
+```
+
+### Payment to sanctioned country → Block
+
+```json
+{
+  "decision": "block",
+  "reason_code": "blocked_geography",
+  "message": "Actions from country 'RU' are blocked by policy."
+}
+```
+
+---
+
+## Step 4: Update the Vendor Allowlist
+
+When you onboard a new vendor, update the policy. SpendGuard creates a new version — the old version is preserved for audit:
+
+```bash
+curl -X POST https://spendguardapi.com/v1/policies \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $SPENDGUARD_API_KEY" \
+  -d '{
+    "policy_id": "vendor_spend_policy",
+    "name": "Vendor Spend Policy",
+    "description": "Controls payments made by our procurement agent",
+    "rules": [
+      ...same rules, but with "vendor_newco" added to the vendors array...
+    ]
+  }'
+```
+
+This creates version 2. All future checks use version 2. Past audit records still reference version 1.

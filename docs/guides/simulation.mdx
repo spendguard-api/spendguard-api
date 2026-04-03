@@ -1,0 +1,170 @@
+---
+title: "Simulation"
+description: "Test your policies without creating real audit records. Completely side-effect free."
+---
+
+The simulation endpoint lets you test how a policy would respond to financial actions **without writing anything to the database**. No checks are logged, no violations are recorded, no duplicate guard fingerprints are stored.
+
+This is useful for:
+- Testing a new policy before going live
+- Previewing how rule changes would affect decisions
+- Running the live demo on the SpendGuard website
+- Training AI agents without generating audit noise
+
+---
+
+## Two Modes
+
+| Mode | Auth Required | Max Actions | Response Field |
+|---|---|---|---|
+| **Demo** | No | 10 per request | `"mode": "demo"` |
+| **Authenticated** | Yes (X-API-Key) | 100 per request | `"mode": "simulation"` |
+
+Both modes run the **exact same rule engine** as real checks. The only difference is that nothing is written to any table.
+
+---
+
+## Demo Mode (No Auth)
+
+Perfect for trying SpendGuard without signing up. No API key needed.
+
+```bash
+curl -X POST https://spendguardapi.com/v1/simulate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "policy_id": "demo_refund_policy",
+    "actions": [
+      {
+        "agent_id": "demo-agent",
+        "policy_id": "demo_refund_policy",
+        "action_type": "refund",
+        "amount": 50.00,
+        "currency": "USD",
+        "counterparty": "customer_001",
+        "metadata": { "days_since_purchase": 10 }
+      },
+      {
+        "agent_id": "demo-agent",
+        "policy_id": "demo_refund_policy",
+        "action_type": "refund",
+        "amount": 750.00,
+        "currency": "USD",
+        "counterparty": "customer_002"
+      }
+    ]
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "mode": "demo",
+  "policy_id": "demo_refund_policy",
+  "policy_version": 1,
+  "results": [
+    {
+      "check_id": "chk_abc123",
+      "decision": "allow",
+      "confidence": "high",
+      "message": "Action is within policy. Proceed.",
+      "policy_version": 1,
+      "latency_ms": 3
+    },
+    {
+      "check_id": "chk_def456",
+      "decision": "block",
+      "confidence": "high",
+      "reason_code": "max_amount_exceeded",
+      "message": "Amount $750.00 exceeds the policy limit of $500.00.",
+      "violated_rule_id": "r1",
+      "policy_version": 1,
+      "latency_ms": 2
+    }
+  ],
+  "summary": {
+    "total": 2,
+    "allowed": 1,
+    "blocked": 1,
+    "escalated": 0
+  }
+}
+```
+
+### Demo Limits
+
+- Maximum 10 actions per request
+- Rate limited to 10 requests per minute per IP address
+- If you exceed 10 actions, you'll get a `422` error with code `demo_limit_exceeded`
+
+---
+
+## Authenticated Mode
+
+Send your API key and you can simulate up to 100 actions per request.
+
+```bash
+curl -X POST https://spendguardapi.com/v1/simulate \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $SPENDGUARD_API_KEY" \
+  -d '{
+    "policy_id": "my_refund_policy",
+    "actions": [
+      {
+        "agent_id": "support-agent-v1",
+        "policy_id": "my_refund_policy",
+        "action_type": "refund",
+        "amount": 50.00,
+        "currency": "USD",
+        "counterparty": "customer_123"
+      }
+    ]
+  }'
+```
+
+The response includes `"mode": "simulation"` instead of `"mode": "demo"`.
+
+---
+
+## What Simulation Does and Doesn't Do
+
+| | Real Check (`POST /v1/checks`) | Simulation (`POST /v1/simulate`) |
+|---|---|---|
+| Runs rule engine | Yes | Yes |
+| Runs duplicate guard | Yes (reads + writes) | Yes (reads only) |
+| Resolves action_type via classifier | Yes | Yes |
+| Writes to checks table | Yes | **No** |
+| Writes to violations table | Yes | **No** |
+| Writes duplicate fingerprint | Yes | **No** |
+| Returns decision | Yes | Yes |
+
+<Warning>
+Simulation is read-only. You can call it as many times as you want without affecting your audit log, violation counts, or duplicate guard state.
+</Warning>
+
+---
+
+## In-Batch Duplicate Detection
+
+If you submit the same action twice within a single simulation batch, SpendGuard detects the duplicate within the batch. The second identical action returns block with `reason_code: "duplicate_action_detected"`.
+
+This mirrors how the real duplicate guard would behave if both actions were submitted in quick succession.
+
+---
+
+## Summary Object
+
+Every simulation response includes a `summary` with aggregate counts:
+
+```json
+{
+  "summary": {
+    "total": 5,
+    "allowed": 2,
+    "blocked": 2,
+    "escalated": 1
+  }
+}
+```
+
+Use this to quickly see how a policy performs across a batch of test actions.

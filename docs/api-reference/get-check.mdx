@@ -1,0 +1,61 @@
+---
+title: "Get Check"
+description: "GET /v1/checks/{id} — Retrieve a past authorization check and its decision."
+---
+
+## Endpoint
+
+```
+GET /v1/checks/{check_id}
+```
+
+**Authentication:** Required (`X-API-Key` header)
+
+---
+
+## Path Parameters
+
+| Parameter | Type | Description |
+|---|---|---|
+| `check_id` | string | The check ID to retrieve (format: `chk_...`) |
+
+---
+
+## Example Request
+
+```bash
+curl https://spendguardapi.com/v1/checks/chk_a1b2c3d4e5f6 \
+  -H "X-API-Key: $SPENDGUARD_API_KEY"
+```
+
+---
+
+## Response — 200 OK
+
+```json
+{
+  "check_id": "chk_a1b2c3d4e5f6",
+  "decision": "block",
+  "confidence": "high",
+  "reason_code": "r1",
+  "message": "Amount $750.00 exceeds the policy limit of $500.00.",
+  "violated_rule_id": "r1",
+  "violated_rule_description": "Block refunds over $500",
+  "policy_version": 1,
+  "next_step": null,
+  "latency_ms": 8,
+  "timestamp": "2026-04-03T12:00:00Z"
+}
+```
+
+The response contains the same fields as the original check response.
+
+---
+
+## Error Responses
+
+| Status | Code | When |
+|---|---|---|
+| 401 | `unauthorized` | Missing or invalid API key |
+| 404 | `check_not_found` | No check exists with this ID |
+| 500 | `internal_error` | Server error |

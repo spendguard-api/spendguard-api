@@ -1,0 +1,115 @@
+---
+title: "List Violations"
+description: "GET /v1/violations — View the audit log of blocked and escalated financial actions."
+---
+
+## Endpoint
+
+```
+GET /v1/violations
+```
+
+**Authentication:** Required (`X-API-Key` header)
+
+Returns every block and escalate decision. Violations are stored permanently and can never be edited or deleted.
+
+---
+
+## Query Parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `agent_id` | string | — | Filter by agent ID |
+| `action_type` | string | — | Filter by action type: `refund`, `credit`, `discount`, `spend` |
+| `decision` | string | — | Filter by decision: `block` or `escalate` |
+| `from` | string | — | Start date (ISO 8601 UTC, e.g., `2026-04-01T00:00:00Z`) |
+| `to` | string | — | End date (ISO 8601 UTC) |
+| `limit` | integer | 20 | Results per page (min 1, max 100) |
+| `cursor` | string | — | Pagination cursor from a previous response |
+
+---
+
+## Example Request
+
+```bash
+curl "https://spendguardapi.com/v1/violations?agent_id=support-agent-v1&decision=block&limit=5" \
+  -H "X-API-Key: $SPENDGUARD_API_KEY"
+```
+
+---
+
+## Response — 200 OK
+
+```json
+{
+  "data": [
+    {
+      "violation_id": "viol_abc123",
+      "check_id": "chk_x9y8z7w6v5u4",
+      "agent_id": "support-agent-v1",
+      "policy_id": "my_refund_policy",
+      "policy_version": 1,
+      "action_type": "refund",
+      "amount": 750.00,
+      "currency": "USD",
+      "counterparty": "customer_456",
+      "decision": "block",
+      "violated_rule_id": "r1",
+      "violated_rule_description": "Block refunds over $500",
+      "confidence": "high",
+      "latency_ms": 8,
+      "timestamp": "2026-04-03T12:02:00Z"
+    }
+  ],
+  "pagination": {
+    "next_cursor": "viol_def456",
+    "has_more": true,
+    "total_count": 23
+  }
+}
+```
+
+### Violation Record Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `violation_id` | string | Unique violation identifier (`viol_...`) |
+| `check_id` | string | The check that produced this violation |
+| `agent_id` | string | Which agent triggered it |
+| `policy_id` | string | Which policy was evaluated |
+| `policy_version` | integer | Which version of the policy |
+| `action_type` | string | refund, credit, discount, or spend |
+| `amount` | number | The dollar amount |
+| `currency` | string | Currency code |
+| `counterparty` | string | Customer or vendor ID |
+| `decision` | string | `block` or `escalate` |
+| `violated_rule_id` | string | Which rule fired |
+| `violated_rule_description` | string | Description of the violated rule |
+| `confidence` | string | high, medium, or low |
+| `latency_ms` | integer | Processing time in milliseconds |
+| `timestamp` | string | When the decision was made (UTC) |
+
+---
+
+## Pagination
+
+Results are sorted newest first. Use `cursor` to page through results:
+
+```bash
+# First page
+curl "https://spendguardapi.com/v1/violations?limit=10" -H "X-API-Key: ..."
+
+# Next page (using cursor from previous response)
+curl "https://spendguardapi.com/v1/violations?limit=10&cursor=viol_def456" -H "X-API-Key: ..."
+```
+
+When `has_more` is `false`, you've reached the end.
+
+---
+
+## Error Responses
+
+| Status | Code | When |
+|---|---|---|
+| 401 | `unauthorized` | Missing or invalid API key |
+| 500 | `internal_error` | Server error |

@@ -1,0 +1,149 @@
+---
+title: "MCP Integration"
+description: "Connect SpendGuard to Claude and other AI agents using the Model Context Protocol."
+---
+
+SpendGuard includes an MCP (Model Context Protocol) server that lets AI agents like Claude check financial actions, create policies, and inspect violations through natural conversation.
+
+Instead of writing code to call the API, your AI agent discovers SpendGuard's tools automatically and uses them when relevant.
+
+---
+
+## What You Get
+
+The MCP server exposes 5 tools:
+
+| Tool | What It Does | API Endpoint |
+|---|---|---|
+| `check_financial_action` | Check if an action is allowed | `POST /v1/checks` |
+| `create_policy` | Create or update a policy | `POST /v1/policies` |
+| `get_policy` | Retrieve a policy and its rules | `GET /v1/policies/{id}` |
+| `simulate_actions` | Test actions with no side effects | `POST /v1/simulate` |
+| `list_violations` | View blocked/escalated audit log | `GET /v1/violations` |
+
+---
+
+## Setup for Claude Desktop
+
+### 1. Find the config file
+
+On macOS:
+```
+~/Library/Application Support/Claude/claude_desktop_config.json
+```
+
+On Windows:
+```
+%APPDATA%\Claude\claude_desktop_config.json
+```
+
+### 2. Add the SpendGuard server
+
+```json
+{
+  "mcpServers": {
+    "spendguard": {
+      "command": "/path/to/your/.venv/bin/python",
+      "args": ["/path/to/mcp/server.py"],
+      "env": {
+        "SPENDGUARD_API_URL": "https://spendguardapi.com",
+        "SPENDGUARD_API_KEY": "sg_live_your_key_here"
+      }
+    }
+  }
+}
+```
+
+<Warning>
+Replace `/path/to/your/.venv/bin/python` with the actual path to your Python environment that has the `mcp` and `httpx` packages installed.
+Replace `/path/to/mcp/server.py` with the actual path to the SpendGuard MCP server file.
+</Warning>
+
+### 3. Restart Claude Desktop
+
+After saving the config, fully quit and reopen Claude Desktop. The SpendGuard tools will appear in the tools menu.
+
+---
+
+## Setup for Claude Code
+
+Add to your project's MCP settings (`.claude/settings.json`):
+
+```json
+{
+  "mcpServers": {
+    "spendguard": {
+      "command": "/path/to/your/.venv/bin/python",
+      "args": ["/path/to/mcp/server.py"],
+      "env": {
+        "SPENDGUARD_API_URL": "https://spendguardapi.com",
+        "SPENDGUARD_API_KEY": "sg_live_your_key_here"
+      }
+    }
+  }
+}
+```
+
+---
+
+## Example Conversations
+
+Once connected, you can talk to Claude naturally and it will use SpendGuard tools when relevant:
+
+### Checking an action
+
+> **You:** "Can our support agent refund $350 to customer_7821? The order is 12 days old."
+>
+> **Claude:** *uses check_financial_action* "The refund requires human approval — $350 exceeds the $200 auto-approve threshold. The order is within the 30-day window, so it's eligible once a manager approves."
+
+### Testing a policy
+
+> **You:** "Simulate what would happen if we tried to refund $750 to customer_456 using the support refund policy."
+>
+> **Claude:** *uses simulate_actions* "That refund would be blocked — $750 exceeds the $500 maximum amount limit. The customer would need to contact a manager for a refund that large."
+
+### Reviewing violations
+
+> **You:** "Show me what our support agent has been blocked on recently."
+>
+> **Claude:** *uses list_violations* "In the last 24 hours, support-agent-v1 had 3 blocks: two for exceeding the $500 refund limit and one duplicate action detection."
+
+---
+
+## Environment Variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `SPENDGUARD_API_URL` | Yes | Your SpendGuard API URL (e.g., `https://spendguardapi.com`) |
+| `SPENDGUARD_API_KEY` | Yes* | Your API key. *Not needed for `simulate_actions` in demo mode. |
+
+---
+
+## Requirements
+
+The MCP server requires these Python packages:
+
+```
+mcp
+httpx
+```
+
+Install them in your Python environment:
+
+```bash
+pip install mcp httpx
+```
+
+---
+
+## Running Manually (for Testing)
+
+You can run the MCP server directly to verify it starts:
+
+```bash
+SPENDGUARD_API_URL=https://spendguardapi.com \
+SPENDGUARD_API_KEY=sg_live_your_key_here \
+python mcp/server.py
+```
+
+The server communicates over stdio (stdin/stdout) per the MCP protocol. You won't see output in the terminal — it's designed to be called by an AI client like Claude.
