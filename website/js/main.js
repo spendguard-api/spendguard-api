@@ -83,7 +83,7 @@
   }
 
   // --- Scroll-triggered fade-in ---
-  var fadeEls = document.querySelectorAll('.fade-in');
+  var fadeEls = document.querySelectorAll('.fade-up');
   if (fadeEls.length && 'IntersectionObserver' in window) {
     var fadeObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
