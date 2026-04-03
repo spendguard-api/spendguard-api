@@ -1,0 +1,307 @@
+---
+title: "Quickstart"
+description: "Go from zero to your first authorization check in under 5 minutes."
+---
+
+## Overview
+
+SpendGuard is a real-time authorization API for AI agents that handle money. Before your agent issues a refund, approves a payment, or applies a discount, it calls SpendGuard. SpendGuard checks the action against your policy and returns **allow**, **block**, or **escalate**.
+
+This guide walks you through:
+
+1. Getting your API key
+2. Creating a policy
+3. Running your first check (and seeing `allow`)
+4. Triggering a block (and seeing why)
+5. Viewing the violation in your audit log
+
+---
+
+## Step 1: Get Your API Key
+
+Every request to SpendGuard requires an API key in the `X-API-Key` header.
+
+<Note>
+Your API key starts with `sg_live_` and is shown exactly once when created. Store it securely — it cannot be retrieved again.
+</Note>
+
+Once you have your key, set it as an environment variable so you can use it in the examples below:
+
+```bash
+export SPENDGUARD_API_KEY="sg_live_your_key_here"
+```
+
+---
+
+## Step 2: Create Your First Policy
+
+A **policy** is a set of rules that controls what financial actions are allowed. Let's create one that:
+
+- Blocks refunds over $500
+- Escalates refunds over $200 for human review
+- Blocks refunds on orders older than 30 days
+
+<CodeGroup>
+
+```bash cURL
+curl -X POST https://spendguardapi.com/v1/policies \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $SPENDGUARD_API_KEY" \
+  -d '{
+    "policy_id": "my_refund_policy",
+    "name": "My Refund Policy",
+    "description": "Controls AI agent refund authorization",
+    "rules": [
+      {
+        "rule_id": "r1",
+        "rule_type": "max_amount",
+        "description": "Block refunds over $500",
+        "parameters": { "limit": 500, "currency": "USD" }
+      },
+      {
+        "rule_id": "r2",
+        "rule_type": "escalate_if",
+        "description": "Escalate refunds over $200",
+        "parameters": { "amount_above": 200, "action_types": ["refund"] }
+      },
+      {
+        "rule_id": "r3",
+        "rule_type": "refund_age_limit",
+        "description": "Block refunds older than 30 days",
+        "parameters": { "max_days": 30 }
+      }
+    ]
+  }'
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    "https://spendguardapi.com/v1/policies",
+    headers={
+        "Content-Type": "application/json",
+        "X-API-Key": "sg_live_your_key_here",
+    },
+    json={
+        "policy_id": "my_refund_policy",
+        "name": "My Refund Policy",
+        "description": "Controls AI agent refund authorization",
+        "rules": [
+            {
+                "rule_id": "r1",
+                "rule_type": "max_amount",
+                "description": "Block refunds over $500",
+                "parameters": {"limit": 500, "currency": "USD"},
+            },
+            {
+                "rule_id": "r2",
+                "rule_type": "escalate_if",
+                "description": "Escalate refunds over $200",
+                "parameters": {"amount_above": 200, "action_types": ["refund"]},
+            },
+            {
+                "rule_id": "r3",
+                "rule_type": "refund_age_limit",
+                "description": "Block refunds older than 30 days",
+                "parameters": {"max_days": 30},
+            },
+        ],
+    },
+)
+
+print(response.json())
+```
+
+</CodeGroup>
+
+You'll get back a response confirming the policy was created at **version 1**:
+
+```json
+{
+  "policy_id": "my_refund_policy",
+  "name": "My Refund Policy",
+  "description": "Controls AI agent refund authorization",
+  "version": 1,
+  "rules": [...],
+  "created_at": "2026-04-03T12:00:00Z",
+  "updated_at": "2026-04-03T12:00:00Z"
+}
+```
+
+---
+
+## Step 3: Run Your First Check — See "Allow"
+
+Now let's check a $50 refund. This is well under the $500 limit and under the $200 escalation threshold, so it should be **allowed**.
+
+<CodeGroup>
+
+```bash cURL
+curl -X POST https://spendguardapi.com/v1/checks \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $SPENDGUARD_API_KEY" \
+  -d '{
+    "agent_id": "support-agent-v1",
+    "policy_id": "my_refund_policy",
+    "action_type": "refund",
+    "amount": 50.00,
+    "currency": "USD",
+    "counterparty": "customer_123",
+    "metadata": { "days_since_purchase": 5 }
+  }'
+```
+
+```python Python
+response = requests.post(
+    "https://spendguardapi.com/v1/checks",
+    headers={
+        "Content-Type": "application/json",
+        "X-API-Key": "sg_live_your_key_here",
+    },
+    json={
+        "agent_id": "support-agent-v1",
+        "policy_id": "my_refund_policy",
+        "action_type": "refund",
+        "amount": 50.00,
+        "currency": "USD",
+        "counterparty": "customer_123",
+        "metadata": {"days_since_purchase": 5},
+    },
+)
+
+data = response.json()
+print(f"Decision: {data['decision']}")  # "allow"
+```
+
+</CodeGroup>
+
+**Result:**
+
+```json
+{
+  "check_id": "chk_a1b2c3d4e5f6",
+  "decision": "allow",
+  "confidence": "high",
+  "reason_code": null,
+  "message": null,
+  "violated_rule_id": null,
+  "policy_version": 1,
+  "latency_ms": 12,
+  "timestamp": "2026-04-03T12:01:00Z"
+}
+```
+
+The decision is `"allow"` — your agent can proceed with the refund.
+
+---
+
+## Step 4: Trigger a Block
+
+Now let's try a $750 refund. This exceeds the $500 `max_amount` rule, so SpendGuard will **block** it.
+
+```bash
+curl -X POST https://spendguardapi.com/v1/checks \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $SPENDGUARD_API_KEY" \
+  -d '{
+    "agent_id": "support-agent-v1",
+    "policy_id": "my_refund_policy",
+    "action_type": "refund",
+    "amount": 750.00,
+    "currency": "USD",
+    "counterparty": "customer_456"
+  }'
+```
+
+**Result:**
+
+```json
+{
+  "check_id": "chk_x9y8z7w6v5u4",
+  "decision": "block",
+  "confidence": "high",
+  "reason_code": "max_amount",
+  "message": "Amount 750.0 exceeds maximum allowed 500 USD",
+  "violated_rule_id": "r1",
+  "violated_rule_description": "Block refunds over $500",
+  "policy_version": 1,
+  "latency_ms": 8,
+  "timestamp": "2026-04-03T12:02:00Z"
+}
+```
+
+The decision is `"block"` with a clear explanation: **amount exceeds the limit**. Your agent should not proceed.
+
+Notice:
+- `violated_rule_id` tells you exactly which rule triggered the block (`r1`)
+- `message` gives a human-readable explanation
+- `reason_code` gives a machine-readable code your agent can branch on
+
+---
+
+## Step 5: Check the Audit Log
+
+Every block and escalate decision is automatically recorded in the violations audit log. Let's retrieve it:
+
+```bash
+curl -X GET "https://spendguardapi.com/v1/violations?agent_id=support-agent-v1&limit=5" \
+  -H "X-API-Key: $SPENDGUARD_API_KEY"
+```
+
+**Result:**
+
+```json
+{
+  "data": [
+    {
+      "violation_id": "viol_abc123",
+      "check_id": "chk_x9y8z7w6v5u4",
+      "agent_id": "support-agent-v1",
+      "policy_id": "my_refund_policy",
+      "policy_version": 1,
+      "action_type": "refund",
+      "amount": 750.00,
+      "currency": "USD",
+      "counterparty": "customer_456",
+      "decision": "block",
+      "violated_rule_id": "r1",
+      "violated_rule_description": "Block refunds over $500",
+      "confidence": "high",
+      "latency_ms": 8,
+      "timestamp": "2026-04-03T12:02:00Z"
+    }
+  ],
+  "pagination": {
+    "next_cursor": null,
+    "has_more": false,
+    "total_count": 1
+  }
+}
+```
+
+Every block and escalate is permanently logged with the full context: who did it, what policy version was used, which rule fired, and when.
+
+---
+
+## What's Next?
+
+<CardGroup cols={2}>
+
+<Card title="Core Concepts" icon="book" href="/guides/concepts">
+  Understand policies, checks, violations, and the three-decision model.
+</Card>
+
+<Card title="Rule Types" icon="shield" href="/guides/rule-types">
+  Learn all 10 rule types and how to configure them.
+</Card>
+
+<Card title="Policy Templates" icon="copy" href="/guides/policy-templates">
+  Start with a pre-built policy template and customize it.
+</Card>
+
+<Card title="Simulation" icon="flask" href="/guides/simulation">
+  Test your policies without creating real audit records.
+</Card>
+
+</CardGroup>

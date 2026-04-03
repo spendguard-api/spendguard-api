@@ -1,0 +1,206 @@
+---
+title: "Core Concepts"
+description: "Understand how SpendGuard works: policies, checks, violations, and the three-decision model."
+---
+
+## The Big Picture
+
+SpendGuard sits between your AI agent and any financial action. Before the agent moves money, it asks SpendGuard: **"Is this allowed?"**
+
+SpendGuard evaluates the request against your rules and returns one of three answers:
+
+| Decision | Meaning | What Your Agent Should Do |
+|---|---|---|
+| **allow** | The action is within policy | Proceed with the action |
+| **block** | The action violates a rule | Do not proceed — stop here |
+| **escalate** | The action needs human review | Pause and route to a human |
+
+That's the entire product. One question, three possible answers, every time.
+
+---
+
+## Policies
+
+A **policy** is a named set of rules that controls what financial actions are allowed.
+
+Think of it like a rulebook. You write the rules once, and every time an agent wants to do something with money, SpendGuard checks the rulebook.
+
+### Example
+
+A refund policy might say:
+- Refunds over $500 are **blocked**
+- Refunds over $200 are **escalated** for human review
+- Refunds on orders older than 30 days are **blocked**
+
+### Key Properties
+
+| Property | Description |
+|---|---|
+| `policy_id` | Unique identifier (e.g., `my_refund_policy`) |
+| `name` | Human-readable name |
+| `version` | Auto-incremented on every update |
+| `rules` | Array of rule objects |
+
+### Policy Versioning
+
+Every time you update a policy, SpendGuard creates a **new version** instead of overwriting the old one. Version 1 stays exactly as it was. Version 2 has your changes.
+
+This matters for auditing. If someone asks "why was this refund blocked last Tuesday?", you can see exactly which version of which policy was in effect at that moment. The answer is in the audit log, permanently.
+
+<Tip>
+You can retrieve any version of a policy by adding `?version=N` to the GET request. Without it, you always get the latest version.
+</Tip>
+
+---
+
+## Checks
+
+A **check** is a real-time authorization request. Your agent sends the details of a planned financial action, and SpendGuard evaluates it against the policy.
+
+### What Happens During a Check
+
+1. SpendGuard loads the policy (latest version)
+2. If `action_type` is missing, the intent classifier resolves it from `reason_text`
+3. The duplicate guard checks for recent identical actions
+4. All rules in the policy are evaluated against the action
+5. A decision is made: allow, block, or escalate
+6. The decision is logged to the immutable audit trail
+7. The response is returned (typically in under 50ms)
+
+### Decision Precedence
+
+If multiple rules fire on the same check:
+
+- **Block wins over escalate** — if any rule says block, the answer is block
+- **Escalate wins over allow** — if any rule says escalate (and none say block), the answer is escalate
+- **Allow is the default** — if no rules trigger, the action is allowed
+
+```
+block > escalate > allow
+```
+
+### Example Check Request
+
+```json
+{
+  "agent_id": "support-agent-v1",
+  "policy_id": "my_refund_policy",
+  "action_type": "refund",
+  "amount": 300.00,
+  "currency": "USD",
+  "counterparty": "customer_789",
+  "metadata": {
+    "days_since_purchase": 5
+  }
+}
+```
+
+### Example Check Response (Escalate)
+
+```json
+{
+  "check_id": "chk_a1b2c3d4e5f6",
+  "decision": "escalate",
+  "confidence": "high",
+  "reason_code": "escalate_if",
+  "message": "Amount 300.0 exceeds escalation threshold 200",
+  "violated_rule_id": "r2",
+  "violated_rule_description": "Escalate refunds over $200",
+  "policy_version": 1,
+  "latency_ms": 11,
+  "timestamp": "2026-04-03T12:00:00Z"
+}
+```
+
+This $300 refund isn't blocked (it's under the $500 max), but it's above the $200 escalation threshold. SpendGuard says: **pause and get a human to approve this one**.
+
+---
+
+## Violations
+
+A **violation** is an audit record created every time a check returns **block** or **escalate**. Violations are stored permanently and can never be edited or deleted.
+
+### What's in a Violation Record
+
+Every violation includes:
+
+| Field | Description |
+|---|---|
+| `violation_id` | Unique identifier (`viol_...`) |
+| `check_id` | The check that produced this violation |
+| `agent_id` | Which agent triggered it |
+| `policy_id` | Which policy was evaluated |
+| `policy_version` | Which version of the policy |
+| `action_type` | refund, credit, discount, or spend |
+| `amount` | The dollar amount |
+| `currency` | Currency code (USD, etc.) |
+| `counterparty` | Customer or vendor ID |
+| `decision` | block or escalate |
+| `violated_rule_id` | Which rule fired |
+| `violated_rule_description` | What the rule does |
+| `confidence` | Confidence level (high, medium, low) |
+| `latency_ms` | How fast the decision was made |
+| `timestamp` | When it happened |
+
+### Why This Matters
+
+The violations log is your proof that the system is working. If a customer complains about a blocked refund, or if a regulator asks about your AI agent's financial controls, you have a complete, tamper-proof record of every decision.
+
+---
+
+## Action Types
+
+SpendGuard supports four types of financial actions in V1:
+
+| Action Type | Description | Example |
+|---|---|---|
+| `refund` | Returning money to a customer | AI support agent issuing a refund |
+| `credit` | Adding account credit | Courtesy credit for a bad experience |
+| `discount` | Reducing a price | AI applying a loyalty discount |
+| `spend` | Paying a vendor or supplier | AI agent approving a purchase order |
+
+### Semantic Classification
+
+If your agent doesn't know the exact action type, it can send `reason_text` instead. SpendGuard's intent classifier will figure it out:
+
+- `"make the customer whole"` → refund
+- `"courtesy adjustment"` → credit
+- `"loyalty pricing"` → discount
+- `"pay the invoice from Acme"` → spend
+
+The classifier only resolves the action type. It never decides whether the action is allowed — that's always the rules.
+
+---
+
+## Duplicate Guard
+
+The duplicate guard prevents the same action from being executed twice. This protects against agent loops, retries, and bugs.
+
+**How it works:**
+1. SpendGuard computes a fingerprint from: `agent_id` + `action_type` + `amount` + `counterparty`
+2. If the same fingerprint was seen within the time window (default: 5 minutes), the check returns **block** with reason `duplicate_action_detected`
+3. If not, the check proceeds normally
+
+The duplicate guard window is configurable per policy using the `duplicate_guard` rule type.
+
+---
+
+## Idempotency
+
+The `POST /v1/checks` endpoint supports an `idempotency_key` field. If you send the same idempotency key twice within 24 hours, SpendGuard returns the original response without re-running the rules or creating a new audit record.
+
+This is useful for retry logic — your agent can safely retry a failed network request without worrying about double-logging.
+
+---
+
+## Summary
+
+| Concept | What It Is |
+|---|---|
+| **Policy** | A set of rules that controls what's allowed |
+| **Check** | A real-time "is this allowed?" request |
+| **Violation** | An audit record of every block or escalate |
+| **Decision** | allow, block, or escalate |
+| **Policy Version** | Every update creates a new version — old ones preserved |
+| **Duplicate Guard** | Blocks identical repeat actions within a time window |
+| **Idempotency** | Safe retries using a unique key |

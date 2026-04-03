@@ -1,0 +1,188 @@
+---
+title: "Authentication"
+description: "How to authenticate with the SpendGuard API using API keys, and what to do when things go wrong."
+---
+
+## API Key Authentication
+
+Every request to SpendGuard (except the health check and demo simulation) requires an API key.
+
+Send your key in the `X-API-Key` header on every request:
+
+```bash
+curl -X GET https://spendguardapi.com/v1/policies/my_policy \
+  -H "X-API-Key: sg_live_your_key_here"
+```
+
+### Key Format
+
+SpendGuard API keys follow this format:
+
+```
+sg_live_ + 32 random hex characters
+```
+
+Example: `sg_live_4a8f2c1b9e7d3056ef28a1c4b7e93f1d`
+
+<Warning>
+Your API key is shown exactly **once** when it's created. SpendGuard stores only a SHA-256 hash of the key — the original cannot be retrieved. If you lose your key, you'll need to create a new one.
+</Warning>
+
+---
+
+## Endpoints That Don't Require Auth
+
+Two endpoints work without an API key:
+
+| Endpoint | Why |
+|---|---|
+| `GET /health` | Health check for monitoring — always public |
+| `POST /v1/simulate` (demo mode) | Public demo — limited to 10 actions per request, responses marked `"mode": "demo"` |
+
+Everything else requires a valid, active API key.
+
+---
+
+## Error Responses
+
+If authentication fails, SpendGuard returns a clear error in the standard format:
+
+### Missing or Invalid Key — `401 Unauthorized`
+
+```json
+{
+  "error": {
+    "code": "unauthorized",
+    "message": "Missing or invalid API key. Provide a valid key in the X-API-Key header.",
+    "request_id": "req_a1b2c3d4e5f6",
+    "timestamp": "2026-04-03T12:00:00Z"
+  }
+}
+```
+
+**Common causes:**
+- No `X-API-Key` header in the request
+- Key is misspelled or truncated
+- Key was never created (not in the database)
+
+### Inactive Key — `401 Unauthorized`
+
+```json
+{
+  "error": {
+    "code": "api_key_inactive",
+    "message": "This API key has been deactivated.",
+    "request_id": "req_a1b2c3d4e5f6",
+    "timestamp": "2026-04-03T12:00:00Z"
+  }
+}
+```
+
+**Common causes:**
+- Key was deactivated by an admin
+- Subscription was cancelled (future billing integration)
+
+---
+
+## Rate Limits
+
+SpendGuard applies rate limits to protect the service and ensure fair usage.
+
+### Default Limits
+
+| Mode | Limit | Scope |
+|---|---|---|
+| **Authenticated** | 100 requests/minute | Per API key |
+| **Demo** (no auth) | 10 requests/minute | Per IP address |
+
+Enterprise customers can have custom rate limits configured per key.
+
+### Rate Limit Headers
+
+Every response includes rate limit information in the headers:
+
+| Header | Description |
+|---|---|
+| `X-RateLimit-Limit` | Your maximum requests per minute |
+| `X-RateLimit-Remaining` | Requests remaining in the current window |
+| `X-RateLimit-Reset` | Unix timestamp when the window resets |
+
+### When You Hit the Limit — `429 Too Many Requests`
+
+```json
+{
+  "error": {
+    "code": "rate_limit_exceeded",
+    "message": "Rate limit exceeded. Try again later.",
+    "request_id": "req_a1b2c3d4e5f6",
+    "timestamp": "2026-04-03T12:00:00Z"
+  }
+}
+```
+
+The response includes a `Retry-After` header telling you how many seconds to wait.
+
+**How to handle this in your agent:**
+
+```python
+import time
+import requests
+
+def check_action(payload, api_key):
+    response = requests.post(
+        "https://spendguardapi.com/v1/checks",
+        headers={"X-API-Key": api_key, "Content-Type": "application/json"},
+        json=payload,
+    )
+
+    if response.status_code == 429:
+        retry_after = int(response.headers.get("Retry-After", 5))
+        time.sleep(retry_after)
+        return check_action(payload, api_key)  # Retry once
+
+    return response.json()
+```
+
+---
+
+## Security Best Practices
+
+<AccordionGroup>
+
+<Accordion title="Never hardcode your API key">
+Store it in environment variables or a secrets manager. Never commit it to source code.
+
+```python
+import os
+
+api_key = os.environ["SPENDGUARD_API_KEY"]
+```
+</Accordion>
+
+<Accordion title="Use one key per agent or service">
+If you have multiple agents, create a separate API key for each one. This way, if one key is compromised, you can revoke it without affecting the others.
+</Accordion>
+
+<Accordion title="Monitor your violation log">
+Regularly check `GET /v1/violations` to see what your agents are trying to do. A sudden spike in blocks might mean a bug in your agent, not a policy problem.
+</Accordion>
+
+<Accordion title="Use idempotency keys for retries">
+When retrying checks after a network error, include an `idempotency_key` in your request. This prevents duplicate audit log entries and ensures you get the same response.
+</Accordion>
+
+</AccordionGroup>
+
+---
+
+## Quick Reference
+
+| What | Value |
+|---|---|
+| **Header** | `X-API-Key` |
+| **Key format** | `sg_live_` + 32 hex characters |
+| **Auth error code** | `unauthorized` |
+| **Inactive key error** | `api_key_inactive` |
+| **Rate limit (auth)** | 100 req/min per key |
+| **Rate limit (demo)** | 10 req/min per IP |
+| **Rate limit error** | `rate_limit_exceeded` (HTTP 429) |
