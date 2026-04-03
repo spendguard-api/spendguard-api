@@ -6,13 +6,17 @@
 (function () {
   'use strict';
 
-  // --- Nav scroll effect ---
+  // --- Nav scroll effect — glass gets more opaque on scroll ---
   var nav = document.getElementById('nav');
   window.addEventListener('scroll', function () {
     if (window.scrollY > 10) {
-      nav.classList.add('scrolled');
+      nav.style.background = 'rgba(255,255,255,0.72)';
+      nav.style.boxShadow = '0 8px 32px rgba(0,0,0,0.08)';
+      nav.style.borderColor = 'rgba(255,255,255,0.3)';
     } else {
-      nav.classList.remove('scrolled');
+      nav.style.background = 'rgba(255,255,255,0.45)';
+      nav.style.boxShadow = '0 4px 16px rgba(0,0,0,0.05)';
+      nav.style.borderColor = 'rgba(255,255,255,0.2)';
     }
   });
 
