@@ -26,10 +26,14 @@
 
 /* --- Scroll Animations --- */
 .fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
-.fade-up.visible { opacity: 1; transform: translateY(0); }
+.fade-up.visible { opacity: 1; transform: translateY(0); transition-delay: 0s; }
 .fade-up-d1 { transition-delay: 0.1s; }
 .fade-up-d2 { transition-delay: 0.2s; }
 .fade-up-d3 { transition-delay: 0.3s; }
+/* Once visible, remove delays so hover transitions are instant */
+.fade-up.visible.fade-up-d1,
+.fade-up.visible.fade-up-d2,
+.fade-up.visible.fade-up-d3 { transition-delay: 0s; }
 
 /* --- Sticky Mobile CTA --- */
 .sticky-cta { display: none; }

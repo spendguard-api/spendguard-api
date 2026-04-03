@@ -31,7 +31,7 @@
     }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=20260403b">
+  <link rel="stylesheet" href="/css/style.css?v=20260403c">
 </head>
 <body class="font-sans text-slate-800 antialiased overflow-x-hidden">
 
@@ -83,13 +83,13 @@
       </div>
       <div class="space-y-3 min-w-0">
         <!-- Code block with tabs -->
-        <div class="rounded-xl overflow-hidden bg-slate-900 shadow-2xl shadow-slate-900/30 border border-slate-800">
+        <div class="code-block rounded-xl overflow-hidden bg-slate-900 shadow-2xl shadow-slate-900/30 border border-slate-800">
           <div class="flex items-center justify-between px-4 py-2.5 border-b border-slate-800">
             <div class="flex gap-0">
-              <button type="button" class="code-tab active text-xs font-mono px-3 py-1.5 text-slate-400 border-b-2 border-transparent transition" data-lang="python">Python</button>
-              <button type="button" class="code-tab text-xs font-mono px-3 py-1.5 text-slate-500 border-b-2 border-transparent transition" data-lang="curl">curl</button>
-              <button type="button" class="code-tab text-xs font-mono px-3 py-1.5 text-slate-500 border-b-2 border-transparent transition" data-lang="node">Node.js</button>
-              <button type="button" class="code-tab text-xs font-mono px-3 py-1.5 text-slate-500 border-b-2 border-transparent transition" data-lang="json">JSON</button>
+              <button type="button" class="code-tab active text-xs font-mono px-3 py-1.5 text-white border-b-2 border-brand-500 transition-colors duration-150" data-lang="python">Python</button>
+              <button type="button" class="code-tab text-xs font-mono px-3 py-1.5 text-slate-500 border-b-2 border-transparent hover:text-slate-300 transition-colors duration-150" data-lang="curl">curl</button>
+              <button type="button" class="code-tab text-xs font-mono px-3 py-1.5 text-slate-500 border-b-2 border-transparent hover:text-slate-300 transition-colors duration-150" data-lang="node">Node.js</button>
+              <button type="button" class="code-tab text-xs font-mono px-3 py-1.5 text-slate-500 border-b-2 border-transparent hover:text-slate-300 transition-colors duration-150" data-lang="json">JSON</button>
             </div>
             <button type="button" class="code-copy text-slate-500 hover:text-slate-300 transition p-1" title="Copy">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
@@ -197,29 +197,31 @@ console.log(decision); <span class="text-slate-600">// "block"</span></code></pr
       <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 fade-up">How it works</h2>
       <p class="mt-4 text-lg text-slate-500 max-w-2xl mx-auto">Three steps from policy to decision.</p>
     </div>
-    <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
-      <div class="text-center fade-up fade-up-d1">
-        <div class="w-10 h-10 rounded-full bg-brand-600 text-white font-bold text-sm flex items-center justify-center mx-auto mb-5">1</div>
+    <div class="grid md:grid-cols-3 gap-8 lg:gap-12 relative">
+      <!-- Connecting line between steps (desktop only) -->
+      <div class="hidden md:block absolute top-5 left-[20%] right-[20%] h-0.5 bg-gradient-to-r from-brand-200 via-brand-400 to-brand-200 opacity-30"></div>
+      <div class="text-center fade-up fade-up-d1 group">
+        <div class="w-12 h-12 rounded-full bg-brand-600 text-white font-bold text-sm flex items-center justify-center mx-auto mb-5 relative z-10 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-brand-600/30 transition-all duration-200">1</div>
         <h3 class="text-lg font-semibold mb-2">Define your rules</h3>
         <p class="text-sm text-slate-500 mb-4">Set dollar limits, vendor allowlists, time restrictions — 10 rule types to build any policy.</p>
-        <div class="rounded-lg bg-slate-900 p-4 text-left"><pre class="text-xs font-mono text-slate-300 overflow-x-auto"><code>{
+        <div class="rounded-lg bg-slate-900 p-4 text-left group-hover:shadow-xl group-hover:-translate-y-1 transition-all duration-200"><pre class="text-xs font-mono text-slate-300 overflow-x-auto"><code>{
   <span class="code-key">"rule_type"</span>: <span class="code-string">"max_amount"</span>,
   <span class="code-key">"parameters"</span>: { <span class="code-key">"limit"</span>: <span class="code-number">500</span> }
 }</code></pre></div>
       </div>
-      <div class="text-center fade-up fade-up-d2">
-        <div class="w-10 h-10 rounded-full bg-brand-600 text-white font-bold text-sm flex items-center justify-center mx-auto mb-5">2</div>
+      <div class="text-center fade-up fade-up-d2 group">
+        <div class="w-12 h-12 rounded-full bg-brand-600 text-white font-bold text-sm flex items-center justify-center mx-auto mb-5 relative z-10 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-brand-600/30 transition-all duration-200">2</div>
         <h3 class="text-lg font-semibold mb-2">Agent calls one endpoint</h3>
         <p class="text-sm text-slate-500 mb-4">One API call before every financial action. Under 50ms. Your agent doesn't even notice.</p>
-        <div class="rounded-lg bg-slate-900 p-4 text-left"><pre class="text-xs font-mono text-slate-300 overflow-x-auto"><code><span class="code-key">POST</span> <span class="code-string">/v1/checks</span>
+        <div class="rounded-lg bg-slate-900 p-4 text-left group-hover:shadow-xl group-hover:-translate-y-1 transition-all duration-200"><pre class="text-xs font-mono text-slate-300 overflow-x-auto"><code><span class="code-key">POST</span> <span class="code-string">/v1/checks</span>
 { <span class="code-key">"action_type"</span>: <span class="code-string">"refund"</span>,
   <span class="code-key">"amount"</span>: <span class="code-number">600</span> }</code></pre></div>
       </div>
-      <div class="text-center fade-up fade-up-d3">
-        <div class="w-10 h-10 rounded-full bg-brand-600 text-white font-bold text-sm flex items-center justify-center mx-auto mb-5">3</div>
+      <div class="text-center fade-up fade-up-d3 group">
+        <div class="w-12 h-12 rounded-full bg-brand-600 text-white font-bold text-sm flex items-center justify-center mx-auto mb-5 relative z-10 group-hover:scale-110 group-hover:shadow-lg group-hover:shadow-brand-600/30 transition-all duration-200">3</div>
         <h3 class="text-lg font-semibold mb-2">Get a decision</h3>
         <p class="text-sm text-slate-500 mb-4">Allow, block, or escalate — with the rule that fired and a recommended next step.</p>
-        <div class="rounded-lg bg-slate-900 p-4 text-left"><pre class="text-xs font-mono text-slate-300 overflow-x-auto"><code>{
+        <div class="rounded-lg bg-slate-900 p-4 text-left group-hover:shadow-xl group-hover:-translate-y-1 transition-all duration-200"><pre class="text-xs font-mono text-slate-300 overflow-x-auto"><code>{
   <span class="code-key">"decision"</span>: <span class="code-highlight-block">"block"</span>,
   <span class="code-key">"message"</span>: <span class="code-string">"Exceeds $500 limit"</span>
 }</code></pre></div>
@@ -236,29 +238,29 @@ console.log(decision); <span class="text-slate-600">// "block"</span></code></pr
       <p class="mt-4 text-lg text-slate-500 max-w-2xl mx-auto">See how SpendGuard protects different agent types.</p>
     </div>
     <div class="grid md:grid-cols-3 gap-6">
-      <div class="bg-white rounded-xl border border-slate-200 p-6 border-l-4 border-l-red-500 hover:shadow-lg transition-all duration-300 fade-up fade-up-d1">
+      <div class="group bg-white rounded-xl border border-slate-200 p-6 border-l-4 border-l-red-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 fade-up fade-up-d1">
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center"><svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke-linecap="round"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center group-hover:bg-brand-100 transition-colors duration-200"><svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke-linecap="round"/><circle cx="12" cy="7" r="4"/></svg></div>
           <h3 class="font-semibold text-slate-900">Support Agent</h3>
         </div>
         <div class="bg-slate-50 rounded-lg p-4 mb-4"><p class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Scenario</p><p class="text-sm text-slate-600">Agent tries to refund $750 on a $200 order</p></div>
-        <div class="flex items-center gap-3"><span class="text-xs font-bold uppercase px-3 py-1 rounded-full badge-block">Block</span><p class="text-xs text-slate-500">Amount exceeds $500 policy limit</p></div>
+        <div class="flex items-center gap-3"><span class="text-xs font-bold uppercase px-3 py-1 rounded-full badge-block group-hover:scale-105 transition-transform duration-200">Block</span><p class="text-xs text-slate-500">Amount exceeds $500 policy limit</p></div>
       </div>
-      <div class="bg-white rounded-xl border border-slate-200 p-6 border-l-4 border-l-amber-500 hover:shadow-lg transition-all duration-300 fade-up fade-up-d2">
+      <div class="group bg-white rounded-xl border border-slate-200 p-6 border-l-4 border-l-amber-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 fade-up fade-up-d2">
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center"><svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4" stroke-linecap="round"/></svg></div>
+          <div class="w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center group-hover:bg-brand-100 transition-colors duration-200"><svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4" stroke-linecap="round"/></svg></div>
           <h3 class="font-semibold text-slate-900">Procurement Agent</h3>
         </div>
         <div class="bg-slate-50 rounded-lg p-4 mb-4"><p class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Scenario</p><p class="text-sm text-slate-600">Agent approves $3,000 vendor payment (threshold: $2,500)</p></div>
-        <div class="flex items-center gap-3"><span class="text-xs font-bold uppercase px-3 py-1 rounded-full badge-escalate">Escalate</span><p class="text-xs text-slate-500">Route to finance team for approval</p></div>
+        <div class="flex items-center gap-3"><span class="text-xs font-bold uppercase px-3 py-1 rounded-full badge-escalate group-hover:scale-105 transition-transform duration-200">Escalate</span><p class="text-xs text-slate-500">Route to finance team for approval</p></div>
       </div>
-      <div class="bg-white rounded-xl border border-slate-200 p-6 border-l-4 border-l-green-500 hover:shadow-lg transition-all duration-300 fade-up fade-up-d3">
+      <div class="group bg-white rounded-xl border border-slate-200 p-6 border-l-4 border-l-green-500 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 fade-up fade-up-d3">
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center"><svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" stroke-linecap="round"/><circle cx="7" cy="7" r="1"/></svg></div>
+          <div class="w-10 h-10 rounded-lg bg-brand-50 flex items-center justify-center group-hover:bg-brand-100 transition-colors duration-200"><svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" stroke-linecap="round"/><circle cx="7" cy="7" r="1"/></svg></div>
           <h3 class="font-semibold text-slate-900">Pricing Agent</h3>
         </div>
         <div class="bg-slate-50 rounded-lg p-4 mb-4"><p class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Scenario</p><p class="text-sm text-slate-600">Agent applies 15% loyalty discount (cap: 20%)</p></div>
-        <div class="flex items-center gap-3"><span class="text-xs font-bold uppercase px-3 py-1 rounded-full badge-allow">Allow</span><p class="text-xs text-slate-500">Within policy. Proceed with discount.</p></div>
+        <div class="flex items-center gap-3"><span class="text-xs font-bold uppercase px-3 py-1 rounded-full badge-allow group-hover:scale-105 transition-transform duration-200">Allow</span><p class="text-xs text-slate-500">Within policy. Proceed with discount.</p></div>
       </div>
     </div>
   </div>
@@ -509,7 +511,7 @@ console.log(decision); <span class="text-slate-600">// "block"</span></code></pr
   <a href="#demo" class="btn-sticky inline-flex items-center justify-center py-2.5 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold">Try Demo</a>
 </div>
 
-<script src="/js/main.js?v=20260403b"></script>
-<script src="/js/demo.js?v=20260403b"></script>
+<script src="/js/main.js?v=20260403c"></script>
+<script src="/js/demo.js?v=20260403c"></script>
 </body>
 </html>

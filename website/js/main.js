@@ -124,9 +124,20 @@
       tab.addEventListener('click', function () {
         var lang = this.getAttribute('data-lang');
         var block = this.closest('.code-block');
-        block.querySelectorAll('.code-tab').forEach(function (t) { t.classList.remove('active'); });
+        if (!block) return;
+        // Remove active state from all tabs
+        block.querySelectorAll('.code-tab').forEach(function (t) {
+          t.classList.remove('active');
+          t.classList.remove('text-white', 'border-brand-500');
+          t.classList.add('text-slate-500', 'border-transparent');
+        });
+        // Remove active content panels
         block.querySelectorAll('.code-tab-content').forEach(function (p) { p.classList.remove('active'); });
+        // Activate clicked tab
         this.classList.add('active');
+        this.classList.remove('text-slate-500', 'border-transparent');
+        this.classList.add('text-white', 'border-brand-500');
+        // Show the matching panel
         var panel = document.getElementById('code-' + lang);
         if (panel) panel.classList.add('active');
       });
