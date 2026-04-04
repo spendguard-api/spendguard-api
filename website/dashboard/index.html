@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpendGuard — Dashboard</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50:'#EFF6FF', 100:'#DBEAFE', 200:'#BFDBFE', 500:'#3B82F6', 600:'#2563EB', 700:'#1D4ED8' },
+            allow: '#16A34A', block: '#DC2626', escalate: '#D97706',
+          },
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'], mono: ['JetBrains Mono', 'Consolas', 'monospace'] },
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/dashboard/css/dashboard.css">
+</head>
+<body class="h-full font-sans bg-slate-50 text-slate-800 antialiased">
+
+<!-- ============================================================ -->
+<!-- LOGIN SCREEN -->
+<!-- ============================================================ -->
+<div id="login-screen" class="min-h-full flex items-center justify-center px-4">
+  <div class="w-full max-w-md">
+    <div class="text-center mb-8">
+      <a href="/">
+        <svg class="h-8 w-auto mx-auto mb-4" viewBox="0 0 180 36" fill="none"><path d="M4 6 L18 2 L32 6 L32 18 C32 26 18 34 18 34 C18 34 4 26 4 18 Z" stroke="#2563EB" stroke-width="2" fill="none"/><path d="M11 17 L16 22 L25 12" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><text x="42" y="24" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="20"><tspan fill="#1E293B">Spend</tspan><tspan fill="#2563EB">Guard</tspan></text></svg>
+      </a>
+      <h1 class="text-2xl font-bold text-slate-900">Sign in to Dashboard</h1>
+      <p class="text-sm text-slate-500 mt-2">Enter your API key to access your account.</p>
+    </div>
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+      <label for="api-key-input" class="block text-sm font-medium text-slate-700 mb-2">API Key</label>
+      <input id="api-key-input" type="password" placeholder="sg_live_..." class="w-full px-4 py-3 rounded-lg border border-slate-300 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition" autocomplete="off">
+      <div id="login-error" class="hidden mt-3 text-sm text-red-600"></div>
+      <button id="login-btn" onclick="handleLogin()" class="w-full mt-4 py-3 rounded-lg bg-brand-600 text-white font-semibold hover:bg-brand-700 transition text-sm">Connect</button>
+    </div>
+    <p class="text-center text-xs text-slate-400 mt-6">Don't have a key? <a href="/" class="text-brand-600 hover:underline">Sign up for free</a></p>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- DASHBOARD SHELL -->
+<!-- ============================================================ -->
+<div id="dashboard-shell" class="hidden h-full">
+  <!-- Top Bar -->
+  <header class="fixed top-0 left-0 right-0 h-14 bg-white border-b border-slate-200 z-30 flex items-center justify-between px-6">
+    <div class="flex items-center gap-4">
+      <a href="/">
+        <svg class="h-6 w-auto" viewBox="0 0 180 36" fill="none"><path d="M4 6 L18 2 L32 6 L32 18 C32 26 18 34 18 34 C18 34 4 26 4 18 Z" stroke="#2563EB" stroke-width="2" fill="none"/><path d="M11 17 L16 22 L25 12" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><text x="42" y="24" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="20"><tspan fill="#1E293B">Spend</tspan><tspan fill="#2563EB">Guard</tspan></text></svg>
+      </a>
+      <span class="text-xs text-slate-400 border-l border-slate-200 pl-4">Dashboard</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <span id="user-name" class="text-sm text-slate-600"></span>
+      <button onclick="handleLogout()" class="text-sm text-slate-500 hover:text-slate-800 transition">Sign out</button>
+    </div>
+  </header>
+
+  <div class="flex pt-14 h-full">
+    <!-- Sidebar -->
+    <aside class="w-56 fixed left-0 top-14 bottom-0 bg-white border-r border-slate-200 py-6 px-4 hidden md:block">
+      <nav class="space-y-1">
+        <button onclick="showView('overview')" class="nav-link active w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition" data-view="overview">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Overview
+        </button>
+        <button onclick="showView('policies')" class="nav-link w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition" data-view="policies">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+          Policies
+        </button>
+        <button onclick="showView('violations')" class="nav-link w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition" data-view="violations">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Violations
+        </button>
+      </nav>
+      <div class="mt-8 pt-6 border-t border-slate-100">
+        <a href="https://spendguard.mintlify.app" target="_blank" rel="noopener" class="flex items-center gap-2 px-3 py-2 text-xs text-slate-400 hover:text-slate-600 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Docs
+        </a>
+        <a href="/" class="flex items-center gap-2 px-3 py-2 text-xs text-slate-400 hover:text-slate-600 transition">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
+          Website
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 md:ml-56 p-6 lg:p-8 overflow-y-auto">
+
+      <!-- OVERVIEW VIEW -->
+      <div id="view-overview" class="view">
+        <h2 class="text-xl font-bold text-slate-900 mb-6">Overview</h2>
+
+        <!-- Metric Cards -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div class="bg-white rounded-xl border border-slate-200 p-5">
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Checks Today</p>
+            <p id="metric-checks-today" class="text-2xl font-bold text-slate-900 mt-1">—</p>
+          </div>
+          <div class="bg-white rounded-xl border border-slate-200 p-5">
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Violations Today</p>
+            <p id="metric-violations-today" class="text-2xl font-bold text-slate-900 mt-1">—</p>
+          </div>
+          <div class="bg-white rounded-xl border border-slate-200 p-5">
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Plan Usage</p>
+            <p id="metric-plan-usage" class="text-2xl font-bold text-slate-900 mt-1">—</p>
+          </div>
+          <div class="bg-white rounded-xl border border-slate-200 p-5">
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Plan</p>
+            <p id="metric-plan-name" class="text-2xl font-bold text-slate-900 mt-1 capitalize">—</p>
+          </div>
+        </div>
+
+        <!-- Usage Bar -->
+        <div class="bg-white rounded-xl border border-slate-200 p-6 mb-8">
+          <div class="flex items-center justify-between mb-3">
+            <p class="text-sm font-medium text-slate-700">Monthly Usage</p>
+            <p id="usage-label" class="text-sm text-slate-500">— / —</p>
+          </div>
+          <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+            <div id="usage-bar" class="h-full rounded-full bg-green-500 transition-all duration-500" style="width: 0%"></div>
+          </div>
+          <div id="usage-warning" class="hidden mt-3 text-sm text-amber-600 font-medium"></div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="flex flex-wrap gap-3">
+          <button onclick="showView('policies')" class="px-4 py-2 text-sm font-medium rounded-lg border border-slate-200 hover:bg-slate-50 transition">View Policies</button>
+          <button onclick="showView('violations')" class="px-4 py-2 text-sm font-medium rounded-lg border border-slate-200 hover:bg-slate-50 transition">View Violations</button>
+          <a href="https://spendguard.mintlify.app/guides/quickstart" target="_blank" rel="noopener" class="px-4 py-2 text-sm font-medium rounded-lg border border-slate-200 hover:bg-slate-50 transition">Quickstart Guide</a>
+        </div>
+      </div>
+
+      <!-- POLICIES VIEW -->
+      <div id="view-policies" class="view hidden">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-slate-900">Policies</h2>
+        </div>
+        <div id="policies-list" class="space-y-4">
+          <p class="text-sm text-slate-400">Loading policies...</p>
+        </div>
+      </div>
+
+      <!-- VIOLATIONS VIEW -->
+      <div id="view-violations" class="view hidden">
+        <h2 class="text-xl font-bold text-slate-900 mb-6">Violations</h2>
+
+        <!-- Filters -->
+        <div class="bg-white rounded-xl border border-slate-200 p-4 mb-6">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-500 mb-1">Decision</label>
+              <select id="filter-decision" onchange="loadViolations()" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <option value="">All</option>
+                <option value="block">Block</option>
+                <option value="escalate">Escalate</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-500 mb-1">Action Type</label>
+              <select id="filter-action-type" onchange="loadViolations()" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+                <option value="">All</option>
+                <option value="refund">Refund</option>
+                <option value="credit">Credit</option>
+                <option value="discount">Discount</option>
+                <option value="spend">Spend</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-500 mb-1">Agent ID</label>
+              <input id="filter-agent-id" type="text" placeholder="e.g. support-agent-v1" onchange="loadViolations()" class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+          </div>
+        </div>
+
+        <!-- Violations Table -->
+        <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-slate-200 bg-slate-50">
+                  <th class="text-left px-4 py-3 font-medium text-slate-500 text-xs uppercase">Time</th>
+                  <th class="text-left px-4 py-3 font-medium text-slate-500 text-xs uppercase">Agent</th>
+                  <th class="text-left px-4 py-3 font-medium text-slate-500 text-xs uppercase">Action</th>
+                  <th class="text-left px-4 py-3 font-medium text-slate-500 text-xs uppercase">Amount</th>
+                  <th class="text-left px-4 py-3 font-medium text-slate-500 text-xs uppercase">Decision</th>
+                  <th class="text-left px-4 py-3 font-medium text-slate-500 text-xs uppercase">Rule</th>
+                </tr>
+              </thead>
+              <tbody id="violations-body">
+                <tr><td colspan="6" class="px-4 py-8 text-center text-slate-400">Loading violations...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="violations-pagination" class="flex items-center justify-between px-4 py-3 border-t border-slate-200">
+            <p id="violations-count" class="text-xs text-slate-500"></p>
+            <button id="load-more-btn" onclick="loadMoreViolations()" class="hidden text-xs font-medium text-brand-600 hover:underline">Load more</button>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script src="/dashboard/js/app.js"></script>
+</body>
+</html>

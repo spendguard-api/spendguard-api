@@ -118,6 +118,7 @@ from api.routes.keys import router as keys_router
 from api.routes.signup import router as signup_router
 from api.routes.billing import router as billing_router
 from api.routes.webhooks import router as webhooks_router
+from api.routes.dashboard import router as dashboard_router
 
 # Public routes — no auth required
 app.include_router(health_router)
@@ -139,6 +140,7 @@ app.include_router(policies_router, prefix="/v1", dependencies=auth_dependencies
 app.include_router(checks_router, prefix="/v1", dependencies=auth_dependencies)
 app.include_router(violations_router, prefix="/v1", dependencies=auth_dependencies)
 app.include_router(billing_router, prefix="/v1", dependencies=auth_dependencies)
+app.include_router(dashboard_router, prefix="/v1", dependencies=auth_dependencies)
 
 # Keys route — uses its own admin key check, NOT standard auth
 app.include_router(keys_router, prefix="/v1")
