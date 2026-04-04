@@ -41,6 +41,11 @@ async def list_violations(
         # Build query
         query = supabase.table("violations").select("*", count="exact")
 
+        # Scope to current user's API key
+        user_key_id = getattr(request.state, "api_key_id", None)
+        if user_key_id:
+            query = query.eq("api_key_id", user_key_id)
+
         # Apply filters
         if agent_id:
             query = query.eq("agent_id", agent_id)

@@ -143,12 +143,23 @@ async def list_policies(
             pid = row["policy_id"]
             if pid not in seen:
                 seen[pid] = True
+                # Ensure rules is always a list (rules_json can be string or list from Supabase)
+                rules_raw = row.get("rules_json", [])
+                if isinstance(rules_raw, str):
+                    import json as _json
+                    try:
+                        rules_raw = _json.loads(rules_raw)
+                    except (ValueError, TypeError):
+                        rules_raw = []
+                if not isinstance(rules_raw, list):
+                    rules_raw = []
+
                 policies.append({
                     "policy_id": row["policy_id"],
                     "name": row["name"],
                     "description": row.get("description"),
                     "version": row["version"],
-                    "rules": row.get("rules_json", []),
+                    "rules": rules_raw,
                     "created_at": row.get("created_at"),
                 })
 

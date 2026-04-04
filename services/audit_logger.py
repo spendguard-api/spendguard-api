@@ -68,6 +68,7 @@ async def log_check_decision(
     engine_result: EngineResult,
     latency_ms: int,
     raw_input_hash: str,
+    api_key_id: str | None = None,
     supabase_client: Any | None = None,
 ) -> None:
     """
@@ -117,6 +118,7 @@ async def log_check_decision(
         "latency_ms": latency_ms,
         "raw_input_hash": raw_input_hash,
         "idempotency_key": idempotency_key,
+        "api_key_id": api_key_id,
     }
 
     try:
@@ -143,6 +145,7 @@ async def log_violation(
     counterparty: str,
     engine_result: EngineResult,
     latency_ms: int,
+    api_key_id: str | None = None,
     supabase_client: Any | None = None,
 ) -> str:
     """
@@ -188,6 +191,7 @@ async def log_violation(
         "violated_rule_description": engine_result.violated_rule_description,
         "confidence": engine_result.confidence,
         "latency_ms": latency_ms,
+        "api_key_id": api_key_id,
     }
 
     try:

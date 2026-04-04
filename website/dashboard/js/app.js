@@ -175,7 +175,7 @@ function loadPolicies() {
 
     container.innerHTML = '';
     policies.forEach(function(p) {
-      var rules = p.rules || [];
+      var rules = Array.isArray(p.rules) ? p.rules : [];
       var ruleTypes = rules.map(function(r) { return r.rule_type; });
       var ruleTags = ruleTypes.map(function(t) { return '<span class="rule-tag">' + t + '</span>'; }).join('');
 
@@ -204,7 +204,7 @@ function loadPolicies() {
 
 function showPolicyDetail(policy) {
   var container = document.getElementById('policies-list');
-  var rules = policy.rules || [];
+  var rules = Array.isArray(policy.rules) ? policy.rules : [];
 
   var rulesHtml = rules.map(function(r) {
     return '<div class="border border-slate-200 rounded-lg p-4">' +

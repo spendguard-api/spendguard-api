@@ -189,6 +189,7 @@ async def create_check(request: Request, body: CheckRequest) -> CheckResponse:
             engine_result=engine_result,
             latency_ms=latency_ms,
             raw_input_hash=raw_hash,
+            api_key_id=api_key_id,
         )
     except Exception as e:
         logger.error("Failed to log check decision: %s", e)
@@ -207,6 +208,7 @@ async def create_check(request: Request, body: CheckRequest) -> CheckResponse:
                 counterparty=body.counterparty,
                 engine_result=engine_result,
                 latency_ms=latency_ms,
+                api_key_id=api_key_id,
             )
         except Exception as e:
             logger.error("Failed to log violation: %s", e)
