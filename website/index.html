@@ -64,7 +64,7 @@
   <a href="#demo" class="text-lg font-medium text-slate-800 py-3 border-b border-slate-100">Try Demo</a>
   <a href="#pricing" class="text-lg font-medium text-slate-800 py-3 border-b border-slate-100">Pricing</a>
   <a href="https://spendguard.mintlify.app" target="_blank" rel="noopener" class="text-lg font-medium text-slate-800 py-3 border-b border-slate-100">Docs</a>
-  <a href="#pricing" class="mt-4 text-center font-semibold px-6 py-3 rounded-lg bg-brand-600 text-white">Get API Key</a>
+  <button type="button" onclick="openSignupModal(); document.getElementById('nav-mobile').classList.remove('open');" class="mt-4 text-center font-semibold px-6 py-3 rounded-lg bg-brand-600 text-white cursor-pointer w-full">Get API Key</button>
 </div>
 
 <!-- Hero -->
@@ -173,7 +173,7 @@ console.log(decision); <span class="text-slate-600">// "block"</span></code></pr
 <section class="py-12 bg-slate-50 border-b border-slate-200">
   <div class="max-w-6xl mx-auto px-6 text-center">
     <p class="text-xs font-semibold tracking-[0.2em] uppercase text-slate-400 mb-8">Built for teams using</p>
-    <div class="flex flex-wrap justify-center items-center gap-x-14 gap-y-6">
+    <div class="trust-logos flex flex-wrap justify-center items-center gap-x-14 gap-y-6">
       <!-- OpenAI -->
       <svg class="h-8 opacity-40 hover:opacity-70 transition" viewBox="0 0 120 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3.14.69 4.22 1.78L12 11V5zm-5.22 2.78A6.973 6.973 0 0 1 12 5v6l-5.22-1.22zM5 12c0-1.66.69-3.14 1.78-4.22L11 12H5zm2.78 5.22A6.973 6.973 0 0 1 5 12h6l-3.22 5.22zM12 19c-1.66 0-3.14-.69-4.22-1.78L12 13v6zm5.22-2.78A6.973 6.973 0 0 1 12 19v-6l5.22 3.22zM19 12c0 1.66-.69 3.14-1.78 4.22L13 12h6zm-2.78-5.22A6.973 6.973 0 0 1 19 12h-6l3.22-5.22z" fill="#64748B"/><text x="28" y="17" font-family="Inter, sans-serif" font-weight="600" font-size="14" fill="#64748B">OpenAI</text></svg>
       <!-- Anthropic / Claude -->

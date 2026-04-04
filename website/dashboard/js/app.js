@@ -331,14 +331,32 @@ function escHtml(str) {
 
 function toggleDashMobileNav() {
   var sidebar = document.querySelector('aside');
-  if (sidebar.classList.contains('hidden')) {
-    sidebar.classList.remove('hidden');
-    sidebar.classList.add('fixed', 'z-20', 'bg-white', 'shadow-lg');
+  var existing = document.getElementById('sidebar-backdrop');
+
+  if (sidebar.classList.contains('mobile-open')) {
+    // Close
+    sidebar.classList.remove('mobile-open');
+    if (existing) existing.remove();
   } else {
-    sidebar.classList.add('hidden');
-    sidebar.classList.remove('fixed', 'z-20', 'shadow-lg');
+    // Open with backdrop
+    sidebar.classList.add('mobile-open');
+    var backdrop = document.createElement('div');
+    backdrop.id = 'sidebar-backdrop';
+    backdrop.className = 'sidebar-backdrop';
+    backdrop.onclick = function() { toggleDashMobileNav(); };
+    document.body.appendChild(backdrop);
   }
 }
+
+// Close mobile nav when a view is selected
+var origShowView = showView;
+showView = function(viewName) {
+  var sidebar = document.querySelector('aside');
+  if (sidebar && sidebar.classList.contains('mobile-open')) {
+    toggleDashMobileNav();
+  }
+  origShowView(viewName);
+};
 
 // ============================================================
 // UPGRADE FLOW

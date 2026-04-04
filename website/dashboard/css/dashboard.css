@@ -23,7 +23,55 @@
 /* Rule tag */
 .rule-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: #f1f5f9; color: #475569; margin: 2px; }
 
-/* Mobile sidebar toggle */
+/* ============================================================
+   MOBILE RESPONSIVE
+   ============================================================ */
+
+/* Mobile: remove sidebar margin, full-width content */
 @media (max-width: 768px) {
   main { margin-left: 0 !important; }
+
+  /* Mobile sidebar overlay */
+  aside.mobile-open {
+    display: block !important;
+    position: fixed;
+    left: 0; top: 56px; bottom: 0;
+    width: 240px;
+    z-index: 40;
+    background: white;
+    border-right: 1px solid #e2e8f0;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.1);
+    padding: 24px 16px;
+  }
+
+  /* Backdrop when sidebar is open */
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    top: 56px;
+    background: rgba(0,0,0,0.3);
+    z-index: 39;
+  }
+
+  /* Metric cards: 2 columns on small phones, not 4 */
+  .metric-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Violations table: smaller text on mobile */
+  .violations-table th,
+  .violations-table td { font-size: 11px; padding: 8px 10px; }
+
+  /* Policy builder: stack fields */
+  .builder-fields { grid-template-columns: 1fr !important; }
+
+  /* Header padding tighter */
+  header { padding-left: 12px; padding-right: 12px; }
+
+  /* Main content less padding */
+  main { padding: 16px !important; }
+}
+
+/* Small phones (375px and below) */
+@media (max-width: 390px) {
+  .metric-grid { gap: 8px !important; }
+  header .flex { gap: 8px; }
 }
