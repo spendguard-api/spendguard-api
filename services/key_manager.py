@@ -64,13 +64,16 @@ async def create_api_key(
         "rate_limit_rpm": rate_limit_rpm,
     }
 
-    supabase_client.table("api_keys").insert(record).execute()
+    result = supabase_client.table("api_keys").insert(record).execute()
+
+    # Get the auto-generated UUID from the insert result
+    db_id = result.data[0]["id"] if result.data else key_id
 
     # Log key_id only — NEVER log the raw key
     logger.info("API key created — key_id=%s name=%s", key_id, name)
 
     return {
-        "key_id": key_id,
+        "key_id": str(db_id),
         "name": name,
         "api_key": raw,  # Shown once, never stored
         "rate_limit_rpm": rate_limit_rpm,

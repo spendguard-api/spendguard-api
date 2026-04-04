@@ -32,8 +32,11 @@ MOCK_API_KEY_ROW = {
     "name": "Billing Test Key",
     "active": True,
     "rate_limit_rpm": 100,
+    "plan_name": "pro",
     "plan_limit": 100,
     "billing_period_start": "2026-04-01T00:00:00+00:00",
+    "overage_enabled": False,
+    "stripe_subscription_id": None,
 }
 
 VALID_CHECK_BODY = {
@@ -97,14 +100,12 @@ class TestCheckPlanQuota:
 
     @pytest.mark.asyncio
     async def test_within_limit(self):
-        """Key under quota returns (True, usage, limit)."""
+        """Key under quota returns within_limit=True."""
         mock_supabase = MagicMock()
 
-        # First call: api_keys lookup
         api_keys_result = MagicMock()
-        api_keys_result.data = [{"plan_limit": 1000, "billing_period_start": "2026-04-01T00:00:00+00:00"}]
+        api_keys_result.data = [{"plan_limit": 1000, "plan_name": "pro", "billing_period_start": "2026-04-01T00:00:00+00:00", "overage_enabled": False, "stripe_subscription_id": None}]
 
-        # Second call: usage count
         usage_result = MagicMock()
         usage_result.count = 50
 
@@ -120,19 +121,19 @@ class TestCheckPlanQuota:
 
         with patch("db.client.supabase", mock_supabase):
             from services.billing import check_plan_quota
-            within, usage, limit = await check_plan_quota("key_123")
+            result = await check_plan_quota("key_123")
 
-        assert within is True
-        assert usage == 50
-        assert limit == 1000
+        assert result["within_limit"] is True
+        assert result["current_usage"] == 50
+        assert result["plan_limit"] == 1000
 
     @pytest.mark.asyncio
     async def test_over_limit(self):
-        """Key over quota returns (False, usage, limit)."""
+        """Key over quota returns within_limit=False."""
         mock_supabase = MagicMock()
 
         api_keys_result = MagicMock()
-        api_keys_result.data = [{"plan_limit": 100, "billing_period_start": "2026-04-01T00:00:00+00:00"}]
+        api_keys_result.data = [{"plan_limit": 100, "plan_name": "free", "billing_period_start": "2026-04-01T00:00:00+00:00", "overage_enabled": False, "stripe_subscription_id": None}]
 
         usage_result = MagicMock()
         usage_result.count = 150
@@ -149,23 +150,23 @@ class TestCheckPlanQuota:
 
         with patch("db.client.supabase", mock_supabase):
             from services.billing import check_plan_quota
-            within, usage, limit = await check_plan_quota("key_123")
+            result = await check_plan_quota("key_123")
 
-        assert within is False
-        assert usage == 150
-        assert limit == 100
+        assert result["within_limit"] is False
+        assert result["current_usage"] == 150
+        assert result["plan_limit"] == 100
 
     @pytest.mark.asyncio
     async def test_fails_open_on_error(self):
-        """DB error returns (True, 0, 10000) — fail open."""
+        """DB error returns within_limit=True — fail open."""
         with patch("db.client.supabase") as mock_sb:
             mock_sb.table.side_effect = Exception("DB down")
             from services.billing import check_plan_quota
-            within, usage, limit = await check_plan_quota("key_123")
+            result = await check_plan_quota("key_123")
 
-        assert within is True
-        assert usage == 0
-        assert limit == 10000
+        assert result["within_limit"] is True
+        assert result["current_usage"] == 0
+        assert result["plan_limit"] == 10000
 
 
 # ============================================================
@@ -250,10 +251,11 @@ class TestBillingIntegration:
             resp = client.post("/v1/checks", json=VALID_CHECK_BODY, headers=AUTH_HEADERS)
         assert resp.status_code == 402
         error = resp.json()
-        # FastAPI wraps in "detail" for HTTPException
         err = error.get("detail", error).get("error", error)
         assert err["code"] == "over_quota"
-        assert "exceeded" in err["message"].lower()
+        assert "usage" in err
+        assert err["usage"]["current"] == 150
+        assert err["usage"]["limit"] == 100
 
     def test_402_uses_standard_error_format(self):
         """402 response uses the locked error format."""

@@ -181,13 +181,13 @@ class TestKeyCreation:
         assert api_key.startswith("sg_live_")
         assert len(api_key) == 72  # sg_live_ (8) + 64 hex chars
 
-    def test_key_id_starts_with_key_prefix(self, client):
-        """key_id starts with key_."""
+    def test_key_id_is_present(self, client):
+        """key_id is a non-empty string (UUID from DB)."""
         resp = client.post("/v1/keys", headers={"X-Admin-Key": TEST_ADMIN_KEY}, json={
             "name": "ID Test",
         })
         assert resp.status_code == 201
-        assert resp.json()["key_id"].startswith("key_")
+        assert len(resp.json()["key_id"]) > 0
 
     def test_missing_admin_key_returns_401(self, client):
         """Missing X-Admin-Key header → 422 (FastAPI requires it)."""

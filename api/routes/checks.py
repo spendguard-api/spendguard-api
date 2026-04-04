@@ -42,18 +42,31 @@ async def create_check(request: Request, body: CheckRequest) -> CheckResponse:
     """
     start_time = time.perf_counter()
 
-    # 0. Check plan quota before processing
+    # 0. Check plan quota before processing (D022)
     api_key_id = getattr(request.state, "api_key_id", None)
+    quota_result = None
     if api_key_id:
         from services.billing import check_plan_quota
-        within_limit, current_usage, plan_limit = await check_plan_quota(api_key_id)
-        if not within_limit:
+        quota_result = await check_plan_quota(api_key_id)
+        if not quota_result["within_limit"]:
+            overage_available = quota_result["plan_name"] != "free"
+            usage_obj = {
+                "current": quota_result["current_usage"],
+                "limit": quota_result["plan_limit"],
+                "plan": quota_result["plan_name"],
+                "overage_available": overage_available,
+            }
+            if overage_available:
+                usage_obj["overage_rate"] = 0.005
+                usage_obj["enable_overage_url"] = "https://spendguardapi.com/v1/billing/enable-overage"
+
             raise HTTPException(status_code=402, detail={
                 "error": {
                     "code": "over_quota",
-                    "message": f"Monthly check limit exceeded ({current_usage}/{plan_limit}). Upgrade your plan or wait until the next billing period.",
+                    "message": f"Monthly check limit reached. You've used {quota_result['current_usage']} of {quota_result['plan_limit']} checks.",
                     "request_id": getattr(request.state, "request_id", "unknown"),
                     "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "usage": usage_obj,
                 }
             })
 
@@ -219,13 +232,23 @@ async def create_check(request: Request, body: CheckRequest) -> CheckResponse:
         timestamp=datetime.now(timezone.utc),
     )
 
-    # 9. Emit usage event (fire-and-forget — never blocks the response)
+    # 9. Emit usage event + report overage to Stripe if applicable
     if api_key_id:
         try:
             from services.billing import emit_usage_event
             await emit_usage_event(api_key_id)
         except Exception as e:
             logger.error("Failed to emit usage event: %s", e)
+
+        # If in overage, report to Stripe for metered billing
+        if quota_result and quota_result.get("is_overage"):
+            try:
+                from services.stripe_client import report_overage_usage
+                sub_id = quota_result.get("stripe_subscription_id")
+                if sub_id:
+                    report_overage_usage(sub_id, quantity=1)
+            except Exception as e:
+                logger.error("Failed to report overage to Stripe: %s", e)
 
     return response
 

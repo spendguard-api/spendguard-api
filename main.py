@@ -115,6 +115,9 @@ from api.routes.checks import router as checks_router
 from api.routes.violations import router as violations_router
 from api.routes.simulate import router as simulate_router
 from api.routes.keys import router as keys_router
+from api.routes.signup import router as signup_router
+from api.routes.billing import router as billing_router
+from api.routes.webhooks import router as webhooks_router
 
 # Public routes — no auth required
 app.include_router(health_router)
@@ -124,11 +127,18 @@ app.include_router(
     dependencies=[Depends(check_rate_limit_demo)],
 )
 
+# Signup — public, rate limited internally (3/hr per IP)
+app.include_router(signup_router, prefix="/v1")
+
+# Stripe webhooks — no standard auth, uses Stripe signature verification
+app.include_router(webhooks_router, prefix="/v1")
+
 # Protected routes — require API key + auth rate limiting
 auth_dependencies = [Depends(require_api_key), Depends(check_rate_limit_auth)]
 app.include_router(policies_router, prefix="/v1", dependencies=auth_dependencies)
 app.include_router(checks_router, prefix="/v1", dependencies=auth_dependencies)
 app.include_router(violations_router, prefix="/v1", dependencies=auth_dependencies)
+app.include_router(billing_router, prefix="/v1", dependencies=auth_dependencies)
 
 # Keys route — uses its own admin key check, NOT standard auth
 app.include_router(keys_router, prefix="/v1")
