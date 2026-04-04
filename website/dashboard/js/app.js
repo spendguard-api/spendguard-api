@@ -377,3 +377,273 @@ function dashboardUpgrade(plan) {
   })
   .catch(function() { alert('Failed to start checkout. Please try again.'); });
 }
+
+// ============================================================
+// POLICY BUILDER
+// ============================================================
+
+var builderRules = [];
+var ruleCounter = 0;
+
+var RULE_TYPES = {
+  max_amount: { label: 'Maximum Amount', fields: [
+    { key: 'limit', label: 'Dollar limit', type: 'number', placeholder: '500' },
+    { key: 'currency', label: 'Currency', type: 'text', placeholder: 'USD', default: 'USD' }
+  ]},
+  refund_age_limit: { label: 'Refund Age Limit', fields: [
+    { key: 'max_days', label: 'Maximum days since purchase', type: 'number', placeholder: '30' }
+  ]},
+  blocked_categories: { label: 'Blocked Categories', fields: [
+    { key: 'categories', label: 'Categories to block (comma separated)', type: 'text', placeholder: 'gambling, luxury_goods' }
+  ]},
+  vendor_allowlist: { label: 'Vendor Allowlist', fields: [
+    { key: 'vendors', label: 'Allowed vendors (comma separated)', type: 'text', placeholder: 'vendor_acme, vendor_globex' }
+  ]},
+  blocked_payment_rails: { label: 'Blocked Payment Methods', fields: [
+    { key: 'rails', label: 'Methods to block (comma separated)', type: 'text', placeholder: 'wire, crypto, cash' }
+  ]},
+  discount_cap: { label: 'Discount Cap', fields: [
+    { key: 'max_percent', label: 'Maximum discount %', type: 'number', placeholder: '20' }
+  ]},
+  geography_block: { label: 'Geography Block', fields: [
+    { key: 'blocked_countries', label: 'Blocked country codes (comma separated)', type: 'text', placeholder: 'RU, KP, IR' }
+  ]},
+  time_restriction: { label: 'Time Restriction', fields: [
+    { key: 'allowed_days', label: 'Allowed days (comma separated)', type: 'text', placeholder: 'mon, tue, wed, thu, fri' },
+    { key: 'allowed_hours_utc', label: 'Allowed hours (UTC)', type: 'text', placeholder: '09:00-17:00' }
+  ]},
+  duplicate_guard: { label: 'Duplicate Guard', fields: [
+    { key: 'window_minutes', label: 'Window (minutes)', type: 'number', placeholder: '10' }
+  ]},
+  escalate_if: { label: 'Escalate If', fields: [
+    { key: 'amount_above', label: 'Escalate above this amount', type: 'number', placeholder: '200' },
+    { key: 'action_types', label: 'For these action types (comma separated)', type: 'text', placeholder: 'refund, credit' }
+  ]}
+};
+
+var TEMPLATES = {
+  refund: {
+    name: 'AI Support Refund Policy', desc: 'Controls refunds issued by AI support agents.',
+    rules: [
+      { rule_type: 'max_amount', desc: 'Block refunds over $500', params: { limit: 500, currency: 'USD' } },
+      { rule_type: 'refund_age_limit', desc: 'No refunds after 30 days', params: { max_days: 30 } },
+      { rule_type: 'escalate_if', desc: 'Escalate refunds over $200', params: { amount_above: 200, action_types: ['refund'] } },
+      { rule_type: 'duplicate_guard', desc: 'Block duplicates within 10 min', params: { window_minutes: 10 } }
+    ]
+  },
+  discount: {
+    name: 'SaaS Discount Policy', desc: 'Controls discounts applied by AI pricing agents.',
+    rules: [
+      { rule_type: 'discount_cap', desc: 'Max 20% discount', params: { max_percent: 20 } },
+      { rule_type: 'max_amount', desc: 'Max $5,000 discount value', params: { limit: 5000, currency: 'USD' } },
+      { rule_type: 'escalate_if', desc: 'Escalate deals over $10,000', params: { amount_above: 10000, action_types: ['discount'] } }
+    ]
+  },
+  vendor: {
+    name: 'Vendor Spend Policy', desc: 'Controls payments made by AI procurement agents.',
+    rules: [
+      { rule_type: 'max_amount', desc: 'Block payments over $10,000', params: { limit: 10000, currency: 'USD' } },
+      { rule_type: 'escalate_if', desc: 'Escalate payments over $2,500', params: { amount_above: 2500, action_types: ['spend'] } },
+      { rule_type: 'blocked_payment_rails', desc: 'No wire or crypto', params: { rails: ['wire', 'crypto'] } },
+      { rule_type: 'geography_block', desc: 'Block sanctioned countries', params: { blocked_countries: ['RU', 'KP', 'IR'] } }
+    ]
+  },
+  expense: {
+    name: 'Expense Reimbursement Policy', desc: 'Controls expense claims processed by AI agents.',
+    rules: [
+      { rule_type: 'max_amount', desc: 'Block claims over $500', params: { limit: 500, currency: 'USD' } },
+      { rule_type: 'escalate_if', desc: 'Escalate claims over $250', params: { amount_above: 250, action_types: ['spend'] } },
+      { rule_type: 'blocked_categories', desc: 'Block personal and gambling', params: { categories: ['personal', 'gambling'] } }
+    ]
+  }
+};
+
+function showPolicyBuilder() {
+  document.getElementById('policies-list').classList.add('hidden');
+  document.querySelector('#view-policies .flex.items-center.justify-between').classList.add('hidden');
+  document.getElementById('policy-builder').classList.remove('hidden');
+  clearBuilder();
+}
+
+function hidePolicyBuilder() {
+  document.getElementById('policy-builder').classList.add('hidden');
+  document.getElementById('policies-list').classList.remove('hidden');
+  document.querySelector('#view-policies .flex.items-center.justify-between').classList.remove('hidden');
+  loadPolicies();
+}
+
+function clearBuilder() {
+  document.getElementById('builder-name').value = '';
+  document.getElementById('builder-id').value = '';
+  document.getElementById('builder-desc').value = '';
+  document.getElementById('builder-error').classList.add('hidden');
+  document.getElementById('builder-success').classList.add('hidden');
+  builderRules = [];
+  ruleCounter = 0;
+  renderBuilderRules();
+}
+
+function loadTemplate(key) {
+  var t = TEMPLATES[key];
+  if (!t) return;
+  document.getElementById('builder-name').value = t.name;
+  document.getElementById('builder-desc').value = t.desc;
+  builderRules = [];
+  ruleCounter = 0;
+  t.rules.forEach(function(r) {
+    ruleCounter++;
+    builderRules.push({ id: ruleCounter, rule_type: r.rule_type, description: r.desc, parameters: Object.assign({}, r.params) });
+  });
+  renderBuilderRules();
+}
+
+function addBuilderRule() {
+  ruleCounter++;
+  builderRules.push({ id: ruleCounter, rule_type: 'max_amount', description: '', parameters: {} });
+  renderBuilderRules();
+}
+
+function removeBuilderRule(id) {
+  builderRules = builderRules.filter(function(r) { return r.id !== id; });
+  renderBuilderRules();
+}
+
+function renderBuilderRules() {
+  var container = document.getElementById('builder-rules');
+  var noRules = document.getElementById('builder-no-rules');
+
+  if (builderRules.length === 0) {
+    container.innerHTML = '';
+    noRules.classList.remove('hidden');
+    return;
+  }
+
+  noRules.classList.add('hidden');
+  container.innerHTML = '';
+
+  builderRules.forEach(function(rule, idx) {
+    var typeInfo = RULE_TYPES[rule.rule_type] || RULE_TYPES.max_amount;
+
+    // Build type selector options
+    var typeOptions = Object.keys(RULE_TYPES).map(function(k) {
+      var sel = k === rule.rule_type ? ' selected' : '';
+      return '<option value="' + k + '"' + sel + '>' + RULE_TYPES[k].label + '</option>';
+    }).join('');
+
+    // Build parameter fields
+    var paramFields = typeInfo.fields.map(function(f) {
+      var val = rule.parameters[f.key];
+      if (Array.isArray(val)) val = val.join(', ');
+      if (val === undefined || val === null) val = f.default || '';
+      return '<div class="flex-1 min-w-0">' +
+        '<label class="block text-xs text-slate-500 mb-1">' + f.label + '</label>' +
+        '<input type="' + f.type + '" value="' + escHtml(String(val)) + '" placeholder="' + f.placeholder + '" ' +
+        'data-rule-id="' + rule.id + '" data-param="' + f.key + '" onchange="updateRuleParam(this)" ' +
+        'class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">' +
+      '</div>';
+    }).join('');
+
+    var card = document.createElement('div');
+    card.className = 'border border-slate-200 rounded-lg p-4 bg-white';
+    card.innerHTML =
+      '<div class="flex items-start justify-between mb-3">' +
+        '<div class="flex items-center gap-3 flex-1">' +
+          '<span class="text-xs font-mono text-slate-400">r' + (idx + 1) + '</span>' +
+          '<select onchange="changeRuleType(' + rule.id + ', this.value)" class="text-sm rounded-lg border border-slate-300 px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-brand-500">' + typeOptions + '</select>' +
+        '</div>' +
+        '<button type="button" onclick="removeBuilderRule(' + rule.id + ')" class="text-slate-400 hover:text-red-500 transition p-1" title="Remove rule" aria-label="Remove rule">' +
+          '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>' +
+        '</button>' +
+      '</div>' +
+      '<div class="mb-3">' +
+        '<input type="text" value="' + escHtml(rule.description) + '" placeholder="Rule description (what it does)" ' +
+        'data-rule-id="' + rule.id + '" data-field="description" onchange="updateRuleDesc(this)" ' +
+        'class="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">' +
+      '</div>' +
+      '<div class="flex flex-wrap gap-3">' + paramFields + '</div>';
+
+    container.appendChild(card);
+  });
+}
+
+function changeRuleType(ruleId, newType) {
+  builderRules.forEach(function(r) {
+    if (r.id === ruleId) {
+      r.rule_type = newType;
+      r.parameters = {};
+    }
+  });
+  renderBuilderRules();
+}
+
+function updateRuleParam(input) {
+  var ruleId = parseInt(input.getAttribute('data-rule-id'));
+  var param = input.getAttribute('data-param');
+  var val = input.value;
+
+  builderRules.forEach(function(r) {
+    if (r.id === ruleId) {
+      // Convert comma lists to arrays for specific params
+      if (['categories', 'vendors', 'rails', 'blocked_countries', 'allowed_days', 'action_types'].indexOf(param) !== -1) {
+        r.parameters[param] = val.split(',').map(function(s) { return s.trim(); }).filter(function(s) { return s; });
+      } else if (input.type === 'number') {
+        r.parameters[param] = parseFloat(val) || 0;
+      } else {
+        r.parameters[param] = val;
+      }
+    }
+  });
+}
+
+function updateRuleDesc(input) {
+  var ruleId = parseInt(input.getAttribute('data-rule-id'));
+  builderRules.forEach(function(r) {
+    if (r.id === ruleId) r.description = input.value;
+  });
+}
+
+function submitPolicy() {
+  var name = document.getElementById('builder-name').value.trim();
+  var policyId = document.getElementById('builder-id').value.trim() || undefined;
+  var desc = document.getElementById('builder-desc').value.trim() || undefined;
+  var errorEl = document.getElementById('builder-error');
+  var successEl = document.getElementById('builder-success');
+  var btn = document.getElementById('builder-submit');
+
+  errorEl.classList.add('hidden');
+  successEl.classList.add('hidden');
+
+  if (!name) { errorEl.textContent = 'Please enter a policy name.'; errorEl.classList.remove('hidden'); return; }
+  if (builderRules.length === 0) { errorEl.textContent = 'Add at least one rule.'; errorEl.classList.remove('hidden'); return; }
+
+  // Build rules array
+  var rules = builderRules.map(function(r, idx) {
+    return {
+      rule_id: 'r' + (idx + 1),
+      rule_type: r.rule_type,
+      description: r.description || RULE_TYPES[r.rule_type].label,
+      parameters: r.parameters
+    };
+  });
+
+  btn.textContent = 'Creating...';
+  btn.disabled = true;
+
+  var body = { name: name, rules: rules };
+  if (policyId) body.policy_id = policyId;
+  if (desc) body.description = desc;
+
+  apiFetchPost('/v1/policies', body)
+  .then(function(data) {
+    successEl.textContent = 'Policy "' + data.name + '" created (version ' + data.version + ')';
+    successEl.classList.remove('hidden');
+    btn.textContent = 'Create Policy';
+    btn.disabled = false;
+  })
+  .catch(function(err) {
+    errorEl.textContent = 'Failed to create policy: ' + err.message;
+    errorEl.classList.remove('hidden');
+    btn.textContent = 'Create Policy';
+    btn.disabled = false;
+  });
+}
