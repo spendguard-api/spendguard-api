@@ -122,6 +122,11 @@ async def list_policies(
 
         query = supabase.table("policies").select("*", count="exact")
 
+        # Scope to current user's policies + shared templates (no owner)
+        user_key_id = getattr(request.state, "api_key_id", None)
+        if user_key_id:
+            query = query.or_(f"api_key_id.eq.{user_key_id},api_key_id.is.null")
+
         if cursor:
             query = query.lt("created_at", cursor)
 

@@ -362,20 +362,7 @@ showView = function(viewName) {
 // UPGRADE FLOW
 // ============================================================
 
-function dashboardUpgrade(plan) {
-  apiFetch('/v1/checkout', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
-    body: JSON.stringify({ plan: plan })
-  })
-  .then(function(resp) { return resp.json(); })
-  .then(function(data) {
-    if (data.checkout_url) window.location.href = data.checkout_url;
-  })
-  .catch(function() { alert('Failed to start checkout. Please try again.'); });
-}
-
-// Override apiFetch for POST support
+// POST helper for dashboard API calls
 function apiFetchPost(path, body) {
   return fetch(API_BASE + path, {
     method: 'POST',
@@ -384,7 +371,10 @@ function apiFetchPost(path, body) {
   }).then(function(resp) {
     if (resp.ok) return resp.json();
     if (resp.status === 401) { handleLogout(); throw new Error('Session expired'); }
-    throw new Error('API error: ' + resp.status);
+    return resp.json().then(function(data) {
+      var err = (data.detail && data.detail.error) || data.error || {};
+      throw new Error(err.message || 'API error: ' + resp.status);
+    });
   });
 }
 
@@ -393,7 +383,7 @@ function dashboardUpgrade(plan) {
   .then(function(data) {
     if (data.checkout_url) window.location.href = data.checkout_url;
   })
-  .catch(function() { alert('Failed to start checkout. Please try again.'); });
+  .catch(function(err) { alert('Failed to start checkout: ' + err.message); });
 }
 
 // ============================================================

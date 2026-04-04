@@ -97,6 +97,7 @@ async def create_policy(
     rules: list[dict[str, Any]],
     description: str | None = None,
     metadata: dict[str, Any] | None = None,
+    api_key_id: str | None = None,
     supabase_client: Any | None = None,
 ) -> dict[str, Any]:
     """
@@ -111,6 +112,7 @@ async def create_policy(
         rules: List of rule dicts.
         description: Optional description.
         metadata: Optional key-value metadata.
+        api_key_id: Owner's API key ID for multi-tenant isolation.
         supabase_client: Supabase client.
 
     Returns:
@@ -147,6 +149,7 @@ async def create_policy(
         "version": next_version,
         "rules_json": json.dumps(rules),
         "metadata": json.dumps(metadata) if metadata else None,
+        "api_key_id": api_key_id,
     }
 
     try:

@@ -35,6 +35,9 @@ async def create_policy_route(request: Request, body: PolicyCreateRequest) -> Po
     # Convert rules to list of dicts for storage
     rules_dicts = [rule.model_dump() for rule in body.rules]
 
+    # Get the authenticated user's key ID for ownership
+    api_key_id = getattr(request.state, "api_key_id", None)
+
     try:
         result = await create_policy(
             policy_id=policy_id,
@@ -42,6 +45,7 @@ async def create_policy_route(request: Request, body: PolicyCreateRequest) -> Po
             rules=rules_dicts,
             description=body.description,
             metadata=body.metadata,
+            api_key_id=api_key_id,
         )
     except Exception as e:
         logger.error("Failed to create policy: %s", e)
