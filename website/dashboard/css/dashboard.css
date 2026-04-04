@@ -36,12 +36,13 @@
     display: block !important;
     position: fixed;
     left: 0; top: 56px; bottom: 0;
-    width: 240px;
-    z-index: 40;
+    width: 260px;
+    z-index: 45;
     background: white;
     border-right: 1px solid #e2e8f0;
-    box-shadow: 4px 0 24px rgba(0,0,0,0.1);
+    box-shadow: 4px 0 24px rgba(0,0,0,0.12);
     padding: 24px 16px;
+    overflow-y: auto;
   }
 
   /* Backdrop when sidebar is open */
@@ -50,7 +51,7 @@
     inset: 0;
     top: 56px;
     background: rgba(0,0,0,0.3);
-    z-index: 39;
+    z-index: 44;
   }
 
   /* Metric cards: 2 columns on small phones, not 4 */

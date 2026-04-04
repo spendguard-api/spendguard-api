@@ -468,7 +468,7 @@ var TEMPLATES = {
 
 function showPolicyBuilder() {
   document.getElementById('policies-list').classList.add('hidden');
-  document.querySelector('#view-policies .flex.items-center.justify-between').classList.add('hidden');
+  document.getElementById('policies-header').classList.add('hidden');
   document.getElementById('policy-builder').classList.remove('hidden');
   clearBuilder();
 }
@@ -476,7 +476,7 @@ function showPolicyBuilder() {
 function hidePolicyBuilder() {
   document.getElementById('policy-builder').classList.add('hidden');
   document.getElementById('policies-list').classList.remove('hidden');
-  document.querySelector('#view-policies .flex.items-center.justify-between').classList.remove('hidden');
+  document.getElementById('policies-header').classList.remove('hidden');
   loadPolicies();
 }
 
