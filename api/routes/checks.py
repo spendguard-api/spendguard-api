@@ -42,6 +42,21 @@ async def create_check(request: Request, body: CheckRequest) -> CheckResponse:
     """
     start_time = time.perf_counter()
 
+    # 0. Check plan quota before processing
+    api_key_id = getattr(request.state, "api_key_id", None)
+    if api_key_id:
+        from services.billing import check_plan_quota
+        within_limit, current_usage, plan_limit = await check_plan_quota(api_key_id)
+        if not within_limit:
+            raise HTTPException(status_code=402, detail={
+                "error": {
+                    "code": "over_quota",
+                    "message": f"Monthly check limit exceeded ({current_usage}/{plan_limit}). Upgrade your plan or wait until the next billing period.",
+                    "request_id": getattr(request.state, "request_id", "unknown"),
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                }
+            })
+
     # 1. Load policy
     try:
         policy = await get_policy(policy_id=body.policy_id)
@@ -190,7 +205,7 @@ async def create_check(request: Request, body: CheckRequest) -> CheckResponse:
     if engine_result.decision == "allow" and resolved_confidence != "high":
         final_confidence = resolved_confidence
 
-    return CheckResponse(
+    response = CheckResponse(
         check_id=check_id,
         decision=Decision(engine_result.decision),
         confidence=Confidence(final_confidence),
@@ -203,6 +218,16 @@ async def create_check(request: Request, body: CheckRequest) -> CheckResponse:
         latency_ms=latency_ms,
         timestamp=datetime.now(timezone.utc),
     )
+
+    # 9. Emit usage event (fire-and-forget — never blocks the response)
+    if api_key_id:
+        try:
+            from services.billing import emit_usage_event
+            await emit_usage_event(api_key_id)
+        except Exception as e:
+            logger.error("Failed to emit usage event: %s", e)
+
+    return response
 
 
 @router.get("/checks/{check_id}", summary="Get a check by ID")
