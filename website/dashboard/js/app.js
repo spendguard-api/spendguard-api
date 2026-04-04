@@ -145,6 +145,16 @@ function updateOverview(data) {
   } else {
     warning.classList.add('hidden');
   }
+
+  // Show upgrade banner for free tier
+  var banner = document.getElementById('upgrade-banner');
+  if (banner) {
+    if (data.plan_name === 'free') {
+      banner.classList.remove('hidden');
+    } else {
+      banner.classList.add('hidden');
+    }
+  }
 }
 
 // ============================================================
@@ -313,4 +323,57 @@ function escHtml(str) {
   var div = document.createElement('div');
   div.appendChild(document.createTextNode(str));
   return div.innerHTML;
+}
+
+// ============================================================
+// MOBILE NAV
+// ============================================================
+
+function toggleDashMobileNav() {
+  var sidebar = document.querySelector('aside');
+  if (sidebar.classList.contains('hidden')) {
+    sidebar.classList.remove('hidden');
+    sidebar.classList.add('fixed', 'z-20', 'bg-white', 'shadow-lg');
+  } else {
+    sidebar.classList.add('hidden');
+    sidebar.classList.remove('fixed', 'z-20', 'shadow-lg');
+  }
+}
+
+// ============================================================
+// UPGRADE FLOW
+// ============================================================
+
+function dashboardUpgrade(plan) {
+  apiFetch('/v1/checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
+    body: JSON.stringify({ plan: plan })
+  })
+  .then(function(resp) { return resp.json(); })
+  .then(function(data) {
+    if (data.checkout_url) window.location.href = data.checkout_url;
+  })
+  .catch(function() { alert('Failed to start checkout. Please try again.'); });
+}
+
+// Override apiFetch for POST support
+function apiFetchPost(path, body) {
+  return fetch(API_BASE + path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-API-Key': apiKey },
+    body: JSON.stringify(body)
+  }).then(function(resp) {
+    if (resp.ok) return resp.json();
+    if (resp.status === 401) { handleLogout(); throw new Error('Session expired'); }
+    throw new Error('API error: ' + resp.status);
+  });
+}
+
+function dashboardUpgrade(plan) {
+  apiFetchPost('/v1/checkout', { plan: plan })
+  .then(function(data) {
+    if (data.checkout_url) window.location.href = data.checkout_url;
+  })
+  .catch(function() { alert('Failed to start checkout. Please try again.'); });
 }

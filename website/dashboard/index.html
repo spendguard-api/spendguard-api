@@ -60,8 +60,11 @@
       <span class="text-xs text-slate-400 border-l border-slate-200 pl-4">Dashboard</span>
     </div>
     <div class="flex items-center gap-4">
-      <span id="user-name" class="text-sm text-slate-600"></span>
-      <button onclick="handleLogout()" class="text-sm text-slate-500 hover:text-slate-800 transition">Sign out</button>
+      <span id="user-name" class="text-sm text-slate-600 hidden sm:inline"></span>
+      <button type="button" onclick="handleLogout()" class="text-sm text-slate-500 hover:text-slate-800 transition">Sign out</button>
+      <button type="button" id="dash-menu-toggle" onclick="toggleDashMobileNav()" class="md:hidden p-2 text-slate-500" aria-label="Menu">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
+      </button>
     </div>
   </header>
 
@@ -119,6 +122,15 @@
             <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Plan</p>
             <p id="metric-plan-name" class="text-2xl font-bold text-slate-900 mt-1 capitalize">—</p>
           </div>
+        </div>
+
+        <!-- Upgrade Banner (free tier only) -->
+        <div id="upgrade-banner" class="hidden bg-gradient-to-r from-brand-600 to-brand-700 rounded-xl p-5 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div>
+            <p class="text-white font-semibold text-sm">You're on the Free plan (1,000 checks/month)</p>
+            <p class="text-blue-200 text-xs mt-1">Upgrade to Pro for 10,000 checks, 5 policies, and email support.</p>
+          </div>
+          <button type="button" onclick="dashboardUpgrade('pro')" class="px-5 py-2 rounded-lg bg-white text-brand-700 text-sm font-semibold hover:bg-blue-50 transition whitespace-nowrap">Upgrade to Pro — $49/mo</button>
         </div>
 
         <!-- Usage Bar -->

@@ -49,7 +49,7 @@
     </div>
     <div class="hidden md:flex items-center gap-3">
       <a href="/dashboard/" class="text-sm font-semibold px-4 py-2 rounded-lg border border-white/30 text-slate-700 hover:bg-white/40 transition">Dashboard</a>
-      <a href="#pricing" class="text-sm font-semibold px-4 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700 shadow-sm transition">Get API Key</a>
+      <button type="button" onclick="openSignupModal()" class="text-sm font-semibold px-4 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700 shadow-sm transition cursor-pointer">Get API Key</button>
     </div>
     <button id="nav-toggle" type="button" class="md:hidden p-2" aria-label="Menu">
       <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
@@ -432,7 +432,7 @@ console.log(decision); <span class="text-slate-600">// "block"</span></code></pr
           <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Documentation access</li>
           <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Simulation endpoint</li>
         </ul>
-        <a href="#get-started" class="block text-center py-2.5 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">Get Free API Key</a>
+        <button type="button" onclick="openSignupModal()" class="block w-full text-center py-2.5 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer">Get Free API Key</button>
       </div>
       <div class="bg-white rounded-xl border-2 border-brand-600 p-8 shadow-xl relative">
         <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-600 text-white text-xs font-bold px-4 py-1 rounded-full">Most Popular</div>
@@ -445,7 +445,7 @@ console.log(decision); <span class="text-slate-600">// "block"</span></code></pr
           <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Email support</li>
           <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>MCP integration</li>
         </ul>
-        <a href="#get-started" class="block text-center py-2.5 rounded-lg bg-brand-600 text-sm font-semibold text-white hover:bg-brand-700 transition shadow-sm">Get Started</a>
+        <button type="button" onclick="handlePaidPlan('pro')" class="block w-full text-center py-2.5 rounded-lg bg-brand-600 text-sm font-semibold text-white hover:bg-brand-700 transition shadow-sm cursor-pointer">Get Started — $49/mo</button>
       </div>
       <div class="bg-white rounded-xl border border-slate-200 p-8 hover:shadow-lg transition-all duration-300">
         <div class="font-semibold text-slate-900 mb-1">Growth</div>
@@ -457,7 +457,7 @@ console.log(decision); <span class="text-slate-600">// "block"</span></code></pr
           <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
           <li class="flex items-center gap-2"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Custom SLA</li>
         </ul>
-        <a href="#get-started" class="block text-center py-2.5 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">Get Started</a>
+        <button type="button" onclick="handlePaidPlan('growth')" class="block w-full text-center py-2.5 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer">Get Started — $199/mo</button>
       </div>
     </div>
     <p class="text-center text-sm text-slate-400 mt-8">All plans include: duplicate guard · policy versioning · semantic classification · immutable audit log</p>
@@ -470,7 +470,7 @@ console.log(decision); <span class="text-slate-600">// "block"</span></code></pr
     <h2 class="text-3xl lg:text-4xl font-bold text-white fade-up">Ready to protect your AI agents?</h2>
     <p class="mt-4 text-lg text-slate-400">Start free. No credit card required. First 1,000 checks on us.</p>
     <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-      <a href="https://spendguard.mintlify.app" target="_blank" rel="noopener" class="inline-flex items-center justify-center px-8 py-3.5 rounded-lg bg-brand-600 text-white font-semibold hover:bg-brand-700 shadow-lg shadow-brand-600/25 transition text-sm">Get Your API Key</a>
+      <button type="button" onclick="openSignupModal()" class="inline-flex items-center justify-center px-8 py-3.5 rounded-lg bg-brand-600 text-white font-semibold hover:bg-brand-700 shadow-lg shadow-brand-600/25 transition text-sm cursor-pointer">Get Your API Key</button>
       <a href="#demo" class="inline-flex items-center justify-center px-8 py-3.5 rounded-lg border border-white/20 text-slate-300 font-semibold hover:bg-white/10 hover:text-white transition text-sm">Try Live Demo</a>
     </div>
   </div>
@@ -507,11 +507,61 @@ console.log(decision); <span class="text-slate-600">// "block"</span></code></pr
 
 <!-- Sticky Mobile CTA -->
 <div class="sticky-cta" id="sticky-cta">
-  <a href="#pricing" class="btn-sticky inline-flex items-center justify-center py-2.5 rounded-lg bg-brand-600 text-white text-sm font-semibold">Get API Key</a>
+  <button type="button" onclick="openSignupModal()" class="btn-sticky inline-flex items-center justify-center py-2.5 rounded-lg bg-brand-600 text-white text-sm font-semibold cursor-pointer">Get API Key</button>
   <a href="#demo" class="btn-sticky inline-flex items-center justify-center py-2.5 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold">Try Demo</a>
 </div>
 
-<script src="/js/main.js?v=20260403c"></script>
-<script src="/js/demo.js?v=20260403c"></script>
+<!-- Signup Modal -->
+<div id="signup-modal" class="fixed inset-0 z-[999] hidden">
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeSignupModal()"></div>
+  <div class="absolute inset-0 flex items-center justify-center p-4">
+    <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+      <!-- Close button -->
+      <button onclick="closeSignupModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
+
+      <!-- Step 1: Signup Form -->
+      <div id="signup-step-form" class="p-8">
+        <h3 class="text-xl font-bold text-slate-900 mb-1">Get your free API key</h3>
+        <p class="text-sm text-slate-500 mb-6">No credit card required. 1,000 checks/month free.</p>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Name</label>
+            <input id="signup-name" type="text" placeholder="Jane Developer" class="w-full px-4 py-3 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+            <input id="signup-email" type="email" placeholder="jane@company.com" class="w-full px-4 py-3 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+          <div id="signup-error" class="hidden text-sm text-red-600"></div>
+          <button id="signup-submit-btn" onclick="handleSignup()" class="w-full py-3 rounded-lg bg-brand-600 text-white font-semibold hover:bg-brand-700 transition text-sm">Create Free Account</button>
+        </div>
+        <p class="text-xs text-slate-400 mt-4 text-center">By signing up you agree to our <a href="/terms/" class="underline">Terms</a> and <a href="/privacy/" class="underline">Privacy Policy</a>.</p>
+      </div>
+
+      <!-- Step 2: Key Reveal -->
+      <div id="signup-step-key" class="p-8 hidden">
+        <div class="text-center mb-6">
+          <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3"><svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <h3 class="text-xl font-bold text-slate-900">Your API key is ready!</h3>
+          <p class="text-sm text-slate-500 mt-1">Copy it now — you won't see it again.</p>
+        </div>
+        <div class="relative bg-slate-900 rounded-lg p-4 mb-6">
+          <code id="signup-key-display" class="text-sm font-mono text-green-400 break-all"></code>
+          <button onclick="copySignupKey()" id="signup-copy-btn" class="absolute top-3 right-3 text-slate-400 hover:text-white transition p-1" title="Copy">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+        <div class="space-y-3">
+          <a href="/dashboard/" class="block text-center py-3 rounded-lg bg-brand-600 text-white font-semibold hover:bg-brand-700 transition text-sm">Go to Dashboard</a>
+          <a href="https://spendguard.mintlify.app/guides/quickstart" target="_blank" rel="noopener" class="block text-center py-3 rounded-lg border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 transition text-sm">Read Quickstart Guide</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/main.js?v=20260404"></script>
+<script src="/js/demo.js?v=20260404"></script>
+<script src="/js/signup.js?v=20260404"></script>
 </body>
 </html>
