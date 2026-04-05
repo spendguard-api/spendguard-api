@@ -1,7 +1,7 @@
-/* SpendGuard — Custom styles (code blocks, demo widget, decisions only) */
-/* Tailwind handles all layout, typography, spacing, and responsive design */
+/* SpendGuard — Custom Styles */
+/* Tailwind handles layout, typography, spacing, responsive */
 
-/* --- Code Block Syntax Colors --- */
+/* Code syntax */
 .code-key { color: #7DD3FC; }
 .code-string { color: #A5D6FF; }
 .code-number { color: #FCA5A5; }
@@ -9,33 +9,59 @@
 .code-highlight-allow { color: #86EFAC; font-weight: 600; }
 .code-highlight-escalate { color: #FDE68A; font-weight: 600; }
 
-/* --- Code Tab Content Toggle --- */
+/* Code tabs */
 .code-tab-content { display: none; }
 .code-tab-content.active { display: block; }
 
-/* --- Decision Badges --- */
+/* Decision badges */
 .badge-allow { background: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0; }
 .badge-block { background: #FEF2F2; color: #DC2626; border: 1px solid #FECACA; }
 .badge-escalate { background: #FFFBEB; color: #D97706; border: 1px solid #FDE68A; }
 
-/* --- Demo Widget Hidden States --- */
+/* Demo widget */
 .demo-result { opacity: 0; transform: translateX(10px); transition: all 0.3s ease; }
 .demo-result.visible { opacity: 1; transform: translateX(0); }
 .demo-footer-hidden { display: none; }
 .demo-error { display: none; }
 
-/* --- Scroll Animations --- */
-.fade-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+/* Scroll animations */
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .fade-up.visible { opacity: 1; transform: translateY(0); transition-delay: 0s; }
 .fade-up-d1 { transition-delay: 0.1s; }
 .fade-up-d2 { transition-delay: 0.2s; }
 .fade-up-d3 { transition-delay: 0.3s; }
-/* Once visible, remove delays so hover transitions are instant */
 .fade-up.visible.fade-up-d1,
 .fade-up.visible.fade-up-d2,
 .fade-up.visible.fade-up-d3 { transition-delay: 0s; }
 
-/* --- Sticky Mobile CTA --- */
+/* Logo scroll belt */
+.logo-track {
+  display: flex;
+  gap: 64px;
+  animation: scroll-logos 25s linear infinite;
+  width: max-content;
+}
+.logo-track:hover { animation-play-state: paused; }
+.logo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.4;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+  cursor: default;
+}
+.logo-item:hover {
+  opacity: 1;
+  transform: scale(1.08);
+}
+@keyframes scroll-logos {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.logo-belt { overflow: hidden; -webkit-mask-image: linear-gradient(to right, transparent, black 80px, black calc(100% - 80px), transparent); mask-image: linear-gradient(to right, transparent, black 80px, black calc(100% - 80px), transparent); }
+
+/* Sticky mobile CTA */
 .sticky-cta { display: none; }
 
 @media (max-width: 768px) {
@@ -54,31 +80,19 @@
   }
   .sticky-cta .btn-sticky { flex: 1; }
   body.has-sticky { padding-bottom: 72px; }
-
-  /* Floating nav: tighter on mobile */
   #nav { left: 8px; right: 8px; top: 8px; height: 48px; }
   #nav .max-w-6xl { padding-left: 12px; padding-right: 12px; }
-
-  /* Hero: less top padding since nav is smaller */
   .hero { padding-top: 80px; }
-
-  /* Code blocks: smaller text on phone */
   .code-block pre { font-size: 11px; padding: 12px; }
   .code-tab { font-size: 10px; padding: 4px 8px; }
-
-  /* Demo widget: tighter */
   .demo-action { padding: 12px 16px; }
-
-  /* Signup modal: less padding on phone */
   #signup-modal .max-w-md { margin: 0 8px; }
   #signup-step-form, #signup-step-key { padding: 24px 20px; }
-
-  /* Trust bar logos: smaller gap on phone */
-  .trust-logos { gap: 24px 20px; }
+  .logo-track { gap: 40px; }
 }
 
-/* --- Reduced Motion --- */
 @media (prefers-reduced-motion: reduce) {
   .fade-up { opacity: 1; transform: none; transition: none; }
   .demo-result { opacity: 1; transform: none; transition: none; }
+  .logo-track { animation: none; }
 }
