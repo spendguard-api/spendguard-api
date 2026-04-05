@@ -18,7 +18,7 @@ import httpx
 logger = logging.getLogger(__name__)
 
 RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
-FROM_EMAIL = os.getenv("FROM_EMAIL", "SpendGuard <noreply@spendguardapi.com>")
+FROM_EMAIL = os.getenv("FROM_EMAIL", "SpendGuard <onboarding@resend.dev>")
 
 
 async def send_welcome_email(to_email: str, owner_name: str, api_key_preview: str) -> bool:
