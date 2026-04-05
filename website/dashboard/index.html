@@ -20,7 +20,7 @@
     }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/dashboard/css/dashboard.css?v=20260405r">
+  <link rel="stylesheet" href="/dashboard/css/dashboard.css?v=20260405m">
 </head>
 <body class="h-full font-sans bg-[#fafbfc] text-slate-800 antialiased">
 
@@ -57,8 +57,8 @@
     <div class="flex items-center gap-2 sm:gap-4">
       <span id="user-name" class="text-sm text-slate-500 hidden sm:inline"></span>
       <button type="button" onclick="handleLogout()" class="text-xs sm:text-sm text-slate-500 hover:text-slate-800 transition">Sign out</button>
-      <button type="button" id="dash-menu-toggle" onclick="toggleDashMobileNav()" class="md:hidden w-10 h-10 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition" aria-label="Menu">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
+      <button type="button" id="dash-menu-toggle" onclick="toggleDashMobileNav()" class="dash-menu-btn w-10 h-10 flex items-center justify-center rounded-lg text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition" aria-label="Open menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
       </button>
     </div>
   </header>
@@ -273,6 +273,6 @@
   </div>
 </div>
 
-<script src="/dashboard/js/app.js?v=20260405r"></script>
+<script src="/dashboard/js/app.js?v=20260405m"></script>
 </body>
 </html>

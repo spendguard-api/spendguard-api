@@ -21,6 +21,12 @@
 .policy-card:hover { border-color: #bfdbfe; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 .rule-tag { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 500; background: #f1f5f9; color: #475569; margin: 2px; }
 
+/* Mobile hamburger: visible on mobile, hidden on desktop */
+.dash-menu-btn { display: flex; }
+@media (min-width: 768px) {
+  .dash-menu-btn { display: none; }
+}
+
 /* Sidebar */
 .dash-sidebar { display: block; }
 
@@ -49,8 +55,25 @@
 /* Mobile responsive */
 @media (max-width: 768px) {
   main { margin-left: 0 !important; padding: 16px !important; }
-  .metric-grid { grid-template-columns: repeat(2, 1fr) !important; }
-  .violations-table th, .violations-table td { font-size: 11px; padding: 8px 10px; }
+  .metric-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+  .metric-grid > div { padding: 16px !important; }
+  .metric-grid p:first-child { font-size: 10px !important; }
+  .metric-grid p:last-child { font-size: 1.25rem !important; }
+  .violations-table th, .violations-table td { font-size: 11px; padding: 8px 10px; white-space: nowrap; }
   .builder-fields { grid-template-columns: 1fr !important; }
   header { padding-left: 12px !important; padding-right: 12px !important; }
+
+  /* Login screen: full width on phone */
+  #login-screen > div { max-width: 100%; padding: 0 16px; }
+
+  /* Policy builder: comfortable spacing */
+  #policy-builder .bg-white { padding: 20px !important; }
+  #policy-builder h3 { font-size: 1rem !important; }
+
+  /* View headings */
+  .view h2 { font-size: 1rem !important; }
+
+  /* Upgrade banner: stack vertically */
+  #upgrade-banner { flex-direction: column !important; }
+  #upgrade-banner button { width: 100%; }
 }

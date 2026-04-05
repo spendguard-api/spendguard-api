@@ -24,6 +24,10 @@
 .demo-footer-hidden { display: none; }
 .demo-error { display: none; }
 
+/* Mobile nav panel */
+.nav-mobile-panel { display: none; }
+.nav-mobile-panel.open { display: flex; }
+
 /* Scroll animations */
 .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .fade-up.visible { opacity: 1; transform: translateY(0); transition-delay: 0s; }
@@ -80,15 +84,45 @@
   }
   .sticky-cta .btn-sticky { flex: 1; }
   body.has-sticky { padding-bottom: 72px; }
+
+  /* Nav: smaller on mobile */
   #nav { left: 8px; right: 8px; top: 8px; height: 48px; }
   #nav .max-w-6xl { padding-left: 12px; padding-right: 12px; }
-  .hero { padding-top: 80px; }
-  .code-block pre { font-size: 11px; padding: 12px; }
-  .code-tab { font-size: 10px; padding: 4px 8px; }
-  .demo-action { padding: 12px 16px; }
-  #signup-modal .max-w-md { margin: 0 8px; }
+
+  /* Hero: comfortable spacing, not crammed */
+  .hero { padding-top: 80px; padding-bottom: 48px; }
+  .hero h1 { font-size: 2rem; line-height: 1.15; }
+  .hero p { font-size: 1rem; }
+
+  /* Code blocks: readable on phone */
+  .code-block pre { font-size: 11px; padding: 14px; }
+  .code-tab { font-size: 10px; padding: 6px 10px; }
+
+  /* Sections: tighter vertical padding on mobile */
+  section { padding-top: 64px !important; padding-bottom: 64px !important; }
+
+  /* Feature/use-case cards: full width, stacked */
+  section .grid { gap: 16px; }
+
+  /* Demo widget */
+  .demo-action { padding: 14px 16px; }
+
+  /* Signup modal: proper phone margins */
+  #signup-modal .max-w-md { margin: 0 12px; }
   #signup-step-form, #signup-step-key { padding: 24px 20px; }
-  .logo-track { gap: 40px; }
+
+  /* Logo belt: tighter */
+  .logo-track { gap: 36px; }
+  .logo-item span { font-size: 12px; }
+
+  /* Security cards: stack nicely */
+  #security .grid { gap: 12px; }
+
+  /* Pricing cards: add gap */
+  #pricing .grid { gap: 16px; }
+
+  /* Footer: more compact */
+  footer { padding-top: 48px; padding-bottom: 48px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
