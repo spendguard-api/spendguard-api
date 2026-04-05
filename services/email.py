@@ -21,7 +21,7 @@ def _get_resend_key() -> str:
     return os.getenv("RESEND_API_KEY", "")
 
 def _get_from_email() -> str:
-    return os.getenv("FROM_EMAIL", "SpendGuard <onboarding@resend.dev>")
+    return os.getenv("FROM_EMAIL", "SpendGuard <noreply@spendguardapi.com>")
 
 
 async def send_welcome_email(to_email: str, owner_name: str, api_key_preview: str) -> bool:
