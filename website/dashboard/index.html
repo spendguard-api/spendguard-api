@@ -21,7 +21,7 @@
     }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/dashboard/css/dashboard.css?v=20260404f">
+  <link rel="stylesheet" href="/dashboard/css/dashboard.css?v=20260405a">
 </head>
 <body class="h-full font-sans bg-slate-50 text-slate-800 antialiased">
 
@@ -70,7 +70,7 @@
 
   <div class="flex pt-14 h-full">
     <!-- Sidebar -->
-    <aside class="w-56 fixed left-0 top-14 bottom-0 bg-white border-r border-slate-200 py-6 px-4 hidden md:block">
+    <aside id="dash-sidebar" class="dash-sidebar w-56 fixed left-0 top-14 bottom-0 bg-white border-r border-slate-200 py-6 px-4">
       <nav class="space-y-1">
         <button onclick="showView('overview')" class="nav-link active w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition" data-view="overview">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
@@ -279,6 +279,6 @@
   </div>
 </div>
 
-<script src="/dashboard/js/app.js?v=20260404f"></script>
+<script src="/dashboard/js/app.js?v=20260405a"></script>
 </body>
 </html>

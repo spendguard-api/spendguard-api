@@ -24,16 +24,17 @@
 .rule-tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: #f1f5f9; color: #475569; margin: 2px; }
 
 /* ============================================================
-   MOBILE RESPONSIVE
+   SIDEBAR RESPONSIVE
    ============================================================ */
 
-/* Mobile: remove sidebar margin, full-width content */
-@media (max-width: 768px) {
-  main { margin-left: 0 !important; }
+/* Desktop: sidebar always visible */
+.dash-sidebar { display: block; }
 
-  /* Mobile sidebar overlay */
-  aside.mobile-open {
-    display: block !important;
+/* Mobile: sidebar hidden by default, shown when mobile-open */
+@media (max-width: 767px) {
+  .dash-sidebar { display: none; }
+  .dash-sidebar.mobile-open {
+    display: block;
     position: fixed;
     left: 0; top: 56px; bottom: 0;
     width: 260px;
@@ -44,8 +45,6 @@
     padding: 24px 16px;
     overflow-y: auto;
   }
-
-  /* Backdrop when sidebar is open */
   .sidebar-backdrop {
     position: fixed;
     inset: 0;
@@ -53,6 +52,14 @@
     background: rgba(0,0,0,0.3);
     z-index: 44;
   }
+}
+
+/* ============================================================
+   MOBILE RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  main { margin-left: 0 !important; }
 
   /* Metric cards: 2 columns on small phones, not 4 */
   .metric-grid { grid-template-columns: repeat(2, 1fr) !important; }

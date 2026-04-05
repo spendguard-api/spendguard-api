@@ -330,7 +330,7 @@ function escHtml(str) {
 // ============================================================
 
 function toggleDashMobileNav() {
-  var sidebar = document.querySelector('aside');
+  var sidebar = document.getElementById('dash-sidebar');
   var existing = document.getElementById('sidebar-backdrop');
 
   if (sidebar.classList.contains('mobile-open')) {
@@ -351,7 +351,7 @@ function toggleDashMobileNav() {
 // Close mobile nav when a view is selected
 var origShowView = showView;
 showView = function(viewName) {
-  var sidebar = document.querySelector('aside');
+  var sidebar = document.getElementById('dash-sidebar');
   if (sidebar && sidebar.classList.contains('mobile-open')) {
     toggleDashMobileNav();
   }
