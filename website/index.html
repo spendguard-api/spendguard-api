@@ -20,6 +20,7 @@
             brand: { 50:'#EFF6FF', 100:'#DBEAFE', 200:'#BFDBFE', 500:'#3B82F6', 600:'#2563EB', 700:'#1D4ED8', 800:'#1E40AF', 900:'#0F172A' },
           },
           fontFamily: {
+            display: ['Sora', 'Inter', 'system-ui', 'sans-serif'],
             sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
             mono: ['JetBrains Mono', 'Consolas', 'monospace'],
           },
@@ -27,26 +28,26 @@
       }
     }
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=20260405m">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css?v=20260405v2">
 </head>
-<body class="font-sans text-slate-800 antialiased overflow-x-hidden bg-white">
+<body class="font-sans text-slate-700 antialiased overflow-x-hidden bg-white">
 
 <!-- Nav -->
-<nav id="nav" class="fixed top-4 left-4 right-4 z-50 h-14 rounded-2xl border border-white/20 shadow-lg shadow-black/5 transition-all duration-300" style="background:rgba(255,255,255,0.45);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%)">
-  <div class="max-w-6xl mx-auto px-6 h-full flex items-center justify-between">
-    <a href="/" class="flex items-center gap-2" title="SpendGuard">
-      <svg class="h-7 w-auto" viewBox="0 0 180 36" fill="none"><path d="M4 6 L18 2 L32 6 L32 18 C32 26 18 34 18 34 C18 34 4 26 4 18 Z" stroke="#2563EB" stroke-width="2" fill="none"/><path d="M11 17 L16 22 L25 12" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><text x="42" y="24" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="20"><tspan fill="#1E293B">Spend</tspan><tspan fill="#2563EB">Guard</tspan></text></svg>
+<nav id="nav" class="fixed top-4 left-4 right-4 z-50 h-14 rounded-2xl border border-white/20 shadow-lg shadow-black/5 transition-all duration-300" style="background:rgba(255,255,255,0.5);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%)">
+  <div class="max-w-6xl mx-auto px-5 h-full flex items-center justify-between">
+    <a href="/" title="SpendGuard" class="flex items-center gap-2">
+      <svg class="h-7 w-auto" viewBox="0 0 180 36" fill="none"><path d="M4 6 L18 2 L32 6 L32 18 C32 26 18 34 18 34 C18 34 4 26 4 18 Z" stroke="#2563EB" stroke-width="2" fill="none"/><path d="M11 17 L16 22 L25 12" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><text x="42" y="24" font-family="Sora, Inter, system-ui, sans-serif" font-weight="700" font-size="20"><tspan fill="#1E293B">Spend</tspan><tspan fill="#2563EB">Guard</tspan></text></svg>
     </a>
-    <div class="hidden md:flex items-center gap-8">
-      <a href="#how-it-works" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition">How it works</a>
-      <a href="#features" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition">Features</a>
-      <a href="#pricing" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition">Pricing</a>
-      <a href="https://spendguard.mintlify.app" target="_blank" rel="noopener" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition">Docs</a>
+    <div class="hidden md:flex items-center gap-7">
+      <a href="#how-it-works" class="text-[13px] font-medium text-slate-500 hover:text-slate-900 transition">How it works</a>
+      <a href="#features" class="text-[13px] font-medium text-slate-500 hover:text-slate-900 transition">Features</a>
+      <a href="#pricing" class="text-[13px] font-medium text-slate-500 hover:text-slate-900 transition">Pricing</a>
+      <a href="https://spendguard.mintlify.app" target="_blank" rel="noopener" class="text-[13px] font-medium text-slate-500 hover:text-slate-900 transition">Docs</a>
     </div>
     <div class="hidden md:flex items-center gap-3">
-      <a href="/dashboard/" class="text-sm font-medium text-slate-600 hover:text-slate-900 transition">Dashboard</a>
-      <button type="button" onclick="openSignupModal()" class="text-sm font-semibold px-4 py-2 rounded-lg bg-brand-600 text-white hover:bg-brand-700 shadow-sm transition cursor-pointer">Get started</button>
+      <a href="/dashboard/" class="text-[13px] font-medium text-slate-600 hover:text-slate-900 transition">Log in</a>
+      <button type="button" onclick="openSignupModal()" class="text-[13px] font-semibold px-4 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition cursor-pointer">Get started</button>
     </div>
     <button id="nav-toggle" type="button" class="md:hidden p-2" aria-label="Menu">
       <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
@@ -55,40 +56,43 @@
 </nav>
 
 <!-- Mobile Nav -->
-<div id="nav-mobile" class="nav-mobile-panel fixed inset-0 top-20 z-40 bg-white/95 backdrop-blur-xl rounded-t-2xl px-6 pt-8 flex flex-col gap-6">
-  <a href="#how-it-works" class="text-lg font-medium text-slate-800 py-3 border-b border-slate-100">How it works</a>
-  <a href="#features" class="text-lg font-medium text-slate-800 py-3 border-b border-slate-100">Features</a>
-  <a href="#pricing" class="text-lg font-medium text-slate-800 py-3 border-b border-slate-100">Pricing</a>
-  <a href="https://spendguard.mintlify.app" target="_blank" rel="noopener" class="text-lg font-medium text-slate-800 py-3 border-b border-slate-100">Docs</a>
-  <a href="/dashboard/" class="text-lg font-medium text-slate-800 py-3 border-b border-slate-100">Dashboard</a>
-  <button type="button" onclick="openSignupModal(); document.getElementById('nav-mobile').classList.remove('open');" class="mt-2 text-center font-semibold px-6 py-3 rounded-lg bg-brand-600 text-white cursor-pointer w-full">Get started free</button>
+<div id="nav-mobile" class="nav-mobile-panel fixed inset-0 top-20 z-40 bg-white/95 backdrop-blur-xl rounded-t-2xl px-6 pt-8 flex flex-col gap-5">
+  <a href="#how-it-works" class="text-base font-medium text-slate-800 py-3 border-b border-slate-100">How it works</a>
+  <a href="#features" class="text-base font-medium text-slate-800 py-3 border-b border-slate-100">Features</a>
+  <a href="#pricing" class="text-base font-medium text-slate-800 py-3 border-b border-slate-100">Pricing</a>
+  <a href="https://spendguard.mintlify.app" target="_blank" rel="noopener" class="text-base font-medium text-slate-800 py-3 border-b border-slate-100">Docs</a>
+  <a href="/dashboard/" class="text-base font-medium text-slate-800 py-3 border-b border-slate-100">Log in</a>
+  <button type="button" onclick="openSignupModal(); document.getElementById('nav-mobile').classList.remove('open');" class="mt-2 text-center font-semibold px-6 py-3 rounded-xl bg-slate-900 text-white cursor-pointer w-full">Get started free</button>
 </div>
 
-<!-- Hero -->
-<section class="hero pt-36 pb-24 lg:pt-44 lg:pb-32">
+<!-- ============================================================ -->
+<!-- HERO -->
+<!-- ============================================================ -->
+<section class="hero pt-36 pb-20 lg:pt-48 lg:pb-32">
   <div class="max-w-6xl mx-auto px-6">
-    <div class="grid lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-      <div>
-        <h1 class="text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold leading-[1.08] tracking-tight text-slate-900">Financial guardrails<br>for AI agents</h1>
-        <p class="mt-6 text-lg text-slate-500 leading-relaxed max-w-lg">One API call before every refund, payment, or discount. SpendGuard evaluates the action against your rules and returns <strong class="text-slate-700">allow</strong>, <strong class="text-slate-700">block</strong>, or <strong class="text-slate-700">escalate</strong>.</p>
-        <div class="mt-8 flex flex-col sm:flex-row gap-3">
-          <button type="button" onclick="openSignupModal()" class="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-brand-600 text-white font-semibold hover:bg-brand-700 shadow-md shadow-brand-600/20 transition text-sm cursor-pointer">Get started free</button>
-          <a href="https://spendguard.mintlify.app/guides/quickstart" target="_blank" rel="noopener" class="inline-flex items-center justify-center px-6 py-3 rounded-lg border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 transition text-sm">Read the docs</a>
-        </div>
-        <p class="mt-5 text-sm text-slate-400">Free tier. No credit card. 1,000 checks every month.</p>
+    <div class="max-w-3xl">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 border border-brand-100 text-brand-600 text-xs font-semibold mb-8">New: Policy builder in dashboard</div>
+      <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-slate-900">Financial guardrails<br class="hidden sm:block"> for AI agents</h1>
+      <p class="mt-6 text-lg lg:text-xl text-slate-500 leading-relaxed max-w-xl">One API call before every refund, payment, or discount. Your rules decide what gets through.</p>
+      <div class="mt-10 flex flex-col sm:flex-row gap-3">
+        <button type="button" onclick="openSignupModal()" class="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition text-sm cursor-pointer">Get started free</button>
+        <a href="https://spendguard.mintlify.app/guides/quickstart" target="_blank" rel="noopener" class="inline-flex items-center justify-center px-6 py-3.5 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 transition text-sm">Read the docs</a>
       </div>
+      <p class="mt-5 text-sm text-slate-400">No credit card required. 1,000 free checks every month.</p>
+    </div>
 
-      <!-- Code block -->
-      <div class="space-y-3 min-w-0">
-        <div class="code-block rounded-xl overflow-hidden bg-[#0d1117] shadow-2xl shadow-slate-900/20 border border-slate-800/60">
-          <div class="flex items-center justify-between px-4 py-2.5 border-b border-white/5">
-            <div class="flex gap-0">
-              <button type="button" class="code-tab active text-xs font-mono px-3 py-1.5 text-white border-b-2 border-brand-500 transition-colors duration-150" data-lang="python">Python</button>
-              <button type="button" class="code-tab text-xs font-mono px-3 py-1.5 text-slate-500 border-b-2 border-transparent hover:text-slate-300 transition-colors duration-150" data-lang="curl">curl</button>
-              <button type="button" class="code-tab text-xs font-mono px-3 py-1.5 text-slate-500 border-b-2 border-transparent hover:text-slate-300 transition-colors duration-150" data-lang="node">Node.js</button>
-            </div>
+    <!-- Hero visual: code + response side by side -->
+    <div class="mt-16 grid lg:grid-cols-2 gap-4">
+      <div class="code-block rounded-2xl overflow-hidden bg-[#0d1117] shadow-2xl shadow-black/10 border border-white/[0.06]">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
+          <div class="flex gap-0">
+            <button type="button" class="code-tab active text-xs font-mono px-3 py-1.5 text-white border-b-2 border-brand-500 transition-colors duration-150" data-lang="python">Python</button>
+            <button type="button" class="code-tab text-xs font-mono px-3 py-1.5 text-slate-500 border-b-2 border-transparent hover:text-slate-300 transition-colors duration-150" data-lang="curl">curl</button>
+            <button type="button" class="code-tab text-xs font-mono px-3 py-1.5 text-slate-500 border-b-2 border-transparent hover:text-slate-300 transition-colors duration-150" data-lang="node">Node.js</button>
           </div>
-          <div class="code-tab-content active" id="code-python"><pre class="p-5 text-[13px] font-mono leading-relaxed text-slate-300 overflow-x-auto"><code><span class="code-key">import</span> <span class="code-string">requests</span>
+          <span class="text-[10px] font-mono text-slate-600">POST /v1/checks</span>
+        </div>
+        <div class="code-tab-content active" id="code-python"><pre class="p-5 text-[13px] font-mono leading-relaxed text-slate-300 overflow-x-auto"><code><span class="code-key">import</span> <span class="code-string">requests</span>
 
 resp = requests.post(
     <span class="code-string">"https://spendguardapi.com/v1/checks"</span>,
@@ -102,7 +106,7 @@ resp = requests.post(
         <span class="code-string">"policy_id"</span>: <span class="code-string">"refund_policy"</span>
     }
 )</code></pre></div>
-          <div class="code-tab-content" id="code-curl"><pre class="p-5 text-[13px] font-mono leading-relaxed text-slate-300 overflow-x-auto"><code>curl -X POST https://spendguardapi.com/v1/checks \
+        <div class="code-tab-content" id="code-curl"><pre class="p-5 text-[13px] font-mono leading-relaxed text-slate-300 overflow-x-auto"><code>curl -X POST https://spendguardapi.com/v1/checks \
   -H <span class="code-string">"X-API-Key: sg_live_xxx"</span> \
   -H <span class="code-string">"Content-Type: application/json"</span> \
   -d <span class="code-string">'{
@@ -113,7 +117,7 @@ resp = requests.post(
     "counterparty": "customer_7821",
     "policy_id": "refund_policy"
   }'</span></code></pre></div>
-          <div class="code-tab-content" id="code-node"><pre class="p-5 text-[13px] font-mono leading-relaxed text-slate-300 overflow-x-auto"><code><span class="code-key">const</span> res = <span class="code-key">await</span> fetch(
+        <div class="code-tab-content" id="code-node"><pre class="p-5 text-[13px] font-mono leading-relaxed text-slate-300 overflow-x-auto"><code><span class="code-key">const</span> res = <span class="code-key">await</span> fetch(
   <span class="code-string">"https://spendguardapi.com/v1/checks"</span>, {
     method: <span class="code-string">"POST"</span>,
     headers: {
@@ -129,19 +133,25 @@ resp = requests.post(
     })
   }
 );</code></pre></div>
+      </div>
+
+      <!-- Response with animated decision -->
+      <div class="rounded-2xl overflow-hidden bg-[#0d1117] border border-white/[0.06] flex flex-col">
+        <div class="flex items-center gap-2 px-4 py-3 border-b border-white/[0.06]">
+          <span class="w-2 h-2 rounded-full bg-red-500/80"></span>
+          <span class="w-2 h-2 rounded-full bg-yellow-500/80"></span>
+          <span class="w-2 h-2 rounded-full bg-green-500/80"></span>
+          <span class="ml-auto text-[10px] text-slate-600 font-mono">Response | 34ms</span>
         </div>
-        <!-- Response -->
-        <div class="rounded-xl overflow-hidden bg-[#0d1117] border border-slate-800/60">
-          <div class="flex items-center gap-2 px-4 py-2 border-b border-white/5">
-            <span class="w-2 h-2 rounded-full bg-red-500/80"></span>
-            <span class="w-2 h-2 rounded-full bg-yellow-500/80"></span>
-            <span class="w-2 h-2 rounded-full bg-green-500/80"></span>
-            <span class="ml-auto text-[11px] text-slate-500 font-mono">Response | 34ms</span>
-          </div>
-          <pre class="p-5 text-[13px] font-mono leading-relaxed text-slate-300 overflow-x-auto"><code>{
+        <div class="flex-1 flex items-center">
+          <pre class="p-5 text-[13px] font-mono leading-relaxed text-slate-300 overflow-x-auto w-full"><code>{
   <span class="code-key">"decision"</span>: <span class="code-highlight-block">"block"</span>,
+  <span class="code-key">"confidence"</span>: <span class="code-string">"high"</span>,
   <span class="code-key">"reason_code"</span>: <span class="code-string">"max_amount_exceeded"</span>,
-  <span class="code-key">"message"</span>: <span class="code-string">"Amount $750.00 exceeds the limit of $500.00."</span>
+  <span class="code-key">"message"</span>: <span class="code-string">"Amount $750.00 exceeds limit of $500.00"</span>,
+  <span class="code-key">"violated_rule_id"</span>: <span class="code-string">"r1"</span>,
+  <span class="code-key">"policy_version"</span>: <span class="code-number">2</span>,
+  <span class="code-key">"latency_ms"</span>: <span class="code-number">34</span>
 }</code></pre>
         </div>
       </div>
@@ -149,203 +159,211 @@ resp = requests.post(
   </div>
 </section>
 
-<!-- Logo Belt -->
+<!-- ============================================================ -->
+<!-- LOGO BELT -->
+<!-- ============================================================ -->
 <section class="py-10 border-y border-slate-100">
   <div class="max-w-6xl mx-auto px-6 text-center">
     <p class="text-[11px] font-semibold tracking-[0.2em] uppercase text-slate-400 mb-6">Works with your stack</p>
   </div>
   <div class="logo-belt">
     <div class="logo-track">
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="#64748B"><circle cx="12" cy="12" r="10" fill="none" stroke="#64748B" stroke-width="1.5"/><path d="M12 2a10 10 0 0 1 0 20 10 10 0 0 1 0-20zm0 3.5L8 12h3v6.5L16 12h-3z"/></svg><span class="text-sm font-semibold text-slate-500">OpenAI</span></div>
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M15.5 4L20 20h-3.5l-1-4h-7L7 20H3.5L8.5 4h7zM12 7.5L9.5 14h5L12 7.5z" fill="#64748B"/></svg><span class="text-sm font-semibold text-slate-500">Anthropic</span></div>
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z" fill="#64748B"/></svg><span class="text-sm font-semibold text-slate-500">LangChain</span></div>
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="7" r="4" stroke="#64748B" stroke-width="1.5"/><path d="M5 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2" stroke="#64748B" stroke-width="1.5"/></svg><span class="text-sm font-semibold text-slate-500">CrewAI</span></div>
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#64748B" stroke-width="1.5"/><path d="M8 12h8M12 8v8" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/></svg><span class="text-sm font-semibold text-slate-500">AutoGen</span></div>
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 7v10l8 5 8-5V7l-8-5z" stroke="#64748B" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 12L4 7m8 5l8-5m-8 5v10" stroke="#64748B" stroke-width="1.5"/></svg><span class="text-sm font-semibold text-slate-500">Python</span></div>
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M20 4H4v16h16V4z" stroke="#64748B" stroke-width="1.5"/><path d="M8 14.5c0 1.38 1.12 2.5 2.5 2.5s2-1 2-1M14 10V7" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/></svg><span class="text-sm font-semibold text-slate-500">Node.js</span></div>
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke="#64748B" stroke-width="1.5" stroke-linejoin="round"/><path d="M4 12h16M12 4v16" stroke="#64748B" stroke-width="1.5"/></svg><span class="text-sm font-semibold text-slate-500">REST API</span></div>
-      <!-- Duplicate set for seamless loop -->
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="#64748B"><circle cx="12" cy="12" r="10" fill="none" stroke="#64748B" stroke-width="1.5"/><path d="M12 2a10 10 0 0 1 0 20 10 10 0 0 1 0-20zm0 3.5L8 12h3v6.5L16 12h-3z"/></svg><span class="text-sm font-semibold text-slate-500">OpenAI</span></div>
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M15.5 4L20 20h-3.5l-1-4h-7L7 20H3.5L8.5 4h7zM12 7.5L9.5 14h5L12 7.5z" fill="#64748B"/></svg><span class="text-sm font-semibold text-slate-500">Anthropic</span></div>
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M13 3L4 14h7l-2 7 9-11h-7l2-7z" fill="#64748B"/></svg><span class="text-sm font-semibold text-slate-500">LangChain</span></div>
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="7" r="4" stroke="#64748B" stroke-width="1.5"/><path d="M5 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2" stroke="#64748B" stroke-width="1.5"/></svg><span class="text-sm font-semibold text-slate-500">CrewAI</span></div>
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#64748B" stroke-width="1.5"/><path d="M8 12h8M12 8v8" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/></svg><span class="text-sm font-semibold text-slate-500">AutoGen</span></div>
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 7v10l8 5 8-5V7l-8-5z" stroke="#64748B" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 12L4 7m8 5l8-5m-8 5v10" stroke="#64748B" stroke-width="1.5"/></svg><span class="text-sm font-semibold text-slate-500">Python</span></div>
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M20 4H4v16h16V4z" stroke="#64748B" stroke-width="1.5"/><path d="M8 14.5c0 1.38 1.12 2.5 2.5 2.5s2-1 2-1M14 10V7" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/></svg><span class="text-sm font-semibold text-slate-500">Node.js</span></div>
-      <div class="logo-item"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke="#64748B" stroke-width="1.5" stroke-linejoin="round"/><path d="M4 12h16M12 4v16" stroke="#64748B" stroke-width="1.5"/></svg><span class="text-sm font-semibold text-slate-500">REST API</span></div>
+      <!-- OpenAI logo mark -->
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M22.28 9.37a5.98 5.98 0 00-.52-4.93 6.07 6.07 0 00-6.55-2.91A5.98 5.98 0 0010.7.16a6.07 6.07 0 00-5.8 4.23 5.98 5.98 0 00-4 2.9 6.07 6.07 0 00.74 7.12 5.98 5.98 0 00.52 4.93 6.07 6.07 0 006.55 2.91A5.98 5.98 0 0013.3 23.84a6.07 6.07 0 005.8-4.23 5.98 5.98 0 004-2.9 6.07 6.07 0 00-.74-7.12z" fill="#64748B"/></svg><span class="text-sm font-semibold text-slate-500">OpenAI</span></div>
+      <!-- Anthropic -->
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M13.73 3h2.87l5.4 18h-2.87l-1.3-4.55H12.8L11.5 21H8.63L13.73 3zm.17 10.82h4.2L16 6.92l-2.1 6.9zM7.4 3l-5.4 18h2.87L6.17 16.45h4.66L7.4 3z" fill="#64748B"/></svg><span class="text-sm font-semibold text-slate-500">Anthropic</span></div>
+      <!-- LangChain -->
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6.5v11L12 22l8-4.5v-11L12 2zm0 2.15l5.65 3.18v2.82L12 13.33 6.35 10.15V7.33L12 4.15zm-5.65 8.7L12 16.03l5.65-3.18v2.82L12 18.85l-5.65-3.18v-2.82z" fill="#64748B"/></svg><span class="text-sm font-semibold text-slate-500">LangChain</span></div>
+      <!-- CrewAI -->
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="6" r="3" stroke="#64748B" stroke-width="1.8" fill="none"/><circle cx="6" cy="16" r="3" stroke="#64748B" stroke-width="1.8" fill="none"/><circle cx="18" cy="16" r="3" stroke="#64748B" stroke-width="1.8" fill="none"/><path d="M12 9v2.5M9.5 14L7.5 13M14.5 14l2-1" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/></svg><span class="text-sm font-semibold text-slate-500">CrewAI</span></div>
+      <!-- AutoGen -->
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" stroke="#64748B" stroke-width="1.8" fill="none"/><path d="M8 12h8M12 8v8" stroke="#64748B" stroke-width="1.8" stroke-linecap="round"/></svg><span class="text-sm font-semibold text-slate-500">AutoGen</span></div>
+      <!-- Python -->
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M11.9 2C8.4 2 8.8 3.4 8.8 3.4l.004 1.5H12v.4H6.4S4 5 4 8.6s2.1 3.4 2.1 3.4h1.2V10.4s-.06-2.1 2.1-2.1h3.6s2 .03 2-1.9V3.9s.3-1.9-3.1-1.9zm-2 1.1a.7.7 0 110 1.4.7.7 0 010-1.4z" fill="#64748B"/><path d="M12.1 22c3.5 0 3.1-1.4 3.1-1.4l-.004-1.5H12v-.4h5.6s2.4.3 2.4-3.3-2.1-3.4-2.1-3.4h-1.2v1.6s.06 2.1-2.1 2.1H11s-2-.03-2 1.9v2.5s-.3 1.9 3.1 1.9zm2-1.1a.7.7 0 110-1.4.7.7 0 010 1.4z" fill="#64748B"/></svg><span class="text-sm font-semibold text-slate-500">Python</span></div>
+      <!-- Node.js -->
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M12 2l9 5.2v10.4L12 22l-9-5.2V7.2L12 2z" stroke="#64748B" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M12 12L3 7.2M12 12l9-4.8M12 12v10" stroke="#64748B" stroke-width="1.5"/></svg><span class="text-sm font-semibold text-slate-500">Node.js</span></div>
+      <!-- REST API -->
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke="#64748B" stroke-width="1.5" stroke-linejoin="round" fill="none"/><path d="M4 12h16M12 4v16" stroke="#64748B" stroke-width="1.5"/><path d="M8 8h2v2H8zM14 14h2v2h-2z" fill="#64748B"/></svg><span class="text-sm font-semibold text-slate-500">REST</span></div>
+      <!-- Duplicate for seamless loop -->
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M22.28 9.37a5.98 5.98 0 00-.52-4.93 6.07 6.07 0 00-6.55-2.91A5.98 5.98 0 0010.7.16a6.07 6.07 0 00-5.8 4.23 5.98 5.98 0 00-4 2.9 6.07 6.07 0 00.74 7.12 5.98 5.98 0 00.52 4.93 6.07 6.07 0 006.55 2.91A5.98 5.98 0 0013.3 23.84a6.07 6.07 0 005.8-4.23 5.98 5.98 0 004-2.9 6.07 6.07 0 00-.74-7.12z" fill="#64748B"/></svg><span class="text-sm font-semibold text-slate-500">OpenAI</span></div>
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M13.73 3h2.87l5.4 18h-2.87l-1.3-4.55H12.8L11.5 21H8.63L13.73 3zm.17 10.82h4.2L16 6.92l-2.1 6.9zM7.4 3l-5.4 18h2.87L6.17 16.45h4.66L7.4 3z" fill="#64748B"/></svg><span class="text-sm font-semibold text-slate-500">Anthropic</span></div>
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M12 2L4 6.5v11L12 22l8-4.5v-11L12 2zm0 2.15l5.65 3.18v2.82L12 13.33 6.35 10.15V7.33L12 4.15zm-5.65 8.7L12 16.03l5.65-3.18v2.82L12 18.85l-5.65-3.18v-2.82z" fill="#64748B"/></svg><span class="text-sm font-semibold text-slate-500">LangChain</span></div>
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="6" r="3" stroke="#64748B" stroke-width="1.8" fill="none"/><circle cx="6" cy="16" r="3" stroke="#64748B" stroke-width="1.8" fill="none"/><circle cx="18" cy="16" r="3" stroke="#64748B" stroke-width="1.8" fill="none"/><path d="M12 9v2.5M9.5 14L7.5 13M14.5 14l2-1" stroke="#64748B" stroke-width="1.5" stroke-linecap="round"/></svg><span class="text-sm font-semibold text-slate-500">CrewAI</span></div>
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" stroke="#64748B" stroke-width="1.8" fill="none"/><path d="M8 12h8M12 8v8" stroke="#64748B" stroke-width="1.8" stroke-linecap="round"/></svg><span class="text-sm font-semibold text-slate-500">AutoGen</span></div>
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M11.9 2C8.4 2 8.8 3.4 8.8 3.4l.004 1.5H12v.4H6.4S4 5 4 8.6s2.1 3.4 2.1 3.4h1.2V10.4s-.06-2.1 2.1-2.1h3.6s2 .03 2-1.9V3.9s.3-1.9-3.1-1.9zm-2 1.1a.7.7 0 110 1.4.7.7 0 010-1.4z" fill="#64748B"/><path d="M12.1 22c3.5 0 3.1-1.4 3.1-1.4l-.004-1.5H12v-.4h5.6s2.4.3 2.4-3.3-2.1-3.4-2.1-3.4h-1.2v1.6s.06 2.1-2.1 2.1H11s-2-.03-2 1.9v2.5s-.3 1.9 3.1 1.9zm2-1.1a.7.7 0 110-1.4.7.7 0 010 1.4z" fill="#64748B"/></svg><span class="text-sm font-semibold text-slate-500">Python</span></div>
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M12 2l9 5.2v10.4L12 22l-9-5.2V7.2L12 2z" stroke="#64748B" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M12 12L3 7.2M12 12l9-4.8M12 12v10" stroke="#64748B" stroke-width="1.5"/></svg><span class="text-sm font-semibold text-slate-500">Node.js</span></div>
+      <div class="logo-item"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke="#64748B" stroke-width="1.5" stroke-linejoin="round" fill="none"/><path d="M4 12h16M12 4v16" stroke="#64748B" stroke-width="1.5"/><path d="M8 8h2v2H8zM14 14h2v2h-2z" fill="#64748B"/></svg><span class="text-sm font-semibold text-slate-500">REST</span></div>
     </div>
   </div>
 </section>
 
-<!-- How It Works -->
-<section id="how-it-works" class="py-24 lg:py-32">
-  <div class="max-w-5xl mx-auto px-6">
+<!-- ============================================================ -->
+<!-- HOW IT WORKS - Visual, step-by-step with code -->
+<!-- ============================================================ -->
+<section id="how-it-works" class="py-24 lg:py-36">
+  <div class="max-w-6xl mx-auto px-6">
     <div class="text-center mb-20">
       <p class="text-sm font-semibold text-brand-600 tracking-wide uppercase mb-3 fade-up">How it works</p>
-      <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 fade-up">Three steps. Under 50ms.</h2>
+      <h2 class="font-display text-3xl lg:text-[2.75rem] font-bold text-slate-900 leading-tight fade-up">Three steps. Under 50ms.</h2>
+      <p class="mt-4 text-base text-slate-500 max-w-lg mx-auto fade-up">Set your rules, call one endpoint, get a decision. Your agent never has to wait.</p>
     </div>
-    <div class="grid md:grid-cols-3 gap-12 lg:gap-16">
-      <div class="fade-up fade-up-d1">
-        <div class="text-5xl font-bold text-slate-200 mb-4">01</div>
-        <h3 class="text-lg font-semibold text-slate-900 mb-2">Set your rules</h3>
-        <p class="text-sm text-slate-500 leading-relaxed mb-5">Choose from 10 rule types. Dollar limits, vendor lists, time windows, geography blocks, duplicate detection, and more.</p>
-        <div class="rounded-lg bg-[#0d1117] p-4"><pre class="text-xs font-mono text-slate-400 overflow-x-auto"><code>{ <span class="code-key">"rule_type"</span>: <span class="code-string">"max_amount"</span>,
-  <span class="code-key">"parameters"</span>: { <span class="code-key">"limit"</span>: <span class="code-number">500</span> } }</code></pre></div>
+
+    <!-- Step 1: Define rules -->
+    <div class="grid lg:grid-cols-2 gap-12 items-center mb-24 fade-up">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold mb-5">Step 1</div>
+        <h3 class="font-display text-2xl font-bold text-slate-900 mb-3">Define your rules</h3>
+        <p class="text-base text-slate-500 leading-relaxed mb-6">Pick from 10 rule types and combine them into a policy. Set dollar limits, vendor lists, time windows, geography blocks, discount caps, or duplicate detection.</p>
+        <div class="flex flex-wrap gap-2">
+          <span class="px-2.5 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600">max_amount</span>
+          <span class="px-2.5 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600">vendor_allowlist</span>
+          <span class="px-2.5 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600">time_restriction</span>
+          <span class="px-2.5 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600">escalate_if</span>
+          <span class="px-2.5 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600">duplicate_guard</span>
+          <span class="px-2.5 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600">+5 more</span>
+        </div>
       </div>
-      <div class="fade-up fade-up-d2">
-        <div class="text-5xl font-bold text-slate-200 mb-4">02</div>
-        <h3 class="text-lg font-semibold text-slate-900 mb-2">Call one endpoint</h3>
-        <p class="text-sm text-slate-500 leading-relaxed mb-5">Your agent sends the planned action to <code class="text-xs bg-slate-100 px-1.5 py-0.5 rounded font-mono">POST /v1/checks</code> before executing it. One HTTP call.</p>
-        <div class="rounded-lg bg-[#0d1117] p-4"><pre class="text-xs font-mono text-slate-400 overflow-x-auto"><code><span class="code-key">POST</span> <span class="code-string">/v1/checks</span>
-{ <span class="code-key">"action_type"</span>: <span class="code-string">"refund"</span>,
-  <span class="code-key">"amount"</span>: <span class="code-number">600</span> }</code></pre></div>
+      <div class="rounded-2xl bg-[#0d1117] border border-white/[0.06] p-5 shadow-xl"><pre class="text-[13px] font-mono text-slate-400 leading-relaxed overflow-x-auto"><code>{
+  <span class="code-key">"name"</span>: <span class="code-string">"AI Support Refund Policy"</span>,
+  <span class="code-key">"rules"</span>: [
+    { <span class="code-key">"rule_type"</span>: <span class="code-string">"max_amount"</span>,
+      <span class="code-key">"parameters"</span>: { <span class="code-key">"limit"</span>: <span class="code-number">500</span> } },
+    { <span class="code-key">"rule_type"</span>: <span class="code-string">"escalate_if"</span>,
+      <span class="code-key">"parameters"</span>: { <span class="code-key">"amount_above"</span>: <span class="code-number">200</span> } },
+    { <span class="code-key">"rule_type"</span>: <span class="code-string">"duplicate_guard"</span>,
+      <span class="code-key">"parameters"</span>: { <span class="code-key">"window_minutes"</span>: <span class="code-number">10</span> } }
+  ]
+}</code></pre></div>
+    </div>
+
+    <!-- Step 2: Agent calls -->
+    <div class="grid lg:grid-cols-2 gap-12 items-center mb-24 fade-up">
+      <div class="order-2 lg:order-1 rounded-2xl bg-[#0d1117] border border-white/[0.06] p-5 shadow-xl"><pre class="text-[13px] font-mono text-slate-400 leading-relaxed overflow-x-auto"><code>resp = requests.post(
+  <span class="code-string">"https://spendguardapi.com/v1/checks"</span>,
+  json={
+    <span class="code-string">"agent_id"</span>: <span class="code-string">"support-agent"</span>,
+    <span class="code-string">"policy_id"</span>: <span class="code-string">"refund_policy"</span>,
+    <span class="code-string">"action_type"</span>: <span class="code-string">"refund"</span>,
+    <span class="code-string">"amount"</span>: <span class="code-number">600</span>,
+    <span class="code-string">"currency"</span>: <span class="code-string">"USD"</span>,
+    <span class="code-string">"counterparty"</span>: <span class="code-string">"cust_123"</span>
+  }
+)
+<span class="text-slate-600"># One line of code. Under 50ms.</span></code></pre></div>
+      <div class="order-1 lg:order-2">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold mb-5">Step 2</div>
+        <h3 class="font-display text-2xl font-bold text-slate-900 mb-3">Your agent calls one endpoint</h3>
+        <p class="text-base text-slate-500 leading-relaxed">Before every financial action, your agent sends the details to <code class="text-xs bg-slate-100 px-1.5 py-0.5 rounded font-mono text-slate-600">POST /v1/checks</code>. SpendGuard evaluates all the rules in the policy and returns a decision. Your agent barely notices the extra call.</p>
       </div>
-      <div class="fade-up fade-up-d3">
-        <div class="text-5xl font-bold text-slate-200 mb-4">03</div>
-        <h3 class="text-lg font-semibold text-slate-900 mb-2">Get a decision</h3>
-        <p class="text-sm text-slate-500 leading-relaxed mb-5">Allow, block, or escalate. Every response tells you which rule fired and what to do next.</p>
-        <div class="rounded-lg bg-[#0d1117] p-4"><pre class="text-xs font-mono text-slate-400 overflow-x-auto"><code>{ <span class="code-key">"decision"</span>: <span class="code-highlight-block">"block"</span>,
-  <span class="code-key">"message"</span>: <span class="code-string">"Exceeds $500"</span> }</code></pre></div>
+    </div>
+
+    <!-- Step 3: Get decision -->
+    <div class="grid lg:grid-cols-2 gap-12 items-center fade-up">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold mb-5">Step 3</div>
+        <h3 class="font-display text-2xl font-bold text-slate-900 mb-3">Get allow, block, or escalate</h3>
+        <p class="text-base text-slate-500 leading-relaxed mb-6">Every response tells you exactly what happened: which rule fired, why it was blocked, and what the agent should do next. Every decision is permanently logged in the audit trail.</p>
+        <div class="flex gap-3">
+          <span class="text-xs font-bold uppercase px-3 py-1.5 rounded-full badge-allow">Allow</span>
+          <span class="text-xs font-bold uppercase px-3 py-1.5 rounded-full badge-block">Block</span>
+          <span class="text-xs font-bold uppercase px-3 py-1.5 rounded-full badge-escalate">Escalate</span>
+        </div>
       </div>
+      <div class="rounded-2xl bg-[#0d1117] border border-white/[0.06] p-5 shadow-xl"><pre class="text-[13px] font-mono text-slate-400 leading-relaxed overflow-x-auto"><code>{
+  <span class="code-key">"decision"</span>: <span class="code-highlight-block">"block"</span>,
+  <span class="code-key">"confidence"</span>: <span class="code-string">"high"</span>,
+  <span class="code-key">"reason_code"</span>: <span class="code-string">"max_amount_exceeded"</span>,
+  <span class="code-key">"message"</span>: <span class="code-string">"Amount $600 exceeds limit of $500"</span>,
+  <span class="code-key">"violated_rule_id"</span>: <span class="code-string">"r1"</span>,
+  <span class="code-key">"next_step"</span>: <span class="code-string">"Reduce or escalate to manager"</span>
+}</code></pre></div>
     </div>
   </div>
 </section>
 
-<!-- Use Cases -->
-<section id="use-cases" class="py-24 lg:py-32 bg-slate-50/70">
-  <div class="max-w-5xl mx-auto px-6">
-    <div class="text-center mb-20">
-      <p class="text-sm font-semibold text-brand-600 tracking-wide uppercase mb-3 fade-up">Use cases</p>
-      <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 fade-up">See it in action</h2>
-    </div>
-    <div class="grid md:grid-cols-3 gap-6">
-      <div class="bg-white rounded-2xl border border-slate-200/80 p-7 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 fade-up fade-up-d1">
-        <div class="flex items-center gap-3 mb-5">
-          <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center"><svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke-linecap="round"/><circle cx="12" cy="7" r="4"/></svg></div>
-          <h3 class="font-semibold text-slate-900">Support Agent</h3>
-        </div>
-        <p class="text-sm text-slate-500 mb-5">Agent tries to refund $750 on a $200 order.</p>
-        <div class="flex items-center gap-3">
-          <span class="text-xs font-bold uppercase px-3 py-1 rounded-full badge-block">Block</span>
-          <p class="text-xs text-slate-400">Exceeds $500 policy limit</p>
-        </div>
-      </div>
-      <div class="bg-white rounded-2xl border border-slate-200/80 p-7 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 fade-up fade-up-d2">
-        <div class="flex items-center gap-3 mb-5">
-          <div class="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center"><svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4" stroke-linecap="round"/></svg></div>
-          <h3 class="font-semibold text-slate-900">Procurement Agent</h3>
-        </div>
-        <p class="text-sm text-slate-500 mb-5">Agent approves $3,000 vendor payment. Threshold is $2,500.</p>
-        <div class="flex items-center gap-3">
-          <span class="text-xs font-bold uppercase px-3 py-1 rounded-full badge-escalate">Escalate</span>
-          <p class="text-xs text-slate-400">Routes to finance team</p>
-        </div>
-      </div>
-      <div class="bg-white rounded-2xl border border-slate-200/80 p-7 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 fade-up fade-up-d3">
-        <div class="flex items-center gap-3 mb-5">
-          <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center"><svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" stroke-linecap="round"/><circle cx="7" cy="7" r="1"/></svg></div>
-          <h3 class="font-semibold text-slate-900">Pricing Agent</h3>
-        </div>
-        <p class="text-sm text-slate-500 mb-5">Agent applies 15% loyalty discount. Cap is 20%.</p>
-        <div class="flex items-center gap-3">
-          <span class="text-xs font-bold uppercase px-3 py-1 rounded-full badge-allow">Allow</span>
-          <p class="text-xs text-slate-400">Within policy</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Features -->
-<section id="features" class="py-24 lg:py-32">
-  <div class="max-w-5xl mx-auto px-6">
+<!-- ============================================================ -->
+<!-- FEATURES - Resend-style with side-by-side visuals -->
+<!-- ============================================================ -->
+<section id="features" class="py-24 lg:py-36 bg-slate-50/60">
+  <div class="max-w-6xl mx-auto px-6">
     <div class="text-center mb-20">
       <p class="text-sm font-semibold text-brand-600 tracking-wide uppercase mb-3 fade-up">Features</p>
-      <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 fade-up">Everything you need. Nothing you don't.</h2>
+      <h2 class="font-display text-3xl lg:text-[2.75rem] font-bold text-slate-900 leading-tight fade-up">Built for teams that ship AI agents</h2>
+      <p class="mt-4 text-base text-slate-500 max-w-lg mx-auto fade-up">Not a prototype. A complete authorization engine you can put in front of real money.</p>
     </div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      <div class="fade-up fade-up-d1">
-        <div class="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-        <h3 class="font-semibold text-slate-900 mb-2">10 rule types</h3>
-        <p class="text-sm text-slate-500 leading-relaxed">Amount limits, vendor allowlists, time windows, geography blocks, discount caps, and duplicate detection. Mix and match.</p>
+
+    <!-- Feature: 10 Rule Types with visual grid -->
+    <div class="grid lg:grid-cols-2 gap-12 items-center mb-28 fade-up">
+      <div>
+        <h3 class="font-display text-2xl font-bold text-slate-900 mb-3">10 rule types</h3>
+        <p class="text-base text-slate-500 leading-relaxed mb-6">Combine any rules into a single policy. Each rule is evaluated independently. If any rule blocks, the action is blocked. If any rule escalates, it goes to a human.</p>
       </div>
-      <div class="fade-up fade-up-d2">
-        <div class="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-        <h3 class="font-semibold text-slate-900 mb-2">Immutable audit log</h3>
-        <p class="text-sm text-slate-500 leading-relaxed">Every decision is logged with 14 fields. Can never be edited or deleted. Filter by agent, action type, or date range.</p>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white rounded-xl border border-slate-200 p-4"><p class="text-xs font-semibold text-slate-900 mb-1">max_amount</p><p class="text-[11px] text-slate-400">Block above dollar limit</p></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4"><p class="text-xs font-semibold text-slate-900 mb-1">refund_age_limit</p><p class="text-[11px] text-slate-400">Block old purchase refunds</p></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4"><p class="text-xs font-semibold text-slate-900 mb-1">vendor_allowlist</p><p class="text-[11px] text-slate-400">Only approved vendors</p></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4"><p class="text-xs font-semibold text-slate-900 mb-1">blocked_categories</p><p class="text-[11px] text-slate-400">Block prohibited types</p></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4"><p class="text-xs font-semibold text-slate-900 mb-1">geography_block</p><p class="text-[11px] text-slate-400">Block by country</p></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4"><p class="text-xs font-semibold text-slate-900 mb-1">time_restriction</p><p class="text-[11px] text-slate-400">Business hours only</p></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4"><p class="text-xs font-semibold text-slate-900 mb-1">duplicate_guard</p><p class="text-[11px] text-slate-400">Block repeat actions</p></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4"><p class="text-xs font-semibold text-slate-900 mb-1">discount_cap</p><p class="text-[11px] text-slate-400">Max discount percentage</p></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4"><p class="text-xs font-semibold text-slate-900 mb-1">escalate_if</p><p class="text-[11px] text-slate-400">Route to human review</p></div>
+        <div class="bg-white rounded-xl border border-slate-200 p-4"><p class="text-xs font-semibold text-slate-900 mb-1">blocked_rails</p><p class="text-[11px] text-slate-400">Block payment methods</p></div>
       </div>
-      <div class="fade-up fade-up-d3">
-        <div class="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/></svg></div>
+    </div>
+
+    <!-- Feature: Audit Log -->
+    <div class="grid lg:grid-cols-2 gap-12 items-center mb-28 fade-up">
+      <div class="order-2 lg:order-1 rounded-2xl bg-white border border-slate-200 shadow-lg overflow-hidden">
+        <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
+          <span class="text-xs font-semibold text-slate-800">Violations Log</span>
+          <span class="text-[10px] text-slate-400">Last 24 hours</span>
+        </div>
+        <div class="divide-y divide-slate-50">
+          <div class="px-5 py-3 flex items-center justify-between"><div><span class="text-xs text-slate-800 font-medium">$750 refund</span><span class="text-[10px] text-slate-400 ml-2">support-agent-v2</span></div><span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full badge-block">Block</span></div>
+          <div class="px-5 py-3 flex items-center justify-between"><div><span class="text-xs text-slate-800 font-medium">$3,000 payment</span><span class="text-[10px] text-slate-400 ml-2">procurement-bot</span></div><span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full badge-escalate">Escalate</span></div>
+          <div class="px-5 py-3 flex items-center justify-between"><div><span class="text-xs text-slate-800 font-medium">$50 refund</span><span class="text-[10px] text-slate-400 ml-2">support-agent-v2</span></div><span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full badge-allow">Allow</span></div>
+          <div class="px-5 py-3 flex items-center justify-between"><div><span class="text-xs text-slate-800 font-medium">Wire transfer</span><span class="text-[10px] text-slate-400 ml-2">finance-bot</span></div><span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full badge-block">Block</span></div>
+        </div>
+      </div>
+      <div class="order-1 lg:order-2">
+        <h3 class="font-display text-2xl font-bold text-slate-900 mb-3">Complete audit trail</h3>
+        <p class="text-base text-slate-500 leading-relaxed">Every decision is permanently logged with 14 fields: who, what, when, which rule fired, and why. Can never be edited or deleted. When compliance asks "why was this approved?" you have the answer.</p>
+      </div>
+    </div>
+
+    <!-- Feature: Policy Versioning + Duplicate Guard + Semantic -->
+    <div class="grid sm:grid-cols-3 gap-6 fade-up">
+      <div class="bg-white rounded-2xl border border-slate-200 p-7">
         <h3 class="font-semibold text-slate-900 mb-2">Policy versioning</h3>
-        <p class="text-sm text-slate-500 leading-relaxed">Every update creates a new version. Previous versions stay intact. You always know which rules were in effect.</p>
+        <p class="text-sm text-slate-500 leading-relaxed">Every update creates a new version. Previous versions stay intact. You always know which rules were active when a decision was made.</p>
       </div>
-      <div class="fade-up fade-up-d1">
-        <div class="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3" stroke-linecap="round"/></svg></div>
-        <h3 class="font-semibold text-slate-900 mb-2">Duplicate guard</h3>
-        <p class="text-sm text-slate-500 leading-relaxed">Catches when an agent submits the same action twice. Configurable windows prevent retry loops from creating duplicates.</p>
+      <div class="bg-white rounded-2xl border border-slate-200 p-7">
+        <h3 class="font-semibold text-slate-900 mb-2">Duplicate detection</h3>
+        <p class="text-sm text-slate-500 leading-relaxed">Catches when an agent submits the same action twice. Configurable time windows prevent retry loops from creating duplicate refunds.</p>
       </div>
-      <div class="fade-up fade-up-d2">
-        <div class="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+      <div class="bg-white rounded-2xl border border-slate-200 p-7">
         <h3 class="font-semibold text-slate-900 mb-2">Semantic classification</h3>
-        <p class="text-sm text-slate-500 leading-relaxed">When your agent says "make the customer whole," SpendGuard understands the intent and applies the right rules.</p>
-      </div>
-      <div class="fade-up fade-up-d3">
-        <div class="w-10 h-10 rounded-xl bg-brand-50 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 11a9 9 0 0118 0"/><rect x="2" y="14" width="6" height="6" rx="1"/><rect x="16" y="14" width="6" height="6" rx="1"/></svg></div>
-        <h3 class="font-semibold text-slate-900 mb-2">MCP ready</h3>
-        <p class="text-sm text-slate-500 leading-relaxed">AI agents discover and use SpendGuard through the Model Context Protocol. Connect it to Claude and check policies naturally.</p>
+        <p class="text-sm text-slate-500 leading-relaxed">When your agent says "make the customer whole," SpendGuard understands the intent is a refund and applies the right rules automatically.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Security -->
-<section id="security" class="py-24 lg:py-32 bg-slate-900">
-  <div class="max-w-5xl mx-auto px-6">
-    <div class="text-center mb-20">
-      <p class="text-sm font-semibold text-brand-500 tracking-wide uppercase mb-3 fade-up">Security</p>
-      <h2 class="text-3xl lg:text-4xl font-bold text-white fade-up">Built for financial data</h2>
-    </div>
-    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200">
-        <h4 class="font-semibold text-white mb-2">API key hashing</h4>
-        <p class="text-sm text-slate-400 leading-relaxed">SHA-256 hashed on creation. The original key is shown once and never stored on our servers.</p>
-      </div>
-      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200">
-        <h4 class="font-semibold text-white mb-2">Encrypted in transit</h4>
-        <p class="text-sm text-slate-400 leading-relaxed">Every API call is encrypted with TLS 1.2 or higher. Unencrypted connections are rejected.</p>
-      </div>
-      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200">
-        <h4 class="font-semibold text-white mb-2">Append-only audit</h4>
-        <p class="text-sm text-slate-400 leading-relaxed">Once a decision is recorded, it can never be modified or deleted by anyone.</p>
-      </div>
-      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200">
-        <h4 class="font-semibold text-white mb-2">Injection protected</h4>
-        <p class="text-sm text-slate-400 leading-relaxed">All database queries are parameterized. No user input ever touches raw SQL.</p>
-      </div>
-      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200">
-        <h4 class="font-semibold text-white mb-2">Rate limiting</h4>
-        <p class="text-sm text-slate-400 leading-relaxed">Per-key and per-IP limits that persist across server restarts. Cannot be bypassed.</p>
-      </div>
-      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200">
-        <h4 class="font-semibold text-white mb-2">Zero PII storage</h4>
-        <p class="text-sm text-slate-400 leading-relaxed">We only store action metadata. No bank accounts, no SSNs, no sensitive customer data.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Live Demo -->
-<section id="demo" class="py-24 lg:py-32">
+<!-- ============================================================ -->
+<!-- LIVE DEMO -->
+<!-- ============================================================ -->
+<section id="demo" class="py-24 lg:py-36">
   <div class="max-w-5xl mx-auto px-6">
     <div class="text-center mb-16">
       <p class="text-sm font-semibold text-brand-600 tracking-wide uppercase mb-3 fade-up">Live demo</p>
-      <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 fade-up">Try it right now</h2>
+      <h2 class="font-display text-3xl lg:text-[2.75rem] font-bold text-slate-900 leading-tight fade-up">Try it right now</h2>
       <p class="mt-4 text-base text-slate-500">Real API call. No signup. Nothing stored.</p>
     </div>
     <div class="max-w-3xl mx-auto bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
       <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
         <span class="font-semibold text-sm text-slate-800">AI Support Refund Policy</span>
-        <span class="text-xs font-semibold px-3 py-1 rounded-full bg-brand-50 text-brand-600">Demo Mode</span>
+        <span class="text-[11px] font-semibold px-3 py-1 rounded-full bg-brand-50 text-brand-600">Demo Mode</span>
       </div>
       <div class="demo-error px-6 py-3 bg-red-50 text-red-600 text-sm text-center" id="demo-error">Demo temporarily unavailable.</div>
       <div id="demo-actions">
@@ -356,7 +374,7 @@ resp = requests.post(
         <div class="demo-action flex items-center justify-between px-6 py-4 hover:bg-slate-50/50 transition" data-index="4"><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center text-sm font-semibold text-slate-500">%</div><div><div class="text-sm font-medium text-slate-800">$100 discount</div><div class="text-xs text-slate-400">15% off, within cap</div></div></div><div class="demo-result" id="result-4"></div></div>
       </div>
       <div class="px-6 py-4 border-t border-slate-100 text-center">
-        <button type="button" class="px-8 py-3 rounded-lg bg-brand-600 text-white font-semibold text-sm hover:bg-brand-700 shadow-sm transition" id="demo-run">Run Simulation</button>
+        <button type="button" class="px-8 py-3 rounded-xl bg-slate-900 text-white font-semibold text-sm hover:bg-slate-800 transition" id="demo-run">Run Simulation</button>
       </div>
       <div class="demo-footer-hidden px-6 py-3 border-t border-slate-100 flex items-center justify-between text-sm" id="demo-footer">
         <div class="flex gap-4" id="demo-summary"></div>
@@ -366,91 +384,88 @@ resp = requests.post(
   </div>
 </section>
 
-<!-- Why SpendGuard -->
-<section class="py-24 lg:py-32 bg-slate-50/70">
+<!-- ============================================================ -->
+<!-- SECURITY -->
+<!-- ============================================================ -->
+<section id="security" class="py-24 lg:py-36 bg-slate-900">
   <div class="max-w-5xl mx-auto px-6">
     <div class="text-center mb-20">
-      <p class="text-sm font-semibold text-brand-600 tracking-wide uppercase mb-3 fade-up">Why SpendGuard</p>
-      <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 fade-up">The problem is real</h2>
+      <p class="text-sm font-semibold text-brand-500 tracking-wide uppercase mb-3 fade-up">Security</p>
+      <h2 class="font-display text-3xl lg:text-[2.75rem] font-bold text-white leading-tight fade-up">Built for financial data</h2>
     </div>
-    <div class="grid md:grid-cols-3 gap-8">
-      <div class="fade-up fade-up-d1">
-        <div class="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01M5.07 19h13.86a2 2 0 001.71-3L13.71 4a2 2 0 00-3.42 0L3.36 16a2 2 0 001.71 3z"/></svg></div>
-        <h3 class="font-semibold text-slate-900 mb-2">Prevent costly mistakes</h3>
-        <p class="text-sm text-slate-500 leading-relaxed">A single AI agent bug can issue hundreds of duplicate refunds before anyone notices. SpendGuard catches it on the first one.</p>
-      </div>
-      <div class="fade-up fade-up-d2">
-        <div class="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-        <h3 class="font-semibold text-slate-900 mb-2">Under 50ms latency</h3>
-        <p class="text-sm text-slate-500 leading-relaxed">Most compliance tools add 500ms or more. SpendGuard returns a decision before your agent notices the check happened.</p>
-      </div>
-      <div class="fade-up fade-up-d3">
-        <div class="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center mb-4"><svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-        <h3 class="font-semibold text-slate-900 mb-2">Complete audit trail</h3>
-        <p class="text-sm text-slate-500 leading-relaxed">When your compliance team asks "why was this payment approved?" you have the answer. Every decision, every rule, every timestamp.</p>
-      </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200"><h4 class="font-semibold text-white mb-2">API key hashing</h4><p class="text-sm text-slate-400 leading-relaxed">SHA-256 hashed on creation. The original is shown once and never stored.</p></div>
+      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200"><h4 class="font-semibold text-white mb-2">Encrypted in transit</h4><p class="text-sm text-slate-400 leading-relaxed">TLS 1.2+ on every call. Unencrypted connections are rejected.</p></div>
+      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200"><h4 class="font-semibold text-white mb-2">Append-only audit</h4><p class="text-sm text-slate-400 leading-relaxed">Once recorded, decisions can never be modified or deleted.</p></div>
+      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200"><h4 class="font-semibold text-white mb-2">Injection protected</h4><p class="text-sm text-slate-400 leading-relaxed">All queries are parameterized. No user input touches raw SQL.</p></div>
+      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200"><h4 class="font-semibold text-white mb-2">Rate limiting</h4><p class="text-sm text-slate-400 leading-relaxed">Per-key and per-IP limits that persist across server restarts.</p></div>
+      <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200"><h4 class="font-semibold text-white mb-2">Zero PII storage</h4><p class="text-sm text-slate-400 leading-relaxed">Only action metadata. No bank accounts, SSNs, or sensitive data.</p></div>
     </div>
   </div>
 </section>
 
-<!-- Pricing -->
-<section id="pricing" class="py-24 lg:py-32">
+<!-- ============================================================ -->
+<!-- PRICING -->
+<!-- ============================================================ -->
+<section id="pricing" class="py-24 lg:py-36">
   <div class="max-w-5xl mx-auto px-6">
     <div class="text-center mb-20">
       <p class="text-sm font-semibold text-brand-600 tracking-wide uppercase mb-3 fade-up">Pricing</p>
-      <h2 class="text-3xl lg:text-4xl font-bold text-slate-900 fade-up">Start free. Pay as you grow.</h2>
+      <h2 class="font-display text-3xl lg:text-[2.75rem] font-bold text-slate-900 leading-tight fade-up">Start free. Pay when you scale.</h2>
     </div>
     <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-      <div class="bg-white rounded-2xl border border-slate-200 p-8 hover:shadow-lg transition-shadow duration-200">
-        <div class="font-semibold text-slate-900 mb-1">Free</div>
+      <div class="bg-white rounded-2xl border border-slate-200 p-8">
+        <div class="font-display font-semibold text-slate-900 mb-1">Free</div>
         <div class="text-sm text-slate-500 mb-5">For exploring</div>
-        <div class="flex items-baseline gap-1 mb-6"><span class="text-4xl font-bold text-slate-900">$0</span><span class="text-slate-400">/mo</span></div>
+        <div class="flex items-baseline gap-1 mb-6"><span class="font-display text-4xl font-bold text-slate-900">$0</span><span class="text-slate-400">/mo</span></div>
         <ul class="space-y-3 mb-8 text-sm text-slate-600">
           <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>1,000 checks/month</li>
           <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>All 10 rule types</li>
           <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Full documentation</li>
-          <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Simulation endpoint</li>
+          <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Live simulation</li>
         </ul>
-        <button type="button" onclick="openSignupModal()" class="block w-full text-center py-2.5 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer">Get started</button>
+        <button type="button" onclick="openSignupModal()" class="block w-full text-center py-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer">Get started</button>
       </div>
-      <div class="bg-white rounded-2xl border-2 border-brand-600 p-8 shadow-xl relative">
-        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-600 text-white text-[11px] font-bold px-4 py-1 rounded-full">Popular</div>
-        <div class="font-semibold text-slate-900 mb-1">Pro</div>
+      <div class="bg-white rounded-2xl border-2 border-slate-900 p-8 relative">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[11px] font-bold px-4 py-1 rounded-full">Popular</div>
+        <div class="font-display font-semibold text-slate-900 mb-1">Pro</div>
         <div class="text-sm text-slate-500 mb-5">For production</div>
-        <div class="flex items-baseline gap-1 mb-6"><span class="text-4xl font-bold text-slate-900">$49</span><span class="text-slate-400">/mo</span></div>
+        <div class="flex items-baseline gap-1 mb-6"><span class="font-display text-4xl font-bold text-slate-900">$49</span><span class="text-slate-400">/mo</span></div>
         <ul class="space-y-3 mb-8 text-sm text-slate-600">
           <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>10,000 checks/month</li>
           <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited policies</li>
           <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Email support</li>
           <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Pay-per-check overage</li>
         </ul>
-        <button type="button" onclick="handlePaidPlan('pro')" class="block w-full text-center py-2.5 rounded-lg bg-brand-600 text-sm font-semibold text-white hover:bg-brand-700 transition shadow-sm cursor-pointer">Get started</button>
+        <button type="button" onclick="handlePaidPlan('pro')" class="block w-full text-center py-3 rounded-xl bg-slate-900 text-sm font-semibold text-white hover:bg-slate-800 transition cursor-pointer">Get started</button>
       </div>
-      <div class="bg-white rounded-2xl border border-slate-200 p-8 hover:shadow-lg transition-shadow duration-200">
-        <div class="font-semibold text-slate-900 mb-1">Growth</div>
+      <div class="bg-white rounded-2xl border border-slate-200 p-8">
+        <div class="font-display font-semibold text-slate-900 mb-1">Growth</div>
         <div class="text-sm text-slate-500 mb-5">For scale</div>
-        <div class="flex items-baseline gap-1 mb-6"><span class="text-4xl font-bold text-slate-900">$199</span><span class="text-slate-400">/mo</span></div>
+        <div class="flex items-baseline gap-1 mb-6"><span class="font-display text-4xl font-bold text-slate-900">$199</span><span class="text-slate-400">/mo</span></div>
         <ul class="space-y-3 mb-8 text-sm text-slate-600">
           <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>100,000 checks/month</li>
           <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited policies</li>
           <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
           <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Custom SLA</li>
         </ul>
-        <button type="button" onclick="handlePaidPlan('growth')" class="block w-full text-center py-2.5 rounded-lg border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer">Get started</button>
+        <button type="button" onclick="handlePaidPlan('growth')" class="block w-full text-center py-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer">Get started</button>
       </div>
     </div>
     <p class="text-center text-sm text-slate-400 mt-8">Every plan includes all rule types, policy versioning, duplicate detection, and a permanent audit log.</p>
   </div>
 </section>
 
+<!-- ============================================================ -->
 <!-- CTA -->
-<section class="py-24 lg:py-32 bg-slate-900">
+<!-- ============================================================ -->
+<section class="py-24 lg:py-36 bg-slate-900">
   <div class="max-w-3xl mx-auto px-6 text-center">
-    <h2 class="text-3xl lg:text-4xl font-bold text-white fade-up">Start protecting your AI agents today</h2>
-    <p class="mt-4 text-lg text-slate-400">Free to start. No credit card. 1,000 checks every month.</p>
+    <h2 class="font-display text-3xl lg:text-[2.75rem] font-bold text-white leading-tight fade-up">Start protecting your AI agents today</h2>
+    <p class="mt-5 text-lg text-slate-400">Free to start. No credit card. 1,000 checks every month.</p>
     <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-      <button type="button" onclick="openSignupModal()" class="inline-flex items-center justify-center px-8 py-3.5 rounded-lg bg-brand-600 text-white font-semibold hover:bg-brand-700 shadow-lg shadow-brand-600/25 transition text-sm cursor-pointer">Get your API key</button>
-      <a href="https://spendguard.mintlify.app/guides/quickstart" target="_blank" rel="noopener" class="inline-flex items-center justify-center px-8 py-3.5 rounded-lg border border-white/20 text-slate-300 font-semibold hover:bg-white/10 hover:text-white transition text-sm">Read the docs</a>
+      <button type="button" onclick="openSignupModal()" class="inline-flex items-center justify-center px-8 py-3.5 rounded-xl bg-white text-slate-900 font-semibold hover:bg-slate-100 transition text-sm cursor-pointer">Get your API key</button>
+      <a href="https://spendguard.mintlify.app/guides/quickstart" target="_blank" rel="noopener" class="inline-flex items-center justify-center px-8 py-3.5 rounded-xl border border-white/20 text-slate-300 font-semibold hover:bg-white/10 hover:text-white transition text-sm">Read the docs</a>
     </div>
   </div>
 </section>
@@ -460,7 +475,7 @@ resp = requests.post(
   <div class="max-w-5xl mx-auto px-6">
     <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
       <div>
-        <svg class="h-6 w-auto mb-4" viewBox="0 0 180 36" fill="none"><path d="M4 6 L18 2 L32 6 L32 18 C32 26 18 34 18 34 C18 34 4 26 4 18 Z" stroke="#2563EB" stroke-width="2" fill="none"/><path d="M11 17 L16 22 L25 12" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><text x="42" y="24" font-family="Inter, system-ui, sans-serif" font-weight="700" font-size="20"><tspan fill="#F8FAFC">Spend</tspan><tspan fill="#2563EB">Guard</tspan></text></svg>
+        <svg class="h-6 w-auto mb-4" viewBox="0 0 180 36" fill="none"><path d="M4 6 L18 2 L32 6 L32 18 C32 26 18 34 18 34 C18 34 4 26 4 18 Z" stroke="#2563EB" stroke-width="2" fill="none"/><path d="M11 17 L16 22 L25 12" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><text x="42" y="24" font-family="Sora, Inter, system-ui, sans-serif" font-weight="700" font-size="20"><tspan fill="#F8FAFC">Spend</tspan><tspan fill="#2563EB">Guard</tspan></text></svg>
         <p class="text-sm text-slate-500 leading-relaxed">Financial authorization for AI agents.</p>
       </div>
       <div>
@@ -482,8 +497,8 @@ resp = requests.post(
 
 <!-- Sticky Mobile CTA -->
 <div class="sticky-cta" id="sticky-cta">
-  <button type="button" onclick="openSignupModal()" class="btn-sticky inline-flex items-center justify-center py-2.5 rounded-lg bg-brand-600 text-white text-sm font-semibold cursor-pointer">Get started</button>
-  <a href="#demo" class="btn-sticky inline-flex items-center justify-center py-2.5 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold">Try demo</a>
+  <button type="button" onclick="openSignupModal()" class="btn-sticky inline-flex items-center justify-center py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold cursor-pointer">Get started</button>
+  <a href="#demo" class="btn-sticky inline-flex items-center justify-center py-2.5 rounded-xl border border-slate-200 text-slate-700 text-sm font-semibold">Try demo</a>
 </div>
 
 <!-- Signup Modal -->
@@ -493,45 +508,45 @@ resp = requests.post(
     <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
       <button type="button" onclick="closeSignupModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition" title="Close" aria-label="Close"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg></button>
       <div id="signup-step-form" class="p-8">
-        <h3 class="text-xl font-bold text-slate-900 mb-1">Create your free account</h3>
+        <h3 class="font-display text-xl font-bold text-slate-900 mb-1">Create your free account</h3>
         <p class="text-sm text-slate-500 mb-6">No credit card needed. 1,000 checks every month.</p>
         <div class="space-y-4">
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Name</label>
-            <input id="signup-name" type="text" placeholder="Jane Developer" autocomplete="name" class="w-full px-4 py-3 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+            <input id="signup-name" type="text" placeholder="Jane Developer" autocomplete="name" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-slate-50">
           </div>
           <div>
             <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
-            <input id="signup-email" type="email" placeholder="jane@company.com" autocomplete="email" class="w-full px-4 py-3 rounded-lg border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500">
+            <input id="signup-email" type="email" placeholder="jane@company.com" autocomplete="email" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-slate-50">
           </div>
           <div id="signup-error" class="hidden text-sm text-red-600"></div>
-          <button type="button" id="signup-submit-btn" onclick="handleSignup()" class="w-full py-3 rounded-lg bg-brand-600 text-white font-semibold hover:bg-brand-700 transition text-sm">Create free account</button>
+          <button type="button" id="signup-submit-btn" onclick="handleSignup()" class="w-full py-3 rounded-xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition text-sm">Create free account</button>
         </div>
         <p class="text-xs text-slate-400 mt-4 text-center">By signing up you agree to our <a href="/terms/" class="underline">Terms</a> and <a href="/privacy/" class="underline">Privacy Policy</a>.</p>
       </div>
       <div id="signup-step-key" class="p-8 hidden">
         <div class="text-center mb-6">
           <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3"><svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
-          <h3 class="text-xl font-bold text-slate-900">Your API key is ready</h3>
+          <h3 class="font-display text-xl font-bold text-slate-900">Your API key is ready</h3>
           <p class="text-sm text-slate-500 mt-1">Copy it now. You won't see it again.</p>
         </div>
-        <div class="relative bg-[#0d1117] rounded-lg p-4 mb-6">
+        <div class="relative bg-[#0d1117] rounded-xl p-4 mb-6">
           <code id="signup-key-display" class="text-sm font-mono text-green-400 break-all"></code>
           <button type="button" onclick="copySignupKey()" id="signup-copy-btn" class="absolute top-3 right-3 text-slate-400 hover:text-white transition p-1" title="Copy" aria-label="Copy API key">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           </button>
         </div>
         <div class="space-y-3">
-          <a href="/dashboard/" class="block text-center py-3 rounded-lg bg-brand-600 text-white font-semibold hover:bg-brand-700 transition text-sm">Go to Dashboard</a>
-          <a href="https://spendguard.mintlify.app/guides/quickstart" target="_blank" rel="noopener" class="block text-center py-3 rounded-lg border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 transition text-sm">Read quickstart guide</a>
+          <a href="/dashboard/" class="block text-center py-3 rounded-xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition text-sm">Go to Dashboard</a>
+          <a href="https://spendguard.mintlify.app/guides/quickstart" target="_blank" rel="noopener" class="block text-center py-3 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 transition text-sm">Read quickstart guide</a>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<script src="/js/main.js?v=20260405m"></script>
-<script src="/js/demo.js?v=20260405m"></script>
-<script src="/js/signup.js?v=20260405m"></script>
+<script src="/js/main.js?v=20260405v2"></script>
+<script src="/js/demo.js?v=20260405v2"></script>
+<script src="/js/signup.js?v=20260405v2"></script>
 </body>
 </html>
