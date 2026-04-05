@@ -25,8 +25,8 @@
 .demo-error { display: none; }
 
 /* Mobile nav panel */
-.nav-mobile-panel { display: none; }
-.nav-mobile-panel.open { display: flex; }
+.nav-mobile-panel { display: none !important; }
+.nav-mobile-panel.open { display: flex !important; flex-direction: column; gap: 20px; }
 
 /* Scroll animations */
 .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
