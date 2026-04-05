@@ -197,19 +197,6 @@ resp = requests.post(
   </div>
 </section>
 
-<!-- Security Trust Strip -->
-<section class="py-6 bg-slate-900">
-  <div class="max-w-5xl mx-auto px-6">
-    <div class="flex flex-wrap justify-center items-center gap-x-8 gap-y-3">
-      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="text-xs font-medium text-slate-300">SHA-256 Key Hashing</span></div>
-      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span class="text-xs font-medium text-slate-300">TLS 1.2+ Encryption</span></div>
-      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span class="text-xs font-medium text-slate-300">Append-Only Audit</span></div>
-      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span class="text-xs font-medium text-slate-300">Zero PII Storage</span></div>
-      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="text-xs font-medium text-slate-300">Under 50ms Response</span></div>
-    </div>
-  </div>
-</section>
-
 <!-- Divider -->
 <div class="section-divider"></div>
 
@@ -410,6 +397,16 @@ resp = requests.post(
 <!-- SECURITY -->
 <!-- ============================================================ -->
 <section id="security" class="py-24 lg:py-36 bg-slate-900">
+  <!-- Trust strip -->
+  <div class="max-w-5xl mx-auto px-6 mb-16">
+    <div class="flex flex-wrap justify-center items-center gap-x-8 gap-y-3 py-4 rounded-2xl border border-white/10 bg-white/[0.03]">
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="text-xs font-medium text-slate-300">SHA-256 Hashing</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span class="text-xs font-medium text-slate-300">TLS 1.2+</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span class="text-xs font-medium text-slate-300">Append-Only</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span class="text-xs font-medium text-slate-300">Zero PII</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="text-xs font-medium text-slate-300">&lt;50ms</span></div>
+    </div>
+  </div>
   <div class="max-w-5xl mx-auto px-6">
     <div class="text-center mb-20">
       <p class="text-sm font-semibold text-brand-500 tracking-wide uppercase mb-3 fade-up">Security</p>
@@ -422,62 +419,6 @@ resp = requests.post(
       <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200"><h4 class="font-semibold text-white mb-2">Injection Protected</h4><p class="text-sm text-slate-400 leading-relaxed">All queries are parameterized. No user input touches raw SQL.</p></div>
       <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200"><h4 class="font-semibold text-white mb-2">Rate Limiting</h4><p class="text-sm text-slate-400 leading-relaxed">Per-key and per-IP limits that persist across server restarts.</p></div>
       <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-6 hover:border-brand-500/30 transition-colors duration-200"><h4 class="font-semibold text-white mb-2">Zero PII Storage</h4><p class="text-sm text-slate-400 leading-relaxed">Only action metadata. No bank accounts, SSNs, or sensitive data.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================ -->
-<!-- FAQ -->
-<!-- ============================================================ -->
-<section id="faq" class="py-24 lg:py-36">
-  <div class="max-w-3xl mx-auto px-6">
-    <div class="text-center mb-16">
-      <p class="text-sm font-semibold text-brand-600 tracking-wide uppercase mb-3 fade-up">FAQ</p>
-      <h2 class="font-display text-3xl lg:text-[2.75rem] font-bold text-slate-900 leading-tight fade-up">Common Questions</h2>
-    </div>
-    <div class="space-y-4 fade-up">
-      <details class="group bg-white rounded-2xl card-glow p-6 cursor-pointer">
-        <summary class="flex items-center justify-between text-sm font-semibold text-slate-900 list-none">
-          How Does the Authorization Flow Work?
-          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-        </summary>
-        <p class="mt-4 text-sm text-slate-500 leading-relaxed">Your agent sends a check request with the action details (amount, type, counterparty). SpendGuard loads your policy, evaluates every rule, and returns allow, block, or escalate in under 50ms. The entire decision is logged permanently.</p>
-      </details>
-      <details class="group bg-white rounded-2xl card-glow p-6 cursor-pointer">
-        <summary class="flex items-center justify-between text-sm font-semibold text-slate-900 list-none">
-          What Data Do You Store?
-          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-        </summary>
-        <p class="mt-4 text-sm text-slate-500 leading-relaxed">Only action metadata: amounts, action types, decisions, and rule outcomes. We never store bank account numbers, SSNs, credit card details, or any personally identifiable information. API keys are SHA-256 hashed and the original is never stored.</p>
-      </details>
-      <details class="group bg-white rounded-2xl card-glow p-6 cursor-pointer">
-        <summary class="flex items-center justify-between text-sm font-semibold text-slate-900 list-none">
-          What Happens When My Agent Hits the Limit?
-          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-        </summary>
-        <p class="mt-4 text-sm text-slate-500 leading-relaxed">The API returns a 402 response with your exact usage numbers and plan limit. On paid plans, you can enable pay-per-check overage at $0.005 per check for the rest of the billing period. Free tier users need to upgrade. No surprise charges ever.</p>
-      </details>
-      <details class="group bg-white rounded-2xl card-glow p-6 cursor-pointer">
-        <summary class="flex items-center justify-between text-sm font-semibold text-slate-900 list-none">
-          Can I Test Without Affecting Real Data?
-          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-        </summary>
-        <p class="mt-4 text-sm text-slate-500 leading-relaxed">Yes. The simulation endpoint runs the exact same rule engine but writes nothing to any table. No audit records, no usage events, no duplicate fingerprints. You can call it as many times as you want with zero impact on your data.</p>
-      </details>
-      <details class="group bg-white rounded-2xl card-glow p-6 cursor-pointer">
-        <summary class="flex items-center justify-between text-sm font-semibold text-slate-900 list-none">
-          How Fast Is the API?
-          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-        </summary>
-        <p class="mt-4 text-sm text-slate-500 leading-relaxed">The rule engine alone runs in under 10ms. Total end-to-end latency including network, database lookup, and audit logging is typically under 50ms. Most compliance and authorization tools add 500ms or more. Your agent will not notice the extra call.</p>
-      </details>
-      <details class="group bg-white rounded-2xl card-glow p-6 cursor-pointer">
-        <summary class="flex items-center justify-between text-sm font-semibold text-slate-900 list-none">
-          Do I Need a Credit Card to Start?
-          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
-        </summary>
-        <p class="mt-4 text-sm text-slate-500 leading-relaxed">No. The free tier gives you 1,000 checks per month with just your name and email. No credit card, no trial period, no expiration. Upgrade to a paid plan whenever you need more volume.</p>
-      </details>
     </div>
   </div>
 </section>
@@ -534,6 +475,62 @@ resp = requests.post(
       </div>
     </div>
     <p class="text-center text-sm text-slate-400 mt-8">Every plan includes all rule types, policy versioning, duplicate detection, and a permanent audit log.</p>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- FAQ -->
+<!-- ============================================================ -->
+<section id="faq" class="py-24 lg:py-36 bg-slate-50/60">
+  <div class="max-w-3xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <p class="text-sm font-semibold text-brand-600 tracking-wide uppercase mb-3 fade-up">FAQ</p>
+      <h2 class="font-display text-3xl lg:text-[2.75rem] font-bold text-slate-900 leading-tight fade-up">Common Questions</h2>
+    </div>
+    <div class="space-y-4 fade-up">
+      <details class="group bg-white rounded-2xl card-glow p-6 cursor-pointer">
+        <summary class="flex items-center justify-between text-sm font-semibold text-slate-900 list-none">
+          How Does the Authorization Flow Work?
+          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-200 flex-shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="mt-4 text-sm text-slate-500 leading-relaxed">Your agent sends a check request with the action details (amount, type, counterparty). SpendGuard loads your policy, evaluates every rule, and returns allow, block, or escalate in under 50ms. The entire decision is logged permanently.</p>
+      </details>
+      <details class="group bg-white rounded-2xl card-glow p-6 cursor-pointer">
+        <summary class="flex items-center justify-between text-sm font-semibold text-slate-900 list-none">
+          What Data Do You Store?
+          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-200 flex-shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="mt-4 text-sm text-slate-500 leading-relaxed">Only action metadata: amounts, action types, decisions, and rule outcomes. We never store bank account numbers, SSNs, credit card details, or any personally identifiable information. API keys are SHA-256 hashed and the original is never stored.</p>
+      </details>
+      <details class="group bg-white rounded-2xl card-glow p-6 cursor-pointer">
+        <summary class="flex items-center justify-between text-sm font-semibold text-slate-900 list-none">
+          What Happens When My Agent Hits the Limit?
+          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-200 flex-shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="mt-4 text-sm text-slate-500 leading-relaxed">The API returns a 402 response with your exact usage numbers and plan limit. On paid plans, you can enable pay-per-check overage at $0.005 per check for the rest of the billing period. Free tier users need to upgrade. No surprise charges ever.</p>
+      </details>
+      <details class="group bg-white rounded-2xl card-glow p-6 cursor-pointer">
+        <summary class="flex items-center justify-between text-sm font-semibold text-slate-900 list-none">
+          Can I Test Without Affecting Real Data?
+          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-200 flex-shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="mt-4 text-sm text-slate-500 leading-relaxed">Yes. The simulation endpoint runs the exact same rule engine but writes nothing to any table. No audit records, no usage events, no duplicate fingerprints. You can call it as many times as you want with zero impact on your data.</p>
+      </details>
+      <details class="group bg-white rounded-2xl card-glow p-6 cursor-pointer">
+        <summary class="flex items-center justify-between text-sm font-semibold text-slate-900 list-none">
+          How Fast Is the API?
+          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-200 flex-shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="mt-4 text-sm text-slate-500 leading-relaxed">The rule engine alone runs in under 10ms. Total end-to-end latency including network, database lookup, and audit logging is typically under 50ms. Most compliance and authorization tools add 500ms or more. Your agent will not notice the extra call.</p>
+      </details>
+      <details class="group bg-white rounded-2xl card-glow p-6 cursor-pointer">
+        <summary class="flex items-center justify-between text-sm font-semibold text-slate-900 list-none">
+          Do I Need a Credit Card to Start?
+          <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform duration-200 flex-shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p class="mt-4 text-sm text-slate-500 leading-relaxed">No. The free tier gives you 1,000 checks per month with just your name and email. No credit card, no trial period, no expiration. Upgrade to a paid plan whenever you need more volume.</p>
+      </details>
+    </div>
   </div>
 </section>
 
