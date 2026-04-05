@@ -26,7 +26,35 @@
 
 /* Mobile nav panel */
 .nav-mobile-panel { display: none !important; }
-.nav-mobile-panel.open { display: flex !important; flex-direction: column; gap: 20px; }
+.nav-mobile-panel.open { display: flex !important; flex-direction: column; gap: 16px; }
+
+/* Section dividers with gradient glow (Resend-inspired) */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(59,130,246,0.3) 20%, rgba(59,130,246,0.5) 50%, rgba(59,130,246,0.3) 80%, transparent);
+  position: relative;
+}
+.section-divider::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 20%;
+  right: 20%;
+  height: 16px;
+  background: radial-gradient(ellipse at center, rgba(59,130,246,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Premium card glow border */
+.card-glow {
+  border: 1px solid rgba(226,232,240,0.8);
+  box-shadow: 0 0 0 1px rgba(59,130,246,0.04), 0 1px 3px rgba(0,0,0,0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.card-glow:hover {
+  border-color: rgba(59,130,246,0.2);
+  box-shadow: 0 0 0 1px rgba(59,130,246,0.08), 0 4px 12px rgba(59,130,246,0.06), 0 1px 3px rgba(0,0,0,0.04);
+}
 
 /* Scroll animations */
 .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
