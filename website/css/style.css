@@ -24,6 +24,12 @@
 .demo-footer-hidden { display: none; }
 .demo-error { display: none; }
 
+/* Floating nav: full width on mobile, centered max-w on desktop */
+.nav-floating { left: 12px; right: 12px; }
+@media (min-width: 768px) {
+  .nav-floating { left: 50%; right: auto; transform: translateX(-50%); width: 100%; max-width: 860px; }
+}
+
 /* Mobile nav panel */
 .nav-mobile-panel { display: none !important; }
 .nav-mobile-panel.open { display: flex !important; flex-direction: column; gap: 16px; }
