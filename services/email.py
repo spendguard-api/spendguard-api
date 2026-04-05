@@ -17,8 +17,11 @@ import httpx
 
 logger = logging.getLogger(__name__)
 
-RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
-FROM_EMAIL = os.getenv("FROM_EMAIL", "SpendGuard <onboarding@resend.dev>")
+def _get_resend_key() -> str:
+    return os.getenv("RESEND_API_KEY", "")
+
+def _get_from_email() -> str:
+    return os.getenv("FROM_EMAIL", "SpendGuard <onboarding@resend.dev>")
 
 
 async def send_welcome_email(to_email: str, owner_name: str, api_key_preview: str) -> bool:
@@ -33,7 +36,8 @@ async def send_welcome_email(to_email: str, owner_name: str, api_key_preview: st
     Returns:
         True if sent successfully, False on failure.
     """
-    if not RESEND_API_KEY:
+    resend_key = _get_resend_key()
+    if not resend_key:
         logger.warning("RESEND_API_KEY not set — skipping welcome email to %s", to_email)
         return False
 
@@ -63,15 +67,16 @@ async def send_welcome_email(to_email: str, owner_name: str, api_key_preview: st
     """
 
     try:
+        from_email = _get_from_email()
         async with httpx.AsyncClient(timeout=10.0) as client:
             resp = await client.post(
                 "https://api.resend.com/emails",
                 headers={
-                    "Authorization": f"Bearer {RESEND_API_KEY}",
+                    "Authorization": f"Bearer {resend_key}",
                     "Content-Type": "application/json",
                 },
                 json={
-                    "from": FROM_EMAIL,
+                    "from": from_email,
                     "to": [to_email],
                     "subject": subject,
                     "html": html_body,
