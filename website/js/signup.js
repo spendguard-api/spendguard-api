@@ -80,7 +80,7 @@ function copySignupKey() {
 
 function handlePaidPlan(plan) {
   // For paid plans, first sign up (if not already), then redirect to Stripe checkout
-  var savedKey = sessionStorage.getItem('sg_api_key');
+  var savedKey = localStorage.getItem('sg_api_key');
   if (savedKey) {
     // Already have a key — go straight to checkout
     redirectToCheckout(plan, savedKey);
@@ -125,7 +125,7 @@ function handleSignupThenCheckout(plan) {
     });
   })
   .then(function(data) {
-    sessionStorage.setItem('sg_api_key', data.api_key);
+    localStorage.setItem('sg_api_key', data.api_key);
     btn.textContent = 'Redirecting to Stripe...';
     redirectToCheckout(plan, data.api_key);
   })

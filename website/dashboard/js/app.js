@@ -35,7 +35,7 @@ function handleLogin() {
   })
   .then(function(data) {
     apiKey = key;
-    sessionStorage.setItem('sg_api_key', key);
+    localStorage.setItem('sg_api_key', key);
     showDashboard(data);
   })
   .catch(function(err) {
@@ -47,7 +47,7 @@ function handleLogin() {
 
 function handleLogout() {
   apiKey = null;
-  sessionStorage.removeItem('sg_api_key');
+  localStorage.removeItem('sg_api_key');
   document.getElementById('dashboard-shell').classList.add('hidden');
   document.getElementById('login-screen').classList.remove('hidden');
   document.getElementById('api-key-input').value = '';
@@ -57,7 +57,7 @@ function handleLogout() {
 
 // Check for existing session on load
 (function() {
-  var savedKey = sessionStorage.getItem('sg_api_key');
+  var savedKey = localStorage.getItem('sg_api_key');
   if (savedKey) {
     apiKey = savedKey;
     fetch(API_BASE + '/v1/usage', { headers: { 'X-API-Key': savedKey } })
