@@ -289,7 +289,7 @@ pre { max-width: 100%; }
   #security .grid { gap: 10px !important; grid-template-columns: 1fr !important; }
 
   /* Pricing */
-  #pricing .grid { gap: 16px !important; grid-template-columns: 1fr !important; }
+  #pricing .grid { gap: 20px !important; grid-template-columns: 1fr !important; overflow: visible !important; padding-top: 16px !important; }
 
   /* FAQ */
   #faq .space-y-4 > details { padding: 16px !important; }
