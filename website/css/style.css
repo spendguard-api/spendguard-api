@@ -96,26 +96,16 @@
   z-index: -1;
 }
 
-/* Glow on hover only (for pricing cards) */
+/* Glow on hover only (for pricing cards) - uses outline trick */
 .glow-border-hover {
   position: relative;
-  overflow: visible;
   border: 1px solid #e2e8f0;
-  background: white;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
-.glow-border-hover::before {
-  content: '';
-  position: absolute;
-  top: -3px; left: -3px; right: -3px; bottom: -3px;
-  background: conic-gradient(from var(--glow-angle, 0deg), transparent 0%, #3B82F6 8%, #60A5FA 12%, transparent 22%, transparent 100%);
-  border-radius: 18px;
-  z-index: -1;
-  animation: glow-spin 3s linear infinite;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+.glow-border-hover:hover {
+  border-color: rgba(59,130,246,0.4);
+  box-shadow: 0 0 15px rgba(59,130,246,0.3), 0 0 30px rgba(59,130,246,0.15), 0 0 45px rgba(59,130,246,0.05);
 }
-.glow-border-hover:hover::before { opacity: 1; }
-.glow-border-hover:hover { border-color: transparent; }
 
 /* Button glow (inline, smaller) */
 .btn-glow {
