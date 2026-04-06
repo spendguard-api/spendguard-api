@@ -100,8 +100,8 @@
 .glow-border-hover {
   position: relative;
   overflow: visible;
-  z-index: 0;
   border: 1px solid #e2e8f0;
+  background: white;
 }
 .glow-border-hover::before {
   content: '';
