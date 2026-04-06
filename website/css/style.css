@@ -177,10 +177,9 @@
   mask-image: linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent);
 }
 
-/* Pricing cards: equal height on desktop only */
+/* Pricing cards: align tops on desktop by pushing Free and Growth down */
 @media (min-width: 768px) {
-  #pricing .grid { align-items: stretch; }
-  #pricing .glow-border-hover { height: 100%; }
+  #pricing .grid > .glow-border-hover { margin-top: 18px; }
 }
 
 /* Scroll animations */
