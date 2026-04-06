@@ -179,7 +179,7 @@
 
 /* Pricing cards: align tops on desktop by pushing Free and Growth down */
 @media (min-width: 768px) {
-  #pricing .grid > .glow-border-hover { margin-top: 18px; }
+  #pricing .grid > .glow-border-hover { margin-top: 24px; }
 }
 
 /* Scroll animations */
