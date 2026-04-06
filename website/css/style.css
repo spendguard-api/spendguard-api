@@ -96,24 +96,33 @@
   z-index: -1;
 }
 
-/* Glow on hover only (for pricing cards) - border-image approach */
-.glow-border-hover {
+/* Pricing card glow wrapper */
+.pricing-wrap {
   position: relative;
-  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
   transition: border-color 0.3s ease;
 }
-.glow-border-hover:hover {
-  border-color: #3B82F6;
-  box-shadow: 0 0 12px rgba(59,130,246,0.4), 0 0 24px rgba(59,130,246,0.2);
-  animation: glow-pulse 2s ease-in-out infinite;
+.pricing-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(from var(--glow-angle, 0deg), transparent 0%, #3B82F6 8%, #60A5FA 12%, transparent 22%, transparent 100%);
+  z-index: 0;
+  animation: glow-spin 3s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
-@keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 12px rgba(59,130,246,0.4), 0 0 24px rgba(59,130,246,0.2); }
-  50% { box-shadow: 0 0 18px rgba(59,130,246,0.5), 0 0 36px rgba(59,130,246,0.25); }
+.pricing-wrap:hover::before { opacity: 1; }
+.pricing-wrap:hover { border-color: transparent; }
+.pricing-inner {
+  position: relative;
+  z-index: 1;
+  background: white;
+  border-radius: 15px;
+  padding: 32px;
 }
-
-/* Popular badge */
-.popular-badge { z-index: 50; position: absolute; }
 
 /* Button glow (inline, smaller) */
 .btn-glow {
