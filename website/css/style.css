@@ -97,11 +97,9 @@
 }
 
 /* Glow on hover only (for pricing cards) */
-/* Uses a wrapper approach: the card is the inner layer, glow is behind it */
 .glow-border-hover {
   position: relative;
   border: 1px solid #e2e8f0;
-  isolation: isolate;
 }
 .glow-border-hover::before {
   content: '';
@@ -109,12 +107,22 @@
   inset: -3px;
   background: conic-gradient(from var(--glow-angle, 0deg), transparent 0%, #3B82F6 8%, #60A5FA 12%, transparent 22%, transparent 100%);
   border-radius: 18px;
-  z-index: -1;
+  z-index: 0;
   animation: glow-spin 3s linear infinite;
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
 }
+.glow-border-hover::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: white;
+  border-radius: inherit;
+  z-index: 0;
+  pointer-events: none;
+}
+.glow-border-hover > * { position: relative; z-index: 1; }
 .glow-border-hover:hover::before { opacity: 1; }
 .glow-border-hover:hover { border-color: transparent; }
 
