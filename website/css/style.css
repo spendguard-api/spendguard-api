@@ -126,6 +126,12 @@
 .glow-border-hover:hover::before { opacity: 1; }
 .glow-border-hover:hover { border-color: transparent; }
 
+/* Popular badge must sit above all card layers */
+.popular-badge { z-index: 50; position: absolute; }
+
+/* Pricing section: never clip overflow (badge needs to stick out) */
+#pricing, #pricing * { overflow: visible !important; }
+
 /* Button glow (inline, smaller) */
 .btn-glow {
   position: relative;
