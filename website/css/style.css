@@ -96,31 +96,39 @@
   z-index: -1;
 }
 
-/* Pricing card glow wrapper */
+/* Pricing card glow wrapper - same technique as .btn-glow */
 .pricing-wrap {
   position: relative;
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid #e2e8f0;
+  z-index: 0;
   transition: border-color 0.3s ease;
 }
 .pricing-wrap::before {
   content: '';
   position: absolute;
-  inset: -50%;
+  top: -2px; left: -2px; right: -2px; bottom: -2px;
   background: conic-gradient(from var(--glow-angle, 0deg), transparent 0%, #3B82F6 8%, #60A5FA 12%, transparent 22%, transparent 100%);
-  z-index: 0;
+  border-radius: inherit;
+  z-index: -2;
   animation: glow-spin 3s linear infinite;
   opacity: 0;
   transition: opacity 0.3s ease;
+}
+.pricing-wrap::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px; right: 2px; bottom: 2px;
+  background: white;
+  border-radius: 14px;
+  z-index: -1;
 }
 .pricing-wrap:hover::before { opacity: 1; }
 .pricing-wrap:hover { border-color: transparent; }
 .pricing-inner {
   position: relative;
   z-index: 1;
-  background: white;
-  border-radius: 15px;
   padding: 32px;
 }
 
