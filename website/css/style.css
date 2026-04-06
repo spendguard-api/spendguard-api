@@ -96,16 +96,14 @@
   z-index: -1;
 }
 
-/* Pricing card glow wrapper - same technique as .btn-glow */
-.pricing-wrap {
+/* Pricing card glow - original first rendition + thin border */
+.glow-border-hover {
   position: relative;
-  border-radius: 16px;
   overflow: hidden;
-  border: 1px solid #e2e8f0;
   z-index: 0;
-  transition: border-color 0.3s ease;
+  border: 1px solid #e2e8f0;
 }
-.pricing-wrap::before {
+.glow-border-hover::before {
   content: '';
   position: absolute;
   top: -2px; left: -2px; right: -2px; bottom: -2px;
@@ -116,20 +114,15 @@
   opacity: 0;
   transition: opacity 0.3s ease;
 }
-.pricing-wrap::after {
+.glow-border-hover:hover::before { opacity: 1; }
+.glow-border-hover:hover { border-color: transparent; }
+.glow-border-hover::after {
   content: '';
   position: absolute;
   top: 2px; left: 2px; right: 2px; bottom: 2px;
   background: white;
-  border-radius: 14px;
+  border-radius: inherit;
   z-index: -1;
-}
-.pricing-wrap:hover::before { opacity: 1; }
-.pricing-wrap:hover { border-color: transparent; }
-.pricing-inner {
-  position: relative;
-  z-index: 1;
-  padding: 32px;
 }
 
 /* Button glow (inline, smaller) */

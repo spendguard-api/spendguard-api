@@ -29,7 +29,7 @@
     }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=20260406e">
+  <link rel="stylesheet" href="/css/style.css?v=20260406f">
 </head>
 <body class="font-sans text-slate-700 antialiased overflow-x-hidden bg-white">
 
@@ -425,54 +425,43 @@ resp = requests.post(
       <p class="text-sm font-semibold text-brand-600 tracking-wide uppercase mb-3 fade-up">Pricing</p>
       <h2 class="font-display text-3xl lg:text-[2.75rem] font-bold text-slate-900 leading-tight fade-up">Start Free. Pay When You Scale.</h2>
     </div>
-    <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-      <!-- Free -->
-      <div class="pricing-wrap">
-        <div class="pricing-inner">
-          <div class="font-display font-semibold text-slate-900 mb-1">Free</div>
-          <div class="text-sm text-slate-500 mb-5">For exploring</div>
-          <div class="flex items-baseline gap-1 mb-6"><span class="font-display text-4xl font-bold text-slate-900">$0</span><span class="text-slate-400">/mo</span></div>
-          <ul class="space-y-3 mb-8 text-sm text-slate-600">
-            <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>1,000 checks/month</li>
-            <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>All 10 rule types</li>
-            <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Full documentation</li>
-            <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Live simulation</li>
-          </ul>
-          <button type="button" onclick="openSignupModal()" class="block w-full text-center py-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer">Get Started</button>
-        </div>
+    <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto pt-4" style="overflow:visible">
+      <div class="bg-white rounded-2xl glow-border-hover p-8">
+        <div class="font-display font-semibold text-slate-900 mb-1">Free</div>
+        <div class="text-sm text-slate-500 mb-5">For exploring</div>
+        <div class="flex items-baseline gap-1 mb-6"><span class="font-display text-4xl font-bold text-slate-900">$0</span><span class="text-slate-400">/mo</span></div>
+        <ul class="space-y-3 mb-8 text-sm text-slate-600">
+          <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>1,000 checks/month</li>
+          <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>All 10 rule types</li>
+          <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Full documentation</li>
+          <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Live simulation</li>
+        </ul>
+        <button type="button" onclick="openSignupModal()" class="block w-full text-center py-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer">Get Started</button>
       </div>
-      <!-- Pro -->
-      <div class="mt-4 md:mt-0">
-        <div class="flex justify-center mb-[-8px] relative z-10"><span class="bg-brand-600 text-white text-[11px] font-bold px-4 py-1 rounded-full">Popular</span></div>
-        <div class="pricing-wrap">
-          <div class="pricing-inner">
-            <div class="font-display font-semibold text-slate-900 mb-1">Pro</div>
-            <div class="text-sm text-slate-500 mb-5">For production</div>
-            <div class="flex items-baseline gap-1 mb-6"><span class="font-display text-4xl font-bold text-slate-900">$49</span><span class="text-slate-400">/mo</span></div>
-            <ul class="space-y-3 mb-8 text-sm text-slate-600">
-              <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>10,000 checks/month</li>
-              <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited policies</li>
-              <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Email support</li>
-              <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Pay-per-check overage</li>
-            </ul>
-            <button type="button" onclick="handlePaidPlan('pro')" class="block w-full text-center py-3 rounded-xl bg-slate-900 text-sm font-semibold text-white hover:bg-slate-800 transition cursor-pointer">Get Started</button>
-          </div>
-        </div>
+      <div class="bg-white rounded-2xl glow-border-hover p-8 relative mt-4 md:mt-0">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-600 text-white text-[11px] font-bold px-4 py-1 rounded-full" style="z-index:10">Popular</div>
+        <div class="font-display font-semibold text-slate-900 mb-1">Pro</div>
+        <div class="text-sm text-slate-500 mb-5">For production</div>
+        <div class="flex items-baseline gap-1 mb-6"><span class="font-display text-4xl font-bold text-slate-900">$49</span><span class="text-slate-400">/mo</span></div>
+        <ul class="space-y-3 mb-8 text-sm text-slate-600">
+          <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>10,000 checks/month</li>
+          <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited policies</li>
+          <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Email support</li>
+          <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Pay-per-check overage</li>
+        </ul>
+        <button type="button" onclick="handlePaidPlan('pro')" class="block w-full text-center py-3 rounded-xl bg-slate-900 text-sm font-semibold text-white hover:bg-slate-800 transition cursor-pointer">Get Started</button>
       </div>
-      <!-- Growth -->
-      <div class="pricing-wrap">
-        <div class="pricing-inner">
-          <div class="font-display font-semibold text-slate-900 mb-1">Growth</div>
-          <div class="text-sm text-slate-500 mb-5">For scale</div>
-          <div class="flex items-baseline gap-1 mb-6"><span class="font-display text-4xl font-bold text-slate-900">$199</span><span class="text-slate-400">/mo</span></div>
-          <ul class="space-y-3 mb-8 text-sm text-slate-600">
-            <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>100,000 checks/month</li>
-            <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited policies</li>
-            <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
-            <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Custom SLA</li>
-          </ul>
-          <button type="button" onclick="handlePaidPlan('growth')" class="block w-full text-center py-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer">Get Started</button>
-        </div>
+      <div class="bg-white rounded-2xl glow-border-hover p-8">
+        <div class="font-display font-semibold text-slate-900 mb-1">Growth</div>
+        <div class="text-sm text-slate-500 mb-5">For scale</div>
+        <div class="flex items-baseline gap-1 mb-6"><span class="font-display text-4xl font-bold text-slate-900">$199</span><span class="text-slate-400">/mo</span></div>
+        <ul class="space-y-3 mb-8 text-sm text-slate-600">
+          <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>100,000 checks/month</li>
+          <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Unlimited policies</li>
+          <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Priority support</li>
+          <li class="flex items-center gap-2.5"><svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>Custom SLA</li>
+        </ul>
+        <button type="button" onclick="handlePaidPlan('growth')" class="block w-full text-center py-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer">Get Started</button>
       </div>
     </div>
     <p class="text-center text-sm text-slate-400 mt-8">Every plan includes all rule types, policy versioning, duplicate detection, and a permanent audit log.</p>
@@ -653,8 +642,8 @@ resp = requests.post(
   </div>
 </div>
 
-<script src="/js/main.js?v=20260406e"></script>
-<script src="/js/demo.js?v=20260406e"></script>
-<script src="/js/signup.js?v=20260406e"></script>
+<script src="/js/main.js?v=20260406f"></script>
+<script src="/js/demo.js?v=20260406f"></script>
+<script src="/js/signup.js?v=20260406f"></script>
 </body>
 </html>
