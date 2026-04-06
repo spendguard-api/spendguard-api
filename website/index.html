@@ -29,7 +29,7 @@
     }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=20260406a">
+  <link rel="stylesheet" href="/css/style.css?v=20260406b">
 </head>
 <body class="font-sans text-slate-700 antialiased overflow-x-hidden bg-white">
 
@@ -47,7 +47,7 @@
     </div>
     <div class="hidden md:flex items-center gap-3">
       <a href="/dashboard/" class="text-[13px] font-medium text-slate-600 hover:text-slate-900 transition">Dashboard</a>
-      <button type="button" onclick="openSignupModal()" class="text-[13px] font-semibold px-4 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition cursor-pointer">Get Started</button>
+      <button type="button" onclick="openSignupModal()" class="btn-glow text-[13px] font-semibold px-4 py-2 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition cursor-pointer">Get Started</button>
     </div>
     <button id="nav-toggle" type="button" class="md:hidden p-2" aria-label="Menu">
       <svg class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/></svg>
@@ -75,7 +75,7 @@
       <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-slate-900">Financial Guardrails<br class="hidden sm:block"> for AI Agents</h1>
       <p class="mt-6 text-lg lg:text-xl text-slate-500 leading-relaxed max-w-xl">One API call before every refund, payment, or discount. Your rules decide what gets through.</p>
       <div class="mt-10 flex flex-col sm:flex-row gap-3">
-        <button type="button" onclick="openSignupModal()" class="inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition text-sm cursor-pointer">Get started free</button>
+        <button type="button" onclick="openSignupModal()" class="btn-glow inline-flex items-center justify-center px-6 py-3.5 rounded-xl bg-slate-900 text-white font-semibold hover:bg-slate-800 transition text-sm cursor-pointer">Get Started</button>
         <a href="https://spendguard.mintlify.app/guides/quickstart" target="_blank" rel="noopener" class="inline-flex items-center justify-center px-6 py-3.5 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 transition text-sm">Read the docs</a>
       </div>
       <p class="mt-5 text-sm text-slate-400">No credit card required. 1,000 free checks every month.</p>
@@ -426,7 +426,7 @@ resp = requests.post(
       <h2 class="font-display text-3xl lg:text-[2.75rem] font-bold text-slate-900 leading-tight fade-up">Start Free. Pay When You Scale.</h2>
     </div>
     <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-      <div class="bg-white rounded-2xl card-glow p-8">
+      <div class="bg-white rounded-2xl glow-border-hover p-8">
         <div class="font-display font-semibold text-slate-900 mb-1">Free</div>
         <div class="text-sm text-slate-500 mb-5">For exploring</div>
         <div class="flex items-baseline gap-1 mb-6"><span class="font-display text-4xl font-bold text-slate-900">$0</span><span class="text-slate-400">/mo</span></div>
@@ -438,8 +438,8 @@ resp = requests.post(
         </ul>
         <button type="button" onclick="openSignupModal()" class="block w-full text-center py-3 rounded-xl border border-slate-200 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition cursor-pointer">Get started</button>
       </div>
-      <div class="bg-white rounded-2xl border-2 border-slate-900 p-8 relative">
-        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[11px] font-bold px-4 py-1 rounded-full">Popular</div>
+      <div class="bg-white rounded-2xl glow-border-hover p-8 relative">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-600 text-white text-[11px] font-bold px-4 py-1 rounded-full z-10">Popular</div>
         <div class="font-display font-semibold text-slate-900 mb-1">Pro</div>
         <div class="text-sm text-slate-500 mb-5">For production</div>
         <div class="flex items-baseline gap-1 mb-6"><span class="font-display text-4xl font-bold text-slate-900">$49</span><span class="text-slate-400">/mo</span></div>
@@ -451,7 +451,7 @@ resp = requests.post(
         </ul>
         <button type="button" onclick="handlePaidPlan('pro')" class="block w-full text-center py-3 rounded-xl bg-slate-900 text-sm font-semibold text-white hover:bg-slate-800 transition cursor-pointer">Get started</button>
       </div>
-      <div class="bg-white rounded-2xl card-glow p-8">
+      <div class="bg-white rounded-2xl glow-border-hover p-8">
         <div class="font-display font-semibold text-slate-900 mb-1">Growth</div>
         <div class="text-sm text-slate-500 mb-5">For scale</div>
         <div class="flex items-baseline gap-1 mb-6"><span class="font-display text-4xl font-bold text-slate-900">$199</span><span class="text-slate-400">/mo</span></div>
@@ -468,15 +468,25 @@ resp = requests.post(
   </div>
 </section>
 
-<!-- Compliance Banner -->
-<section class="compliance-banner py-6 bg-slate-900">
-  <div class="max-w-5xl mx-auto px-6">
-    <div class="flex flex-wrap justify-center items-center gap-x-10 gap-y-4">
-      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="text-sm font-medium text-slate-300">SHA-256 Key Hashing</span></div>
-      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span class="text-sm font-medium text-slate-300">TLS 1.2+ Encryption</span></div>
-      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span class="text-sm font-medium text-slate-300">Append-Only Audit</span></div>
-      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span class="text-sm font-medium text-slate-300">Zero PII Storage</span></div>
-      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="text-sm font-medium text-slate-300">Under 50ms Response</span></div>
+<!-- Compliance Belt -->
+<section class="py-5 bg-slate-900">
+  <div class="compliance-belt">
+    <div class="compliance-track">
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="text-sm font-medium text-slate-300 whitespace-nowrap">SHA-256 Key Hashing</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span class="text-sm font-medium text-slate-300 whitespace-nowrap">TLS 1.2+ Encryption</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span class="text-sm font-medium text-slate-300 whitespace-nowrap">Append-Only Audit</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span class="text-sm font-medium text-slate-300 whitespace-nowrap">Zero PII Storage</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="text-sm font-medium text-slate-300 whitespace-nowrap">Under 50ms Response</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="text-sm font-medium text-slate-300 whitespace-nowrap">Deterministic Rules</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 11a9 9 0 0118 0"/><rect x="2" y="14" width="6" height="6" rx="1"/><rect x="16" y="14" width="6" height="6" rx="1"/></svg><span class="text-sm font-medium text-slate-300 whitespace-nowrap">MCP Ready</span></div>
+      <!-- Duplicate for seamless loop -->
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="text-sm font-medium text-slate-300 whitespace-nowrap">SHA-256 Key Hashing</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span class="text-sm font-medium text-slate-300 whitespace-nowrap">TLS 1.2+ Encryption</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span class="text-sm font-medium text-slate-300 whitespace-nowrap">Append-Only Audit</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg><span class="text-sm font-medium text-slate-300 whitespace-nowrap">Zero PII Storage</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="text-sm font-medium text-slate-300 whitespace-nowrap">Under 50ms Response</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span class="text-sm font-medium text-slate-300 whitespace-nowrap">Deterministic Rules</span></div>
+      <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 11a9 9 0 0118 0"/><rect x="2" y="14" width="6" height="6" rx="1"/><rect x="16" y="14" width="6" height="6" rx="1"/></svg><span class="text-sm font-medium text-slate-300 whitespace-nowrap">MCP Ready</span></div>
     </div>
   </div>
 </section>
@@ -632,8 +642,8 @@ resp = requests.post(
   </div>
 </div>
 
-<script src="/js/main.js?v=20260406a"></script>
-<script src="/js/demo.js?v=20260406a"></script>
-<script src="/js/signup.js?v=20260406a"></script>
+<script src="/js/main.js?v=20260406b"></script>
+<script src="/js/demo.js?v=20260406b"></script>
+<script src="/js/signup.js?v=20260406b"></script>
 </body>
 </html>
