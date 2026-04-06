@@ -24,7 +24,7 @@
 .demo-footer-hidden { display: none; }
 .demo-error { display: none; }
 
-/* Floating nav: full width on mobile, centered max-w on desktop */
+/* Floating nav */
 .nav-floating { left: 12px; right: 12px; }
 @media (min-width: 768px) {
   .nav-floating { left: 50%; right: auto; transform: translateX(-50%); width: 100%; max-width: 860px; }
@@ -34,7 +34,7 @@
 .nav-mobile-panel { display: none !important; }
 .nav-mobile-panel.open { display: flex !important; flex-direction: column; gap: 16px; }
 
-/* Section dividers with gradient glow (Resend-inspired) */
+/* Section dividers with gradient glow */
 .section-divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(59,130,246,0.3) 20%, rgba(59,130,246,0.5) 50%, rgba(59,130,246,0.3) 80%, transparent);
@@ -51,7 +51,7 @@
   pointer-events: none;
 }
 
-/* Premium card glow border */
+/* Card glow border (subtle) */
 .card-glow {
   border: 1px solid rgba(226,232,240,0.8);
   box-shadow: 0 0 0 1px rgba(59,130,246,0.04), 0 1px 3px rgba(0,0,0,0.04);
@@ -60,6 +60,16 @@
 .card-glow:hover {
   border-color: rgba(59,130,246,0.2);
   box-shadow: 0 0 0 1px rgba(59,130,246,0.08), 0 4px 12px rgba(59,130,246,0.06), 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* Blue glow border for visual boxes (code blocks, demo, audit mock) */
+.box-glow {
+  border: 1px solid rgba(59,130,246,0.15);
+  box-shadow: 0 0 0 1px rgba(59,130,246,0.06), 0 0 20px rgba(59,130,246,0.06), 0 4px 16px rgba(0,0,0,0.08);
+}
+.box-glow-dark {
+  border: 1px solid rgba(59,130,246,0.2);
+  box-shadow: 0 0 0 1px rgba(59,130,246,0.08), 0 0 30px rgba(59,130,246,0.08), 0 8px 24px rgba(0,0,0,0.15);
 }
 
 /* Scroll animations */
@@ -89,19 +99,25 @@
   flex-shrink: 0;
   cursor: default;
 }
-.logo-item:hover {
-  opacity: 1;
-  transform: scale(1.08);
-}
+.logo-item:hover { opacity: 1; transform: scale(1.08); }
 @keyframes scroll-logos {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
-.logo-belt { overflow: hidden; -webkit-mask-image: linear-gradient(to right, transparent, black 80px, black calc(100% - 80px), transparent); mask-image: linear-gradient(to right, transparent, black 80px, black calc(100% - 80px), transparent); }
+.logo-belt { overflow: hidden; -webkit-mask-image: linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent); mask-image: linear-gradient(to right, transparent, black 60px, black calc(100% - 60px), transparent); }
 
 /* Sticky mobile CTA */
 .sticky-cta { display: none; }
 
+/* ============================================================
+   GLOBAL MOBILE FIX: prevent any horizontal overflow
+   ============================================================ */
+html, body { max-width: 100vw; overflow-x: hidden; }
+pre { max-width: 100%; }
+
+/* ============================================================
+   MOBILE (max-width: 768px)
+   ============================================================ */
 @media (max-width: 768px) {
   .sticky-cta.visible {
     display: flex;
@@ -119,44 +135,84 @@
   .sticky-cta .btn-sticky { flex: 1; }
   body.has-sticky { padding-bottom: 72px; }
 
-  /* Nav: smaller on mobile */
-  #nav { left: 8px; right: 8px; top: 8px; height: 48px; }
-  #nav .max-w-6xl { padding-left: 12px; padding-right: 12px; }
+  /* Nav */
+  .nav-floating { left: 8px; right: 8px; top: 8px; height: 48px; }
+  .nav-floating .px-5 { padding-left: 12px; padding-right: 12px; }
 
-  /* Hero: comfortable spacing, not crammed */
-  .hero { padding-top: 80px; padding-bottom: 48px; }
-  .hero h1 { font-size: 2rem; line-height: 1.15; }
-  .hero p { font-size: 1rem; }
+  /* Hero */
+  .hero { padding-top: 76px !important; padding-bottom: 48px !important; }
+  .hero h1 { font-size: 1.875rem !important; line-height: 1.15 !important; }
+  .hero p { font-size: 0.95rem !important; }
+  .hero .mt-16 { margin-top: 2rem !important; }
+  .hero .grid { gap: 12px !important; }
 
-  /* Code blocks: readable on phone */
-  .code-block pre { font-size: 11px; padding: 14px; }
-  .code-tab { font-size: 10px; padding: 6px 10px; }
+  /* All code blocks: prevent overflow */
+  .code-block, .rounded-2xl { max-width: 100%; overflow: hidden; }
+  .code-block pre, pre { font-size: 10px !important; padding: 12px !important; word-break: break-all; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .code-tab { font-size: 10px; padding: 5px 8px; }
 
-  /* Sections: tighter vertical padding on mobile */
-  section { padding-top: 64px !important; padding-bottom: 64px !important; }
+  /* Sections: comfortable mobile padding */
+  section { padding-top: 56px !important; padding-bottom: 56px !important; }
+  section .px-6 { padding-left: 20px; padding-right: 20px; }
 
-  /* Feature/use-case cards: full width, stacked */
-  section .grid { gap: 16px; }
+  /* Grids: stack on mobile */
+  section .grid { gap: 16px !important; }
+  .grid.lg\:grid-cols-2 { grid-template-columns: 1fr !important; }
+  .grid.sm\:grid-cols-3 { grid-template-columns: 1fr !important; }
+  .grid.sm\:grid-cols-2 { grid-template-columns: 1fr !important; }
+
+  /* Rule type grid: 2 columns on mobile */
+  .grid.grid-cols-2 { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+  .grid.grid-cols-2 .card-glow { padding: 12px !important; }
+  .grid.grid-cols-2 .card-glow p:first-child { font-size: 10px !important; }
+
+  /* Step badges */
+  .order-1 { order: 1 !important; }
+  .order-2 { order: 2 !important; }
 
   /* Demo widget */
-  .demo-action { padding: 14px 16px; }
+  .demo-action { padding: 12px 14px; }
+  .demo-action .text-sm { font-size: 13px; }
 
-  /* Signup modal: proper phone margins */
-  #signup-modal .max-w-md { margin: 0 12px; }
-  #signup-step-form, #signup-step-key { padding: 24px 20px; }
+  /* Signup modal */
+  #signup-modal .max-w-md { margin: 0 10px; }
+  #signup-step-form, #signup-step-key { padding: 20px 18px; }
 
-  /* Logo belt: tighter */
-  .logo-track { gap: 36px; }
-  .logo-item span { font-size: 12px; }
+  /* Logo belt */
+  .logo-track { gap: 32px; }
+  .logo-item span { font-size: 11px; }
+  .logo-belt { -webkit-mask-image: linear-gradient(to right, transparent, black 30px, black calc(100% - 30px), transparent); mask-image: linear-gradient(to right, transparent, black 30px, black calc(100% - 30px), transparent); }
 
-  /* Security cards: stack nicely */
-  #security .grid { gap: 12px; }
+  /* Compliance banner */
+  .compliance-banner .flex { gap: 12px 20px !important; }
+  .compliance-banner span { font-size: 11px !important; }
 
-  /* Pricing cards: add gap */
-  #pricing .grid { gap: 16px; }
+  /* Security cards */
+  #security .grid { gap: 10px !important; grid-template-columns: 1fr !important; }
 
-  /* Footer: more compact */
-  footer { padding-top: 48px; padding-bottom: 48px; }
+  /* Pricing */
+  #pricing .grid { gap: 16px !important; grid-template-columns: 1fr !important; }
+
+  /* FAQ */
+  #faq .space-y-4 > details { padding: 16px !important; }
+  #faq summary { font-size: 13px; }
+
+  /* Footer */
+  footer { padding-top: 40px !important; padding-bottom: 40px !important; }
+  footer .grid { gap: 24px !important; grid-template-columns: 1fr 1fr !important; }
+
+  /* Section headings smaller on mobile */
+  .font-display { letter-spacing: -0.01em; }
+  h2.font-display { font-size: 1.5rem !important; line-height: 1.2 !important; }
+  h3.font-display { font-size: 1.25rem !important; }
+}
+
+/* Small phones (375px and below) */
+@media (max-width: 390px) {
+  .hero h1 { font-size: 1.625rem !important; }
+  .grid.grid-cols-2 { gap: 6px !important; }
+  .compliance-banner span { font-size: 10px !important; }
+  footer .grid { grid-template-columns: 1fr !important; }
 }
 
 @media (prefers-reduced-motion: reduce) {

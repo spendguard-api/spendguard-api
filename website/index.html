@@ -29,7 +29,7 @@
     }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css?v=20260405v5">
+  <link rel="stylesheet" href="/css/style.css?v=20260406a">
 </head>
 <body class="font-sans text-slate-700 antialiased overflow-x-hidden bg-white">
 
@@ -83,7 +83,7 @@
 
     <!-- Hero visual: code + response side by side -->
     <div class="mt-16 grid lg:grid-cols-2 gap-4">
-      <div class="code-block rounded-2xl overflow-hidden bg-[#0d1117] shadow-2xl shadow-black/10 border border-white/[0.06]">
+      <div class="code-block rounded-2xl overflow-hidden bg-[#0d1117] box-glow-dark">
         <div class="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
           <div class="flex gap-0">
             <button type="button" class="code-tab active text-xs font-mono px-3 py-1.5 text-white border-b-2 border-brand-500 transition-colors duration-150" data-lang="python">Python</button>
@@ -136,7 +136,7 @@ resp = requests.post(
       </div>
 
       <!-- Response with animated decision -->
-      <div class="rounded-2xl overflow-hidden bg-[#0d1117] border border-white/[0.06] flex flex-col">
+      <div class="rounded-2xl overflow-hidden bg-[#0d1117] box-glow-dark flex flex-col">
         <div class="flex items-center gap-2 px-4 py-3 border-b border-white/[0.06]">
           <span class="w-2 h-2 rounded-full bg-red-500/80"></span>
           <span class="w-2 h-2 rounded-full bg-yellow-500/80"></span>
@@ -226,7 +226,7 @@ resp = requests.post(
           <span class="px-2.5 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-600">+5 more</span>
         </div>
       </div>
-      <div class="rounded-2xl bg-[#0d1117] border border-white/[0.06] p-5 shadow-xl"><pre class="text-[13px] font-mono text-slate-400 leading-relaxed overflow-x-auto"><code>{
+      <div class="rounded-2xl bg-[#0d1117] box-glow-dark p-5"><pre class="text-[13px] font-mono text-slate-400 leading-relaxed overflow-x-auto"><code>{
   <span class="code-key">"name"</span>: <span class="code-string">"AI Support Refund Policy"</span>,
   <span class="code-key">"rules"</span>: [
     { <span class="code-key">"rule_type"</span>: <span class="code-string">"max_amount"</span>,
@@ -241,7 +241,7 @@ resp = requests.post(
 
     <!-- Step 2: Agent calls -->
     <div class="grid lg:grid-cols-2 gap-12 items-center mb-24 fade-up">
-      <div class="order-2 lg:order-1 rounded-2xl bg-[#0d1117] border border-white/[0.06] p-5 shadow-xl"><pre class="text-[13px] font-mono text-slate-400 leading-relaxed overflow-x-auto"><code>resp = requests.post(
+      <div class="order-2 lg:order-1 rounded-2xl bg-[#0d1117] box-glow-dark p-5"><pre class="text-[13px] font-mono text-slate-400 leading-relaxed overflow-x-auto"><code>resp = requests.post(
   <span class="code-string">"https://spendguardapi.com/v1/checks"</span>,
   json={
     <span class="code-string">"agent_id"</span>: <span class="code-string">"support-agent"</span>,
@@ -272,7 +272,7 @@ resp = requests.post(
           <span class="text-xs font-bold uppercase px-3 py-1.5 rounded-full badge-escalate">Escalate</span>
         </div>
       </div>
-      <div class="rounded-2xl bg-[#0d1117] border border-white/[0.06] p-5 shadow-xl"><pre class="text-[13px] font-mono text-slate-400 leading-relaxed overflow-x-auto"><code>{
+      <div class="rounded-2xl bg-[#0d1117] box-glow-dark p-5"><pre class="text-[13px] font-mono text-slate-400 leading-relaxed overflow-x-auto"><code>{
   <span class="code-key">"decision"</span>: <span class="code-highlight-block">"block"</span>,
   <span class="code-key">"confidence"</span>: <span class="code-string">"high"</span>,
   <span class="code-key">"reason_code"</span>: <span class="code-string">"max_amount_exceeded"</span>,
@@ -320,7 +320,7 @@ resp = requests.post(
 
     <!-- Feature: Audit Log -->
     <div class="grid lg:grid-cols-2 gap-12 items-center mb-28 fade-up">
-      <div class="order-2 lg:order-1 rounded-2xl bg-white border border-slate-200 shadow-lg overflow-hidden">
+      <div class="order-2 lg:order-1 rounded-2xl bg-white box-glow overflow-hidden">
         <div class="px-5 py-3 border-b border-slate-100 flex items-center justify-between">
           <span class="text-xs font-semibold text-slate-800">Violations Log</span>
           <span class="text-[10px] text-slate-400">Last 24 hours</span>
@@ -369,7 +369,7 @@ resp = requests.post(
       <h2 class="font-display text-3xl lg:text-[2.75rem] font-bold text-slate-900 leading-tight fade-up">Try It Right Now</h2>
       <p class="mt-4 text-base text-slate-500">Real API call. No signup. Nothing stored.</p>
     </div>
-    <div class="max-w-3xl mx-auto bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
+    <div class="max-w-3xl mx-auto bg-white rounded-2xl box-glow overflow-hidden">
       <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
         <span class="font-semibold text-sm text-slate-800">AI Support Refund Policy</span>
         <span class="text-[11px] font-semibold px-3 py-1 rounded-full bg-brand-50 text-brand-600">Demo Mode</span>
@@ -469,7 +469,7 @@ resp = requests.post(
 </section>
 
 <!-- Compliance Banner -->
-<section class="py-6 bg-slate-900">
+<section class="compliance-banner py-6 bg-slate-900">
   <div class="max-w-5xl mx-auto px-6">
     <div class="flex flex-wrap justify-center items-center gap-x-10 gap-y-4">
       <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span class="text-sm font-medium text-slate-300">SHA-256 Key Hashing</span></div>
@@ -632,8 +632,8 @@ resp = requests.post(
   </div>
 </div>
 
-<script src="/js/main.js?v=20260405v5"></script>
-<script src="/js/demo.js?v=20260405v5"></script>
-<script src="/js/signup.js?v=20260405v5"></script>
+<script src="/js/main.js?v=20260406a"></script>
+<script src="/js/demo.js?v=20260406a"></script>
+<script src="/js/signup.js?v=20260406a"></script>
 </body>
 </html>
