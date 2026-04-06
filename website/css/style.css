@@ -96,41 +96,24 @@
   z-index: -1;
 }
 
-/* Glow on hover only (for pricing cards) */
+/* Glow on hover only (for pricing cards) - border-image approach */
 .glow-border-hover {
   position: relative;
-  border: 1px solid #e2e8f0;
+  border: 2px solid #e2e8f0;
+  transition: border-color 0.3s ease;
 }
-.glow-border-hover::before {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  background: conic-gradient(from var(--glow-angle, 0deg), transparent 0%, #3B82F6 8%, #60A5FA 12%, transparent 22%, transparent 100%);
-  border-radius: 18px;
-  z-index: 0;
-  animation: glow-spin 3s linear infinite;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
+.glow-border-hover:hover {
+  border-color: #3B82F6;
+  box-shadow: 0 0 12px rgba(59,130,246,0.4), 0 0 24px rgba(59,130,246,0.2);
+  animation: glow-pulse 2s ease-in-out infinite;
 }
-.glow-border-hover::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: white;
-  border-radius: inherit;
-  z-index: 0;
-  pointer-events: none;
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(59,130,246,0.4), 0 0 24px rgba(59,130,246,0.2); }
+  50% { box-shadow: 0 0 18px rgba(59,130,246,0.5), 0 0 36px rgba(59,130,246,0.25); }
 }
-.glow-border-hover > * { position: relative; z-index: 1; }
-.glow-border-hover:hover::before { opacity: 1; }
-.glow-border-hover:hover { border-color: transparent; }
 
-/* Popular badge must sit above all card layers */
+/* Popular badge */
 .popular-badge { z-index: 50; position: absolute; }
-
-/* Pricing section: never clip overflow (badge needs to stick out) */
-#pricing, #pricing * { overflow: visible !important; }
 
 /* Button glow (inline, smaller) */
 .btn-glow {
