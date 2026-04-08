@@ -6,6 +6,7 @@
 var API_BASE = '';  // Same origin
 var apiKey = null;
 var violationsCursor = null;
+var lastUsageData = null;  // Cached /v1/usage response — used by Account view
 
 // ============================================================
 // AUTH
@@ -112,6 +113,7 @@ function showView(viewName) {
   if (viewName === 'policies') loadPolicies();
   if (viewName === 'violations') { violationsCursor = null; loadViolations(); }
   if (viewName === 'overview') refreshOverview();
+  if (viewName === 'account') loadAccount();
 }
 
 // ============================================================
@@ -125,6 +127,7 @@ function refreshOverview() {
 }
 
 function updateOverview(data) {
+  lastUsageData = data;  // Cache for Account view
   document.getElementById('metric-checks-today').textContent = data.checks_today.toLocaleString();
   document.getElementById('metric-violations-today').textContent = data.violations_today.toLocaleString();
   document.getElementById('metric-plan-usage').textContent = data.current_period_usage.toLocaleString() + ' / ' + data.plan_limit.toLocaleString();
@@ -445,6 +448,166 @@ function startUpgradePolling(expectedPlan) {
   _upgradePollAttempts = 0;
   pollForUpgrade(expectedPlan);
 }
+
+// ============================================================
+// ACCOUNT VIEW + SUBSCRIPTION CANCEL (D025)
+// ============================================================
+
+function loadAccount() {
+  // Always re-fetch so we show the freshest subscription state
+  apiFetch('/v1/usage')
+  .then(function(data) {
+    lastUsageData = data;
+    renderAccount(data);
+  })
+  .catch(function(err) {
+    var plan = document.getElementById('account-plan');
+    if (plan) plan.textContent = 'Error loading account';
+  });
+}
+
+function renderAccount(data) {
+  if (!data) return;
+
+  // Profile
+  document.getElementById('account-name').textContent = data.owner_name || '—';
+  document.getElementById('account-email').textContent = data.email || '—';
+
+  // Plan info
+  var plan = (data.plan_name || 'free').toLowerCase();
+  var planDisplay = plan.charAt(0).toUpperCase() + plan.slice(1);
+  document.getElementById('account-plan').textContent = planDisplay;
+  document.getElementById('account-limit').textContent = (data.plan_limit || 0).toLocaleString() + ' checks';
+
+  // Hide all state sections first
+  var freeState = document.getElementById('account-state-free');
+  var activeState = document.getElementById('account-state-active');
+  var scheduledState = document.getElementById('account-state-scheduled');
+  freeState.classList.add('hidden');
+  activeState.classList.add('hidden');
+  scheduledState.classList.add('hidden');
+
+  if (plan === 'free') {
+    freeState.classList.remove('hidden');
+    return;
+  }
+
+  // Paid tier — check cancellation state
+  if (data.cancel_at_period_end) {
+    scheduledState.classList.remove('hidden');
+    var endDate = formatPeriodEnd(data.current_period_end);
+    var body = document.getElementById('account-cancel-body');
+    if (body) {
+      body.textContent = 'Your ' + planDisplay + ' plan remains active until ' + endDate + '. After that date, your account will revert to the free plan.';
+    }
+  } else {
+    activeState.classList.remove('hidden');
+    var next = document.getElementById('account-next-billing');
+    if (next) next.textContent = formatPeriodEnd(data.current_period_end);
+  }
+}
+
+function formatPeriodEnd(iso) {
+  if (!iso) return '—';
+  try {
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return '—';
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  } catch (e) {
+    return '—';
+  }
+}
+
+function showCancelModal() {
+  var modal = document.getElementById('cancel-modal');
+  if (!modal) return;
+
+  // Personalize the body with the plan + cancel date
+  var plan = 'your plan';
+  var endDate = 'the end of your current billing period';
+  if (lastUsageData) {
+    var p = (lastUsageData.plan_name || '').toLowerCase();
+    if (p === 'pro') plan = 'your Pro plan';
+    if (p === 'growth') plan = 'your Growth plan';
+    if (lastUsageData.current_period_end) {
+      endDate = formatPeriodEnd(lastUsageData.current_period_end);
+    }
+  }
+
+  var title = document.getElementById('cancel-modal-title');
+  var body = document.getElementById('cancel-modal-body');
+  if (title) title.textContent = 'Cancel ' + plan + '?';
+  if (body) body.textContent = 'You will retain full access until ' + endDate + '. After that, your account will revert to the free plan with 1,000 checks per month.';
+
+  // Clear any prior error
+  var err = document.getElementById('cancel-modal-error');
+  if (err) err.classList.add('hidden');
+
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function hideCancelModal() {
+  var modal = document.getElementById('cancel-modal');
+  if (modal) modal.classList.add('hidden');
+  document.body.style.overflow = '';
+  // Reset button state in case user clicks cancel mid-request
+  var btn = document.getElementById('cancel-modal-confirm');
+  if (btn) { btn.textContent = 'Yes, cancel'; btn.disabled = false; }
+}
+
+function confirmCancelSubscription() {
+  var btn = document.getElementById('cancel-modal-confirm');
+  var err = document.getElementById('cancel-modal-error');
+  if (btn) { btn.textContent = 'Cancelling…'; btn.disabled = true; }
+  if (err) err.classList.add('hidden');
+
+  apiFetchPost('/v1/billing/cancel', {})
+  .then(function(data) {
+    hideCancelModal();
+    // Refresh account + overview with new state
+    loadAccount();
+    refreshOverview();
+    showAccountToast('Subscription cancelled. You have access until ' + formatPeriodEnd(data.current_period_end) + '.');
+  })
+  .catch(function(e) {
+    if (btn) { btn.textContent = 'Yes, cancel'; btn.disabled = false; }
+    if (err) {
+      err.textContent = e.message || 'Failed to cancel. Please try again.';
+      err.classList.remove('hidden');
+    }
+  });
+}
+
+function reactivateSubscription() {
+  apiFetchPost('/v1/billing/reactivate', {})
+  .then(function(data) {
+    loadAccount();
+    refreshOverview();
+    showAccountToast('Subscription reactivated. Welcome back.');
+  })
+  .catch(function(e) {
+    alert('Failed to reactivate: ' + (e.message || 'Unknown error'));
+  });
+}
+
+function showAccountToast(message) {
+  var existing = document.getElementById('account-toast');
+  if (existing) existing.remove();
+
+  var toast = document.createElement('div');
+  toast.id = 'account-toast';
+  toast.className = 'account-toast';
+  toast.textContent = message;
+  document.body.appendChild(toast);
+
+  setTimeout(function() {
+    toast.classList.add('fade-out');
+    setTimeout(function() { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 400);
+  }, 5000);
+}
+
+// ============================================================
 
 function pollForUpgrade(expectedPlan) {
   _upgradePollAttempts++;

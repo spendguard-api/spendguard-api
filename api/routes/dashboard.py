@@ -33,7 +33,7 @@ async def get_usage(request: Request) -> dict:
         # Get key info
         key_result = (
             supabase.table("api_keys")
-            .select("plan_name, plan_limit, billing_period_start, overage_enabled, owner_name, email")
+            .select("plan_name, plan_limit, billing_period_start, overage_enabled, owner_name, email, cancel_at_period_end, current_period_end")
             .eq("id", api_key_id)
             .limit(1)
             .execute()
@@ -47,6 +47,8 @@ async def get_usage(request: Request) -> dict:
         plan_limit = key.get("plan_limit", 1000)
         period_start = key.get("billing_period_start")
         overage_enabled = key.get("overage_enabled", False)
+        cancel_at_period_end = key.get("cancel_at_period_end", False)
+        current_period_end = key.get("current_period_end")
 
         if not period_start:
             now = datetime.now(timezone.utc)
@@ -92,6 +94,8 @@ async def get_usage(request: Request) -> dict:
             "overage_enabled": overage_enabled,
             "owner_name": key.get("owner_name"),
             "email": key.get("email"),
+            "cancel_at_period_end": cancel_at_period_end,
+            "current_period_end": current_period_end,
         }
 
     except HTTPException:

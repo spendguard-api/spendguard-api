@@ -20,7 +20,7 @@
     }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/dashboard/css/dashboard.css?v=20260407a">
+  <link rel="stylesheet" href="/dashboard/css/dashboard.css?v=20260408a">
 </head>
 <body class="h-full font-sans bg-[#fafbfc] text-slate-800 antialiased">
 
@@ -78,6 +78,10 @@
         <button type="button" onclick="showView('violations')" class="nav-link w-full text-left flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition" data-view="violations">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           Violations
+        </button>
+        <button type="button" onclick="showView('account')" class="nav-link w-full text-left flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition" data-view="account">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Account
         </button>
       </nav>
       <div class="mt-8 pt-6 border-t border-slate-100 space-y-1">
@@ -227,6 +231,77 @@
         </div>
       </div>
 
+      <!-- ACCOUNT -->
+      <div id="view-account" class="view hidden">
+        <h2 class="text-lg font-bold text-slate-900 mb-6">Account</h2>
+
+        <!-- Profile card -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+          <h3 class="text-sm font-semibold text-slate-900 mb-4">Profile</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Name</p>
+              <p id="account-name" class="text-sm font-medium text-slate-900 mt-1">—</p>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Email</p>
+              <p id="account-email" class="text-sm font-medium text-slate-900 mt-1">—</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subscription card -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+          <h3 class="text-sm font-semibold text-slate-900 mb-4">Subscription</h3>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
+            <div>
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Current plan</p>
+              <p id="account-plan" class="text-base font-bold text-slate-900 mt-1 capitalize">Free</p>
+            </div>
+            <div>
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Monthly limit</p>
+              <p id="account-limit" class="text-base font-bold text-slate-900 mt-1">1,000 checks</p>
+            </div>
+          </div>
+
+          <!-- State: Free plan — show upgrade prompt -->
+          <div id="account-state-free" class="hidden pt-5 border-t border-slate-100">
+            <p class="text-sm text-slate-500 mb-4">You are on the free plan. Upgrade to Pro or Growth for higher limits and priority support.</p>
+            <div class="flex flex-col sm:flex-row gap-3">
+              <button type="button" onclick="dashboardUpgrade('pro')" class="px-5 py-2.5 rounded-lg bg-brand-600 text-white text-sm font-semibold hover:bg-brand-700 transition">Upgrade to Pro — $49/mo</button>
+              <button type="button" onclick="dashboardUpgrade('growth')" class="px-5 py-2.5 rounded-lg border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition">Upgrade to Growth — $199/mo</button>
+            </div>
+          </div>
+
+          <!-- State: Paid plan active — show billing info + cancel button -->
+          <div id="account-state-active" class="hidden pt-5 border-t border-slate-100">
+            <div class="mb-5">
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Next billing date</p>
+              <p id="account-next-billing" class="text-sm font-medium text-slate-900 mt-1">—</p>
+            </div>
+            <button type="button" onclick="showCancelModal()" class="cancel-btn">Cancel subscription</button>
+          </div>
+
+          <!-- State: Cancellation scheduled — show warning + reactivate button -->
+          <div id="account-state-scheduled" class="hidden pt-5 border-t border-slate-100">
+            <div class="cancel-warning">
+              <div class="cancel-warning-icon">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </div>
+              <div>
+                <p class="cancel-warning-title">Your subscription is scheduled to cancel</p>
+                <p class="cancel-warning-body" id="account-cancel-body">Your paid plan will remain active until the end of the current billing period.</p>
+              </div>
+            </div>
+            <button type="button" onclick="reactivateSubscription()" class="reactivate-btn">Keep my subscription</button>
+          </div>
+        </div>
+
+        <!-- Danger zone info -->
+        <p class="text-xs text-slate-400 mt-3">Cancellations take effect at the end of your current billing period. After that, your account reverts to the free plan with 1,000 checks per month. Your API key and policies remain intact.</p>
+      </div>
+
       <!-- VIOLATIONS -->
       <div id="view-violations" class="view hidden">
         <h2 class="text-lg font-bold text-slate-900 mb-6">Violations</h2>
@@ -289,6 +364,31 @@
   </div>
 </div>
 
-<script src="/dashboard/js/app.js?v=20260407a"></script>
+<!-- Cancel confirmation modal (D025) -->
+<div id="cancel-modal" class="cancel-modal hidden" role="dialog" aria-modal="true" aria-labelledby="cancel-modal-title">
+  <div class="cancel-modal-backdrop" onclick="hideCancelModal()"></div>
+  <div class="cancel-modal-card">
+    <div class="cancel-modal-icon">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <h3 id="cancel-modal-title" class="cancel-modal-title">Cancel your subscription?</h3>
+    <p id="cancel-modal-body" class="cancel-modal-body">Your paid plan will remain active until the end of the current billing period. After that, your account will revert to the free plan with 1,000 checks per month.</p>
+
+    <ul class="cancel-modal-list">
+      <li><span class="cancel-modal-bullet">•</span> Your API key and policies will remain unchanged</li>
+      <li><span class="cancel-modal-bullet">•</span> You can reactivate anytime before your plan ends</li>
+      <li><span class="cancel-modal-bullet">•</span> No refunds are issued for the current billing period</li>
+    </ul>
+
+    <div id="cancel-modal-error" class="cancel-modal-error hidden"></div>
+
+    <div class="cancel-modal-actions">
+      <button type="button" onclick="hideCancelModal()" class="cancel-modal-btn-secondary">Keep subscription</button>
+      <button type="button" id="cancel-modal-confirm" onclick="confirmCancelSubscription()" class="cancel-modal-btn-primary">Yes, cancel</button>
+    </div>
+  </div>
+</div>
+
+<script src="/dashboard/js/app.js?v=20260408a"></script>
 </body>
 </html>

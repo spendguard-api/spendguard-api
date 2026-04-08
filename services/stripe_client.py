@@ -115,6 +115,79 @@ def create_checkout_session(
     return session.url
 
 
+def cancel_subscription_at_period_end(subscription_id: str) -> dict:
+    """
+    Schedule a Stripe subscription to cancel at the end of the current period.
+
+    The subscription remains active (and the user keeps their paid plan) until
+    the current billing period ends. At that point Stripe fires
+    customer.subscription.deleted and our webhook drops them to the free tier.
+
+    Args:
+        subscription_id: Stripe subscription ID (starts with "sub_").
+
+    Returns:
+        Dict with "current_period_end" (unix timestamp) and "cancel_at_period_end" (bool).
+
+    Raises:
+        ValueError: If the subscription cannot be found or updated.
+    """
+    if not subscription_id:
+        raise ValueError("subscription_id is required")
+
+    try:
+        subscription = stripe.Subscription.modify(
+            subscription_id,
+            cancel_at_period_end=True,
+        )
+        logger.info(
+            "Subscription scheduled to cancel — id=%s period_end=%s",
+            subscription_id, subscription.get("current_period_end"),
+        )
+        return {
+            "current_period_end": subscription.get("current_period_end"),
+            "cancel_at_period_end": subscription.get("cancel_at_period_end", True),
+        }
+    except stripe.error.StripeError as e:
+        logger.error("Failed to cancel subscription %s: %s", subscription_id, e)
+        raise ValueError(f"Failed to cancel subscription: {e}")
+
+
+def reactivate_subscription(subscription_id: str) -> dict:
+    """
+    Undo a scheduled cancellation, reactivating the subscription.
+
+    Only works while the subscription is still in the current paid period
+    (i.e. before Stripe has actually cancelled it). After cancellation has
+    taken effect, the user must purchase a new subscription.
+
+    Args:
+        subscription_id: Stripe subscription ID.
+
+    Returns:
+        Dict with "current_period_end" and "cancel_at_period_end" (should be False).
+
+    Raises:
+        ValueError: If the subscription cannot be found or updated.
+    """
+    if not subscription_id:
+        raise ValueError("subscription_id is required")
+
+    try:
+        subscription = stripe.Subscription.modify(
+            subscription_id,
+            cancel_at_period_end=False,
+        )
+        logger.info("Subscription reactivated — id=%s", subscription_id)
+        return {
+            "current_period_end": subscription.get("current_period_end"),
+            "cancel_at_period_end": subscription.get("cancel_at_period_end", False),
+        }
+    except stripe.error.StripeError as e:
+        logger.error("Failed to reactivate subscription %s: %s", subscription_id, e)
+        raise ValueError(f"Failed to reactivate subscription: {e}")
+
+
 def report_overage_usage(subscription_id: str, quantity: int = 1) -> None:
     """
     Report metered overage usage to Stripe.

@@ -214,3 +214,106 @@ async def send_upgrade_email(
     except Exception as e:
         logger.error("Failed to send upgrade email to %s: %s", to_email, e)
         return False
+
+
+async def send_cancellation_email(
+    to_email: str,
+    owner_name: str,
+    plan_name: str,
+    cancel_date_iso: str,
+) -> bool:
+    """
+    Send a cancellation confirmation email when the user schedules a cancel (D025).
+
+    This fires when the user clicks "Cancel subscription" on the dashboard and
+    Stripe sets cancel_at_period_end=true. The plan remains active until the
+    cancel date — this email confirms the scheduled cancellation and tells the
+    user exactly when their access ends.
+
+    Args:
+        to_email: Customer's email address.
+        owner_name: Customer's name.
+        plan_name: "pro" or "growth".
+        cancel_date_iso: ISO timestamp when the plan cancels (current_period_end).
+
+    Returns:
+        True if sent successfully, False on failure.
+    """
+    resend_key = _get_resend_key()
+    if not resend_key:
+        logger.warning("RESEND_API_KEY not set — skipping cancellation email to %s", to_email)
+        return False
+
+    plan_display = PLAN_DISPLAY_NAMES.get(plan_name, plan_name.title())
+
+    try:
+        cancel_dt = datetime.fromisoformat(cancel_date_iso.replace("Z", "+00:00"))
+    except (ValueError, AttributeError):
+        cancel_dt = datetime.now(timezone.utc) + timedelta(days=30)
+    formatted_cancel_date = cancel_dt.strftime("%B %-d, %Y")
+
+    subject = f"Your SpendGuard {plan_display} cancellation is confirmed"
+    html_body = f"""
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 20px; color: #1e293b;">
+      <h1 style="font-size: 22px; font-weight: 700; margin: 0 0 8px 0;">Your cancellation is confirmed</h1>
+      <p style="color: #64748b; font-size: 15px; line-height: 1.6; margin: 0 0 24px 0;">Hi {owner_name}, your SpendGuard {plan_display} plan is scheduled to cancel. This email confirms the details below.</p>
+
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 24px 0;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">Current plan</td>
+            <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #1e293b;">{plan_display}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">Access ends on</td>
+            <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #1e293b;">{formatted_cancel_date}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">After cancellation</td>
+            <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #1e293b;">Free plan — 1,000 checks/month</td>
+          </tr>
+        </table>
+      </div>
+
+      <p style="color: #64748b; font-size: 14px; line-height: 1.6;">You will retain full access to your {plan_display} plan until {formatted_cancel_date}. After that date, your account will automatically revert to the free plan with a limit of 1,000 checks per month. Your API key and policies will remain intact — only the plan limit changes.</p>
+
+      <p style="color: #64748b; font-size: 14px; line-height: 1.6; margin-top: 16px;">Changed your mind? You can reactivate your subscription any time before {formatted_cancel_date} from your dashboard. After that date, you will need to purchase a new subscription.</p>
+
+      <div style="margin-top: 28px; text-align: center;">
+        <a href="https://spendguardapi.com/dashboard/" style="display: inline-block; background: #2563eb; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600;">Open Dashboard</a>
+      </div>
+
+      <p style="color: #94a3b8; font-size: 13px; margin-top: 32px; line-height: 1.6;">Questions about your cancellation or billing? Reply to this email and we will help.</p>
+
+      <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0 16px 0;">
+      <p style="color: #94a3b8; font-size: 12px; margin: 0;">SpendGuard — Real-time authorization for AI agent financial actions.</p>
+    </div>
+    """
+
+    try:
+        from_email = _get_billing_from_email()
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {resend_key}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "from": from_email,
+                    "to": [to_email],
+                    "subject": subject,
+                    "html": html_body,
+                },
+            )
+
+        if resp.status_code in (200, 201):
+            logger.info("Cancellation email sent to %s — plan=%s", to_email, plan_name)
+            return True
+        else:
+            logger.error("Resend API error (cancellation) — status=%d body=%s", resp.status_code, resp.text)
+            return False
+
+    except Exception as e:
+        logger.error("Failed to send cancellation email to %s: %s", to_email, e)
+        return False
