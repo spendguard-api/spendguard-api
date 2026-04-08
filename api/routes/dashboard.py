@@ -33,7 +33,7 @@ async def get_usage(request: Request) -> dict:
         # Get key info
         key_result = (
             supabase.table("api_keys")
-            .select("plan_name, plan_limit, billing_period_start, overage_enabled, owner_name, email, cancel_at_period_end, current_period_end")
+            .select("plan_name, plan_limit, billing_period_start, overage_enabled, owner_name, email, cancel_at_period_end, current_period_end, stripe_subscription_id")
             .eq("id", api_key_id)
             .limit(1)
             .execute()
@@ -49,6 +49,34 @@ async def get_usage(request: Request) -> dict:
         overage_enabled = key.get("overage_enabled", False)
         cancel_at_period_end = key.get("cancel_at_period_end", False)
         current_period_end = key.get("current_period_end")
+        stripe_subscription_id = key.get("stripe_subscription_id")
+
+        # Lazy backfill: if the user is on a paid plan but current_period_end is
+        # missing (subscription was created before the field existed), fetch it
+        # from Stripe once and persist it. This is a one-time per-user heal that
+        # makes the dashboard "next billing date" populate without manual SQL.
+        if plan_name != "free" and stripe_subscription_id and not current_period_end:
+            try:
+                import stripe
+                import os
+                stripe.api_key = os.getenv("STRIPE_SECRET_KEY", "")
+                sub = stripe.Subscription.retrieve(stripe_subscription_id)
+                period_end_unix = sub.get("current_period_end")
+                fetched_cancel_flag = bool(sub.get("cancel_at_period_end", False))
+                if period_end_unix:
+                    current_period_end = datetime.fromtimestamp(
+                        period_end_unix, tz=timezone.utc
+                    ).isoformat()
+                    update_payload = {"current_period_end": current_period_end}
+                    # Also sync cancel flag in case it drifted
+                    if fetched_cancel_flag != cancel_at_period_end:
+                        update_payload["cancel_at_period_end"] = fetched_cancel_flag
+                        cancel_at_period_end = fetched_cancel_flag
+                    supabase.table("api_keys").update(update_payload).eq("id", api_key_id).execute()
+                    logger.info("Backfilled current_period_end for key_id=%s from Stripe", api_key_id)
+            except Exception as e:
+                # Backfill is best-effort — don't break /v1/usage if Stripe is down
+                logger.warning("Failed to backfill current_period_end for key_id=%s: %s", api_key_id, e)
 
         if not period_start:
             now = datetime.now(timezone.utc)

@@ -116,29 +116,34 @@ async def _handle_subscription_created(event: dict) -> None:
     # Determine plan from the subscription
     plan_info = _resolve_plan(subscription)
 
+    # Capture current_period_end from Stripe so the dashboard can show
+    # the next billing date right away (D025 fix).
+    period_end_unix = subscription.get("current_period_end")
+    period_end_iso = None
+    if period_end_unix:
+        period_end_iso = datetime.fromtimestamp(period_end_unix, tz=timezone.utc).isoformat()
+
     from db.client import supabase
+
+    update_payload = {
+        "active": True,
+        "plan_name": plan_info["plan_name"],
+        "plan_limit": plan_info["plan_limit"],
+        "stripe_subscription_id": subscription["id"],
+        "billing_period_start": datetime.now(timezone.utc).isoformat(),
+        "overage_enabled": False,
+        "cancel_at_period_end": False,
+    }
+    if period_end_iso:
+        update_payload["current_period_end"] = period_end_iso
 
     if api_key_id:
         # Update by key ID from metadata
-        supabase.table("api_keys").update({
-            "active": True,
-            "plan_name": plan_info["plan_name"],
-            "plan_limit": plan_info["plan_limit"],
-            "stripe_customer_id": customer_id,
-            "stripe_subscription_id": subscription["id"],
-            "billing_period_start": datetime.now(timezone.utc).isoformat(),
-            "overage_enabled": False,
-        }).eq("id", api_key_id).execute()
+        update_payload["stripe_customer_id"] = customer_id
+        supabase.table("api_keys").update(update_payload).eq("id", api_key_id).execute()
     else:
         # Try to find by stripe_customer_id
-        supabase.table("api_keys").update({
-            "active": True,
-            "plan_name": plan_info["plan_name"],
-            "plan_limit": plan_info["plan_limit"],
-            "stripe_subscription_id": subscription["id"],
-            "billing_period_start": datetime.now(timezone.utc).isoformat(),
-            "overage_enabled": False,
-        }).eq("stripe_customer_id", customer_id).execute()
+        supabase.table("api_keys").update(update_payload).eq("stripe_customer_id", customer_id).execute()
 
     logger.info(
         "Subscription created — customer=%s plan=%s key_id=%s",

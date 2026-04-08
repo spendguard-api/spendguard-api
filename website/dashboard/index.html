@@ -20,7 +20,7 @@
     }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/dashboard/css/dashboard.css?v=20260408a">
+  <link rel="stylesheet" href="/dashboard/css/dashboard.css?v=20260408b">
 </head>
 <body class="h-full font-sans bg-[#fafbfc] text-slate-800 antialiased">
 
@@ -250,6 +250,24 @@
           </div>
         </div>
 
+        <!-- API Key card (D025) -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+          <h3 class="text-sm font-semibold text-slate-900 mb-1">API Key</h3>
+          <p class="text-xs text-slate-500 mb-4">Use this key in the <code class="text-[11px] font-mono bg-slate-100 px-1.5 py-0.5 rounded">X-API-Key</code> header for every request. Keep it secret — anyone with this key can use your account.</p>
+
+          <div class="api-key-row">
+            <input id="api-key-display" type="text" readonly value="" class="api-key-input" aria-label="Your API key">
+            <button type="button" id="api-key-toggle" onclick="toggleApiKeyVisibility()" class="api-key-btn" aria-label="Show or hide API key">
+              <svg id="api-key-eye-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <span id="api-key-toggle-label">Show</span>
+            </button>
+            <button type="button" id="api-key-copy" onclick="copyApiKey()" class="api-key-btn api-key-btn-primary" aria-label="Copy API key">
+              <svg id="api-key-copy-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              <span id="api-key-copy-label">Copy</span>
+            </button>
+          </div>
+        </div>
+
         <!-- Subscription card -->
         <div class="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
           <h3 class="text-sm font-semibold text-slate-900 mb-4">Subscription</h3>
@@ -389,6 +407,6 @@
   </div>
 </div>
 
-<script src="/dashboard/js/app.js?v=20260408a"></script>
+<script src="/dashboard/js/app.js?v=20260408b"></script>
 </body>
 </html>

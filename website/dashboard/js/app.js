@@ -473,6 +473,14 @@ function renderAccount(data) {
   document.getElementById('account-name').textContent = data.owner_name || '—';
   document.getElementById('account-email').textContent = data.email || '—';
 
+  // API key — populate masked by default, store full key in dataset for toggle
+  var keyInput = document.getElementById('api-key-display');
+  if (keyInput && apiKey) {
+    keyInput.dataset.fullKey = apiKey;
+    keyInput.dataset.visible = 'false';
+    keyInput.value = maskApiKey(apiKey);
+  }
+
   // Plan info
   var plan = (data.plan_name || 'free').toLowerCase();
   var planDisplay = plan.charAt(0).toUpperCase() + plan.slice(1);
@@ -588,6 +596,68 @@ function reactivateSubscription() {
   })
   .catch(function(e) {
     alert('Failed to reactivate: ' + (e.message || 'Unknown error'));
+  });
+}
+
+// API key display helpers
+function maskApiKey(key) {
+  if (!key) return '';
+  // Show the prefix (sg_live_ or sg_test_) + 4 chars, then mask the rest
+  // Example: "sg_live_abcd••••••••••••••••••"
+  var prefixMatch = key.match(/^([a-z]+_[a-z]+_)?/);
+  var prefix = prefixMatch ? prefixMatch[0] : '';
+  var afterPrefix = key.slice(prefix.length);
+  var visible = afterPrefix.slice(0, 4);
+  var masked = '•'.repeat(Math.max(afterPrefix.length - 4, 8));
+  return prefix + visible + masked;
+}
+
+function toggleApiKeyVisibility() {
+  var input = document.getElementById('api-key-display');
+  var label = document.getElementById('api-key-toggle-label');
+  var icon = document.getElementById('api-key-eye-icon');
+  if (!input || !input.dataset.fullKey) return;
+
+  var isVisible = input.dataset.visible === 'true';
+  if (isVisible) {
+    input.value = maskApiKey(input.dataset.fullKey);
+    input.dataset.visible = 'false';
+    if (label) label.textContent = 'Show';
+    if (icon) icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  } else {
+    input.value = input.dataset.fullKey;
+    input.dataset.visible = 'true';
+    if (label) label.textContent = 'Hide';
+    if (icon) icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  }
+}
+
+function copyApiKey() {
+  var input = document.getElementById('api-key-display');
+  if (!input || !input.dataset.fullKey) return;
+
+  var btn = document.getElementById('api-key-copy');
+  var label = document.getElementById('api-key-copy-label');
+  var icon = document.getElementById('api-key-copy-icon');
+
+  // Always copy the FULL key, not the masked version
+  navigator.clipboard.writeText(input.dataset.fullKey).then(function() {
+    if (label) label.textContent = 'Copied';
+    if (icon) icon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
+    if (btn) btn.classList.add('api-key-btn-success');
+    setTimeout(function() {
+      if (label) label.textContent = 'Copy';
+      if (icon) icon.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>';
+      if (btn) btn.classList.remove('api-key-btn-success');
+    }, 2000);
+  }).catch(function() {
+    // Fallback for older browsers — select + execCommand
+    input.value = input.dataset.fullKey;
+    input.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    if (input.dataset.visible !== 'true') input.value = maskApiKey(input.dataset.fullKey);
+    if (label) label.textContent = 'Copied';
+    setTimeout(function() { if (label) label.textContent = 'Copy'; }, 2000);
   });
 }
 
