@@ -1,5 +1,71 @@
 /* SpendGuard Dashboard Styles */
 
+/* Upgrade success banner (D024) */
+.upgrade-success-banner {
+  margin-bottom: 24px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 100%);
+  border: 1px solid #a7f3d0;
+  box-shadow: 0 1px 3px rgba(16, 185, 129, 0.06), 0 4px 16px rgba(16, 185, 129, 0.05);
+  animation: upgrade-banner-in 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.upgrade-success-banner.hidden { display: none; }
+.upgrade-success-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 18px;
+}
+.upgrade-success-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #10b981;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.upgrade-success-text { flex: 1; min-width: 0; }
+.upgrade-success-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #064e3b;
+  margin: 0 0 2px 0;
+}
+.upgrade-success-body {
+  font-size: 13px;
+  color: #047857;
+  margin: 0;
+  line-height: 1.5;
+}
+.upgrade-success-close {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  color: #059669;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease;
+}
+.upgrade-success-close:hover { background: rgba(16, 185, 129, 0.1); }
+@keyframes upgrade-banner-in {
+  0% { opacity: 0; transform: translateY(-8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 768px) {
+  .upgrade-success-inner { padding: 14px 14px; gap: 12px; }
+  .upgrade-success-icon { width: 32px; height: 32px; }
+  .upgrade-success-title { font-size: 14px; }
+  .upgrade-success-body { font-size: 12px; }
+}
+
 /* Nav links */
 .nav-link { color: #64748b; border-radius: 8px; }
 .nav-link:hover { background: #f8fafc; color: #1e293b; }

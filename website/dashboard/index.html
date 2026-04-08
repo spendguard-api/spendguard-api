@@ -20,7 +20,7 @@
     }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/dashboard/css/dashboard.css?v=20260405v5">
+  <link rel="stylesheet" href="/dashboard/css/dashboard.css?v=20260407a">
 </head>
 <body class="h-full font-sans bg-[#fafbfc] text-slate-800 antialiased">
 
@@ -94,6 +94,22 @@
 
     <!-- Main -->
     <main class="flex-1 md:ml-52 p-6 lg:p-8 overflow-y-auto">
+
+      <!-- Upgrade success banner -->
+      <div id="upgrade-success-banner" class="upgrade-success-banner hidden" role="status" aria-live="polite">
+        <div class="upgrade-success-inner">
+          <div class="upgrade-success-icon">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="upgrade-success-text">
+            <p id="upgrade-success-title" class="upgrade-success-title">Upgrade complete</p>
+            <p id="upgrade-success-body" class="upgrade-success-body">Your new plan is active.</p>
+          </div>
+          <button type="button" onclick="dismissUpgradeBanner()" class="upgrade-success-close" aria-label="Dismiss">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+      </div>
 
       <!-- OVERVIEW -->
       <div id="view-overview" class="view">
@@ -273,6 +289,6 @@
   </div>
 </div>
 
-<script src="/dashboard/js/app.js?v=20260405v5"></script>
+<script src="/dashboard/js/app.js?v=20260407a"></script>
 </body>
 </html>

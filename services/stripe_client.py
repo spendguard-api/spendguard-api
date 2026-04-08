@@ -64,7 +64,7 @@ def verify_webhook_signature(payload: bytes, sig_header: str) -> dict:
 def create_checkout_session(
     plan: str,
     customer_email: str | None = None,
-    success_url: str = "https://spendguardapi.com/?checkout=success",
+    success_url: str | None = None,
     cancel_url: str = "https://spendguardapi.com/?checkout=cancel",
     metadata: dict | None = None,
 ) -> str:
@@ -74,9 +74,11 @@ def create_checkout_session(
     Args:
         plan: "pro" or "growth".
         customer_email: Pre-fill the email field.
-        success_url: Redirect URL after successful payment.
+        success_url: Redirect URL after successful payment. Defaults to dashboard
+            with ?upgraded={plan} so the dashboard can show a confirmation banner.
         cancel_url: Redirect URL if customer cancels.
-        metadata: Optional metadata to attach to the subscription.
+        metadata: Optional metadata to attach to the subscription. The plan name
+            is automatically merged in so the webhook can resolve the correct tier.
 
     Returns:
         Stripe Checkout URL.
@@ -88,18 +90,25 @@ def create_checkout_session(
     if not price_id:
         raise ValueError(f"Invalid plan '{plan}' or price ID not configured. Set STRIPE_PRICE_{plan.upper()} env var.")
 
+    if success_url is None:
+        success_url = f"https://spendguardapi.com/dashboard/?upgraded={plan}&session_id={{CHECKOUT_SESSION_ID}}"
+
+    # Always include the plan in subscription metadata so the webhook handler
+    # can resolve the correct tier (D023 fix — previously every upgrade defaulted to pro).
+    subscription_metadata = {"plan": plan}
+    if metadata:
+        subscription_metadata.update(metadata)
+
     session_params = {
         "mode": "subscription",
         "line_items": [{"price": price_id, "quantity": 1}],
         "success_url": success_url,
         "cancel_url": cancel_url,
+        "subscription_data": {"metadata": subscription_metadata},
     }
 
     if customer_email:
         session_params["customer_email"] = customer_email
-
-    if metadata:
-        session_params["subscription_data"] = {"metadata": metadata}
 
     session = stripe.checkout.Session.create(**session_params)
     logger.info("Checkout session created — plan=%s session_id=%s", plan, session.id)

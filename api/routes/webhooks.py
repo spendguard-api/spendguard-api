@@ -106,6 +106,7 @@ async def _handle_subscription_created(event: dict) -> None:
     Activate key and set plan when a new subscription is created.
 
     Looks up the API key by the customer email or metadata.api_key_id.
+    Sends an upgrade confirmation email after the row is updated (D024).
     """
     subscription = event["data"]["object"]
     customer_id = subscription.get("customer", "")
@@ -142,6 +143,79 @@ async def _handle_subscription_created(event: dict) -> None:
     logger.info(
         "Subscription created — customer=%s plan=%s key_id=%s",
         customer_id, plan_info["plan_name"], api_key_id,
+    )
+
+    # Send upgrade confirmation email (D024). Wrapped in try/except so a failed
+    # email never breaks the webhook — Stripe must always get a 200 back.
+    try:
+        await _send_upgrade_email_for_key(
+            api_key_id=api_key_id,
+            customer_id=customer_id,
+            plan_name=plan_info["plan_name"],
+            plan_limit=plan_info["plan_limit"],
+        )
+    except Exception as e:
+        logger.error("Failed to send upgrade email after subscription created: %s", e)
+
+
+async def _send_upgrade_email_for_key(
+    api_key_id: str | None,
+    customer_id: str,
+    plan_name: str,
+    plan_limit: int,
+) -> None:
+    """
+    Look up the customer's email and name, then send the upgrade confirmation.
+
+    Tries the api_key_id first (preferred — set in checkout metadata), then
+    falls back to looking up by stripe_customer_id.
+    """
+    from db.client import supabase
+    from services.email import send_upgrade_email
+
+    row = None
+    if api_key_id:
+        result = (
+            supabase.table("api_keys")
+            .select("email, owner_name")
+            .eq("id", api_key_id)
+            .limit(1)
+            .execute()
+        )
+        if result.data:
+            row = result.data[0]
+
+    if not row and customer_id:
+        result = (
+            supabase.table("api_keys")
+            .select("email, owner_name")
+            .eq("stripe_customer_id", customer_id)
+            .limit(1)
+            .execute()
+        )
+        if result.data:
+            row = result.data[0]
+
+    if not row:
+        logger.warning(
+            "Cannot send upgrade email — no matching api_keys row "
+            "(api_key_id=%s, customer_id=%s)",
+            api_key_id, customer_id,
+        )
+        return
+
+    email = row.get("email")
+    owner_name = row.get("owner_name") or "there"
+
+    if not email:
+        logger.warning("Cannot send upgrade email — api_keys row has no email")
+        return
+
+    await send_upgrade_email(
+        to_email=email,
+        owner_name=owner_name,
+        plan_name=plan_name,
+        plan_limit=plan_limit,
     )
 
 

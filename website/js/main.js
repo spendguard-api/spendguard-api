@@ -144,6 +144,32 @@
     });
   }
 
+  // --- Checkout cancel toast (D024) ---
+  // When the user comes back from Stripe Checkout after cancelling,
+  // the URL has ?checkout=cancel — show a brief, non-alarming toast.
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var checkout = params.get('checkout');
+    if (checkout !== 'cancel') return;
+
+    // Clean the URL so refreshing doesn't re-show
+    history.replaceState({}, document.title, window.location.pathname);
+
+    var toast = document.createElement('div');
+    toast.className = 'checkout-cancel-toast';
+    toast.setAttribute('role', 'status');
+    toast.innerHTML =
+      '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+      '<span>Checkout cancelled — no charges were made.</span>';
+    document.body.appendChild(toast);
+
+    // Auto-dismiss after 5 seconds
+    setTimeout(function () {
+      toast.classList.add('fade-out');
+      setTimeout(function () { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 400);
+    }, 5000);
+  })();
+
   // --- Sticky mobile CTA (visible after scrolling past hero) ---
   var stickyCta = document.getElementById('sticky-cta');
   var heroSection = document.querySelector('.hero');

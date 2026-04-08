@@ -37,6 +37,7 @@ function handleLogin() {
     apiKey = key;
     localStorage.setItem('sg_api_key', key);
     showDashboard(data);
+    handleUpgradeReturn();
   })
   .catch(function(err) {
     errorEl.textContent = err.message;
@@ -62,8 +63,11 @@ function handleLogout() {
     apiKey = savedKey;
     fetch(API_BASE + '/v1/usage', { headers: { 'X-API-Key': savedKey } })
     .then(function(resp) { if (resp.ok) return resp.json(); throw new Error(); })
-    .then(function(data) { showDashboard(data); })
+    .then(function(data) { showDashboard(data); handleUpgradeReturn(); })
     .catch(function() { handleLogout(); });
+  } else {
+    // No saved key but landed on dashboard with ?upgraded= — they need to log in first
+    // The banner will fire after they log in successfully
   }
 })();
 
@@ -384,6 +388,97 @@ function dashboardUpgrade(plan) {
     if (data.checkout_url) window.location.href = data.checkout_url;
   })
   .catch(function(err) { alert('Failed to start checkout: ' + err.message); });
+}
+
+// ============================================================
+// UPGRADE RETURN BANNER (D024)
+// ============================================================
+// When the user comes back from Stripe Checkout, the URL has ?upgraded=pro
+// or ?upgraded=growth. We show a green success banner and poll /v1/usage
+// every 2 seconds until plan_name matches (handles webhook delay).
+
+var _upgradePollTimer = null;
+var _upgradePollAttempts = 0;
+var UPGRADE_POLL_MAX_ATTEMPTS = 8;  // 8 × 2s = 16s max wait
+
+function handleUpgradeReturn() {
+  var params = new URLSearchParams(window.location.search);
+  var upgradedPlan = params.get('upgraded');
+  if (!upgradedPlan) return;
+  if (upgradedPlan !== 'pro' && upgradedPlan !== 'growth') return;
+
+  // Clean the URL so refreshing doesn't re-show
+  var cleanUrl = window.location.pathname;
+  history.replaceState({}, document.title, cleanUrl);
+
+  showUpgradeBanner(upgradedPlan, false);
+  startUpgradePolling(upgradedPlan);
+}
+
+function showUpgradeBanner(plan, confirmed) {
+  var banner = document.getElementById('upgrade-success-banner');
+  var title = document.getElementById('upgrade-success-title');
+  var body = document.getElementById('upgrade-success-body');
+  if (!banner) return;
+
+  var planDisplay = plan === 'pro' ? 'Pro' : 'Growth';
+  var planLimit = plan === 'pro' ? '10,000' : '100,000';
+
+  if (confirmed) {
+    title.textContent = 'Welcome to SpendGuard ' + planDisplay;
+    body.textContent = 'Your plan is now active with ' + planLimit + ' checks per month. A confirmation email is on its way.';
+  } else {
+    title.textContent = 'Confirming your upgrade to ' + planDisplay + '…';
+    body.textContent = 'This takes a few seconds. Your dashboard will update automatically.';
+  }
+
+  banner.classList.remove('hidden');
+}
+
+function dismissUpgradeBanner() {
+  var banner = document.getElementById('upgrade-success-banner');
+  if (banner) banner.classList.add('hidden');
+  if (_upgradePollTimer) { clearTimeout(_upgradePollTimer); _upgradePollTimer = null; }
+}
+
+function startUpgradePolling(expectedPlan) {
+  _upgradePollAttempts = 0;
+  pollForUpgrade(expectedPlan);
+}
+
+function pollForUpgrade(expectedPlan) {
+  _upgradePollAttempts++;
+
+  apiFetch('/v1/usage')
+  .then(function(data) {
+    if (data.plan_name === expectedPlan) {
+      // Webhook has fired — update overview and switch banner to confirmed state
+      updateOverview(data);
+      showUpgradeBanner(expectedPlan, true);
+      _upgradePollTimer = null;
+      return;
+    }
+
+    if (_upgradePollAttempts >= UPGRADE_POLL_MAX_ATTEMPTS) {
+      // Timed out — show a fallback message
+      var title = document.getElementById('upgrade-success-title');
+      var body = document.getElementById('upgrade-success-body');
+      if (title && body) {
+        title.textContent = 'Payment received — still processing';
+        body.textContent = 'Your upgrade should appear within a minute. Refresh the page if it does not update.';
+      }
+      _upgradePollTimer = null;
+      return;
+    }
+
+    _upgradePollTimer = setTimeout(function() { pollForUpgrade(expectedPlan); }, 2000);
+  })
+  .catch(function() {
+    // Silently retry — network blip is fine
+    if (_upgradePollAttempts < UPGRADE_POLL_MAX_ATTEMPTS) {
+      _upgradePollTimer = setTimeout(function() { pollForUpgrade(expectedPlan); }, 2000);
+    }
+  });
 }
 
 // ============================================================

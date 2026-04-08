@@ -3,6 +3,7 @@ Email service for SpendGuard API using Resend.
 
 Sends transactional emails:
 - Welcome email on free tier signup (D023)
+- Upgrade confirmation email on paid plan activation (D024)
 
 Uses Resend HTTP API directly — no SDK needed.
 RESEND_API_KEY from environment.
@@ -12,16 +13,31 @@ from __future__ import annotations
 
 import logging
 import os
+from datetime import datetime, timedelta, timezone
 
 import httpx
 
 logger = logging.getLogger(__name__)
+
+PLAN_DISPLAY_NAMES = {
+    "pro": "Pro",
+    "growth": "Growth",
+}
+
+PLAN_PRICES_DISPLAY = {
+    "pro": "$49/month",
+    "growth": "$199/month",
+}
+
 
 def _get_resend_key() -> str:
     return os.getenv("RESEND_API_KEY", "")
 
 def _get_from_email() -> str:
     return os.getenv("FROM_EMAIL", "SpendGuard <noreply@spendguardapi.com>")
+
+def _get_billing_from_email() -> str:
+    return os.getenv("BILLING_FROM_EMAIL", "SpendGuard Billing <billing@spendguardapi.com>")
 
 
 async def send_welcome_email(to_email: str, owner_name: str, api_key_preview: str) -> bool:
@@ -92,4 +108,109 @@ async def send_welcome_email(to_email: str, owner_name: str, api_key_preview: st
 
     except Exception as e:
         logger.error("Failed to send welcome email to %s: %s", to_email, e)
+        return False
+
+
+async def send_upgrade_email(
+    to_email: str,
+    owner_name: str,
+    plan_name: str,
+    plan_limit: int,
+) -> bool:
+    """
+    Send a confirmation email after a paid plan is activated.
+
+    Triggered by the Stripe customer.subscription.created webhook (D024).
+    Free tier signups receive the welcome email instead — this function is
+    only called for pro and growth tiers.
+
+    Args:
+        to_email: Customer's email address.
+        owner_name: Customer's name.
+        plan_name: "pro" or "growth".
+        plan_limit: Monthly check limit for the plan (e.g. 10000, 100000).
+
+    Returns:
+        True if sent successfully, False on failure.
+    """
+    resend_key = _get_resend_key()
+    if not resend_key:
+        logger.warning("RESEND_API_KEY not set — skipping upgrade email to %s", to_email)
+        return False
+
+    plan_display = PLAN_DISPLAY_NAMES.get(plan_name, plan_name.title())
+    plan_price = PLAN_PRICES_DISPLAY.get(plan_name, "")
+    formatted_limit = f"{plan_limit:,}"
+
+    now = datetime.now(timezone.utc)
+    next_billing = now + timedelta(days=30)
+    billing_date = now.strftime("%B %-d, %Y")
+    next_billing_date = next_billing.strftime("%B %-d, %Y")
+
+    subject = f"Your SpendGuard {plan_display} plan is active"
+    html_body = f"""
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 20px; color: #1e293b;">
+      <h1 style="font-size: 22px; font-weight: 700; margin: 0 0 8px 0;">Your upgrade is complete</h1>
+      <p style="color: #64748b; font-size: 15px; line-height: 1.6; margin: 0 0 24px 0;">Hi {owner_name}, thank you for upgrading to SpendGuard {plan_display}. Your new plan is now active and ready to use.</p>
+
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 24px 0;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">Plan</td>
+            <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #1e293b;">{plan_display}{(' — ' + plan_price) if plan_price else ''}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">Monthly limit</td>
+            <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #1e293b;">{formatted_limit} checks</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">Activation date</td>
+            <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #1e293b;">{billing_date}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">Next billing date</td>
+            <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #1e293b;">{next_billing_date}</td>
+          </tr>
+        </table>
+      </div>
+
+      <p style="color: #64748b; font-size: 14px; line-height: 1.6;">Your existing API key works without any changes — no need to regenerate it. The new limits and features are already applied to your account.</p>
+
+      <div style="margin-top: 28px; text-align: center;">
+        <a href="https://spendguardapi.com/dashboard/" style="display: inline-block; background: #2563eb; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600;">Open Dashboard</a>
+      </div>
+
+      <p style="color: #94a3b8; font-size: 13px; margin-top: 32px; line-height: 1.6;">You can manage your subscription, download invoices, or change your plan at any time from your dashboard. Questions about billing? Reply to this email and we'll help.</p>
+
+      <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0 16px 0;">
+      <p style="color: #94a3b8; font-size: 12px; margin: 0;">SpendGuard — Real-time authorization for AI agent financial actions.</p>
+    </div>
+    """
+
+    try:
+        from_email = _get_billing_from_email()
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {resend_key}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "from": from_email,
+                    "to": [to_email],
+                    "subject": subject,
+                    "html": html_body,
+                },
+            )
+
+        if resp.status_code in (200, 201):
+            logger.info("Upgrade email sent to %s — plan=%s", to_email, plan_name)
+            return True
+        else:
+            logger.error("Resend API error (upgrade) — status=%d body=%s", resp.status_code, resp.text)
+            return False
+
+    except Exception as e:
+        logger.error("Failed to send upgrade email to %s: %s", to_email, e)
         return False
