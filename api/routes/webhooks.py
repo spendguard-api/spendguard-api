@@ -234,8 +234,10 @@ async def _handle_subscription_updated(event: dict) -> None:
     - Cancellation undone (cancel_at_period_end flipped back to false)
     - Renewal (new current_period_end)
 
-    When cancel_at_period_end flips from false → true, we send the
-    cancellation confirmation email. The DB row is updated regardless.
+    Note: The cancellation email is sent directly from the POST
+    /v1/billing/cancel endpoint, NOT here. This handler is a pure
+    state-sync safety net that also covers out-of-band changes made
+    directly in the Stripe dashboard.
     """
     subscription = event["data"]["object"]
     customer_id = subscription.get("customer", "")
@@ -248,20 +250,6 @@ async def _handle_subscription_updated(event: dict) -> None:
         period_end_iso = datetime.fromtimestamp(period_end_unix, tz=timezone.utc).isoformat()
 
     from db.client import supabase
-
-    # Read current row so we can detect state transitions (for the email)
-    existing = (
-        supabase.table("api_keys")
-        .select("id, email, owner_name, cancel_at_period_end")
-        .eq("stripe_customer_id", customer_id)
-        .limit(1)
-        .execute()
-    )
-    previous_cancel_flag = False
-    row = None
-    if existing.data:
-        row = existing.data[0]
-        previous_cancel_flag = bool(row.get("cancel_at_period_end", False))
 
     update_payload = {
         "plan_name": plan_info["plan_name"],
@@ -277,23 +265,6 @@ async def _handle_subscription_updated(event: dict) -> None:
         "Subscription updated — customer=%s plan=%s cancel_at_period_end=%s",
         customer_id, plan_info["plan_name"], cancel_at_period_end,
     )
-
-    # Send cancellation email only when the flag flips from false → true
-    if row and cancel_at_period_end and not previous_cancel_flag:
-        try:
-            from services.email import send_cancellation_email
-
-            email = row.get("email")
-            owner_name = row.get("owner_name") or "there"
-            if email and period_end_iso:
-                await send_cancellation_email(
-                    to_email=email,
-                    owner_name=owner_name,
-                    plan_name=plan_info["plan_name"],
-                    cancel_date_iso=period_end_iso,
-                )
-        except Exception as e:
-            logger.error("Failed to send cancellation email: %s", e)
 
 
 async def _handle_subscription_deleted(event: dict) -> None:

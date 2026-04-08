@@ -322,8 +322,9 @@ async def cancel_subscription(request: Request) -> CancelResponse:
         period_end_iso = datetime.fromtimestamp(period_end_unix, tz=timezone.utc).isoformat()
 
     # Update our row immediately so the dashboard reflects the cancellation
-    # without waiting for the webhook. The webhook will still fire and
-    # (idempotently) re-confirm the same state + send the email.
+    # without waiting for the webhook. The webhook will still fire but is
+    # now a no-op for state — it remains as a safety net for out-of-band
+    # cancellations (e.g. from the Stripe dashboard directly).
     try:
         from db.client import supabase
 
@@ -338,6 +339,35 @@ async def cancel_subscription(request: Request) -> CancelResponse:
         "Subscription scheduled to cancel — key_id=%s plan=%s period_end=%s",
         api_key_id, plan_name, period_end_iso,
     )
+
+    # Send the confirmation email directly from the endpoint so we don't
+    # depend on the webhook's transition detection (which races with the
+    # DB update above). Wrapped in try/except so a failed email never
+    # blocks the cancellation itself.
+    try:
+        from db.client import supabase
+        from services.email import send_cancellation_email
+
+        profile_result = (
+            supabase.table("api_keys")
+            .select("email, owner_name")
+            .eq("id", api_key_id)
+            .limit(1)
+            .execute()
+        )
+        if profile_result.data and period_end_iso:
+            profile = profile_result.data[0]
+            email = profile.get("email")
+            owner_name = profile.get("owner_name") or "there"
+            if email:
+                await send_cancellation_email(
+                    to_email=email,
+                    owner_name=owner_name,
+                    plan_name=plan_name,
+                    cancel_date_iso=period_end_iso,
+                )
+    except Exception as e:
+        logger.error("Failed to send cancellation email from endpoint: %s", e)
 
     return CancelResponse(
         cancel_at_period_end=True,
