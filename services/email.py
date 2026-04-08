@@ -216,6 +216,129 @@ async def send_upgrade_email(
         return False
 
 
+async def send_plan_change_email(
+    to_email: str,
+    owner_name: str,
+    old_plan: str,
+    new_plan: str,
+    new_plan_limit: int,
+    next_billing_iso: str | None = None,
+) -> bool:
+    """
+    Send a confirmation email when a customer switches between paid plans (D026).
+
+    Triggered by the POST /v1/checkout endpoint when the user already has an
+    active subscription and switches between Pro and Growth (in either direction).
+
+    Args:
+        to_email: Customer's email address.
+        owner_name: Customer's name.
+        old_plan: Plan name before the change ("pro" or "growth").
+        new_plan: Plan name after the change ("pro" or "growth").
+        new_plan_limit: Monthly check limit for the new plan.
+        next_billing_iso: ISO timestamp of the next billing date (cycle reset to today + 30).
+
+    Returns:
+        True if sent successfully, False on failure.
+    """
+    resend_key = _get_resend_key()
+    if not resend_key:
+        logger.warning("RESEND_API_KEY not set — skipping plan change email to %s", to_email)
+        return False
+
+    old_display = PLAN_DISPLAY_NAMES.get(old_plan, old_plan.title())
+    new_display = PLAN_DISPLAY_NAMES.get(new_plan, new_plan.title())
+    new_price = PLAN_PRICES_DISPLAY.get(new_plan, "")
+    formatted_limit = f"{new_plan_limit:,}"
+    is_upgrade = (old_plan == "pro" and new_plan == "growth")
+
+    today = datetime.now(timezone.utc).strftime("%B %-d, %Y")
+    if next_billing_iso:
+        try:
+            next_dt = datetime.fromisoformat(next_billing_iso.replace("Z", "+00:00"))
+        except (ValueError, AttributeError):
+            next_dt = datetime.now(timezone.utc) + timedelta(days=30)
+    else:
+        next_dt = datetime.now(timezone.utc) + timedelta(days=30)
+    next_billing_date = next_dt.strftime("%B %-d, %Y")
+
+    action_word = "upgrade" if is_upgrade else "plan change"
+    subject = f"Your SpendGuard plan changed to {new_display}"
+
+    html_body = f"""
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 20px; color: #1e293b;">
+      <h1 style="font-size: 22px; font-weight: 700; margin: 0 0 8px 0;">Your {action_word} is complete</h1>
+      <p style="color: #64748b; font-size: 15px; line-height: 1.6; margin: 0 0 24px 0;">Hi {owner_name}, your SpendGuard plan has been changed from {old_display} to {new_display}. Your billing cycle has been reset and your new plan is active immediately.</p>
+
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 24px 0;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">Previous plan</td>
+            <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #1e293b;">{old_display}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">New plan</td>
+            <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #1e293b;">{new_display}{(' — ' + new_price) if new_price else ''}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">New monthly limit</td>
+            <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #1e293b;">{formatted_limit} checks</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">Effective date</td>
+            <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #1e293b;">{today}</td>
+          </tr>
+          <tr>
+            <td style="padding: 6px 0; color: #64748b;">Next billing date</td>
+            <td style="padding: 6px 0; text-align: right; font-weight: 600; color: #1e293b;">{next_billing_date}</td>
+          </tr>
+        </table>
+      </div>
+
+      <p style="color: #64748b; font-size: 14px; line-height: 1.6;">A prorated invoice has been issued for the difference between your previous plan and your new plan. Any unused time on your previous plan has been credited toward the new plan. You can view the detailed invoice in your dashboard or in the receipt sent separately by Stripe.</p>
+
+      <p style="color: #64748b; font-size: 14px; line-height: 1.6; margin-top: 16px;">Your API key and policies are unchanged. Only the plan limit and billing amount have been updated.</p>
+
+      <div style="margin-top: 28px; text-align: center;">
+        <a href="https://spendguardapi.com/dashboard/" style="display: inline-block; background: #2563eb; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: 600;">Open Dashboard</a>
+      </div>
+
+      <p style="color: #94a3b8; font-size: 13px; margin-top: 32px; line-height: 1.6;">Questions about your plan change or billing? Reply to this email and we will help.</p>
+
+      <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 32px 0 16px 0;">
+      <p style="color: #94a3b8; font-size: 12px; margin: 0;">SpendGuard — Real-time authorization for AI agent financial actions.</p>
+    </div>
+    """
+
+    try:
+        from_email = _get_billing_from_email()
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {resend_key}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "from": from_email,
+                    "to": [to_email],
+                    "subject": subject,
+                    "html": html_body,
+                },
+            )
+
+        if resp.status_code in (200, 201):
+            logger.info("Plan change email sent to %s — %s -> %s", to_email, old_plan, new_plan)
+            return True
+        else:
+            logger.error("Resend API error (plan change) — status=%d body=%s", resp.status_code, resp.text)
+            return False
+
+    except Exception as e:
+        logger.error("Failed to send plan change email to %s: %s", to_email, e)
+        return False
+
+
 async def send_cancellation_email(
     to_email: str,
     owner_name: str,

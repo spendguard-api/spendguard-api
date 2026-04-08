@@ -139,72 +139,197 @@ class CheckoutRequest(BaseModel):
 class CheckoutResponse(BaseModel):
     """Response body for POST /v1/checkout."""
 
-    checkout_url: str
+    checkout_url: str | None = None  # Present only for new (free → paid) subscriptions
+    change_type: str  # "checkout" or "plan_change"
     plan: str
     message: str
+
+
+# Plan limits used when we update the api_keys row after a plan change.
+# Mirrors the values in services/stripe_client.PLAN_LIMITS so we don't
+# need to import that module here.
+_PLAN_LIMITS = {"pro": 10000, "growth": 100000}
 
 
 @router.post("/checkout", response_model=CheckoutResponse)
 async def create_checkout(request: Request, body: CheckoutRequest) -> CheckoutResponse:
     """
-    Create a Stripe Checkout session to upgrade from free to a paid plan.
+    Start a paid subscription or switch between paid plans (D026).
 
-    Returns a Stripe-hosted checkout URL. Redirect the user there to complete payment.
+    Three branches:
+    1. User has no active subscription (free tier) → create a Stripe Checkout
+       Session and return the hosted URL for payment.
+    2. User already has an active subscription on a DIFFERENT plan → modify
+       the existing Stripe subscription in place. Billing cycle resets to today,
+       proration is charged immediately. Returns success without a checkout URL.
+    3. User already has an active subscription on the SAME plan → return 409.
+
+    This prevents the bug where a Pro user clicking "Get Growth" would create
+    a second subscription and be billed for both plans.
     """
     request_id = getattr(request.state, "request_id", "unknown")
     timestamp = datetime.now(timezone.utc).isoformat()
     api_key_id = getattr(request.state, "api_key_id", None)
 
-    # Get customer email for pre-filling checkout
+    # Look up the user's current subscription state
     customer_email = None
+    current_plan = "free"
+    current_subscription_id = None
     if api_key_id:
         try:
             from db.client import supabase
 
             result = (
                 supabase.table("api_keys")
-                .select("email")
+                .select("email, plan_name, stripe_subscription_id")
                 .eq("id", api_key_id)
                 .limit(1)
                 .execute()
             )
             if result.data:
-                customer_email = result.data[0].get("email")
+                row = result.data[0]
+                customer_email = row.get("email")
+                current_plan = row.get("plan_name", "free") or "free"
+                current_subscription_id = row.get("stripe_subscription_id")
         except Exception as e:
-            logger.warning("Could not fetch email for checkout: %s", e)
+            logger.warning("Could not fetch profile for checkout: %s", e)
 
-    try:
-        from services.stripe_client import create_checkout_session
+    # ----------------------------------------------------------------
+    # Branch 1: Free tier → create Stripe Checkout Session (existing flow)
+    # ----------------------------------------------------------------
+    if current_plan == "free" or not current_subscription_id:
+        try:
+            from services.stripe_client import create_checkout_session
 
-        checkout_url = create_checkout_session(
+            checkout_url = create_checkout_session(
+                plan=body.plan,
+                customer_email=customer_email,
+                metadata={"api_key_id": api_key_id} if api_key_id else None,
+            )
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail={
+                "error": {
+                    "code": "bad_request",
+                    "message": str(e),
+                    "request_id": request_id,
+                    "timestamp": timestamp,
+                }
+            })
+        except Exception as e:
+            logger.error("Failed to create checkout session: %s", e)
+            raise HTTPException(status_code=500, detail={
+                "error": {
+                    "code": "internal_error",
+                    "message": "Failed to create checkout session.",
+                    "request_id": request_id,
+                    "timestamp": timestamp,
+                }
+            })
+
+        return CheckoutResponse(
+            checkout_url=checkout_url,
+            change_type="checkout",
             plan=body.plan,
-            customer_email=customer_email,
-            metadata={"api_key_id": api_key_id} if api_key_id else None,
+            message=f"Redirect to the checkout URL to complete your {body.plan} plan upgrade.",
+        )
+
+    # ----------------------------------------------------------------
+    # Branch 3: Same plan → 409
+    # ----------------------------------------------------------------
+    if current_plan == body.plan:
+        raise HTTPException(status_code=409, detail={
+            "error": {
+                "code": "already_on_plan",
+                "message": f"You are already on the {current_plan} plan.",
+                "request_id": request_id,
+                "timestamp": timestamp,
+            }
+        })
+
+    # ----------------------------------------------------------------
+    # Branch 2: Switching between paid plans → modify existing subscription
+    # ----------------------------------------------------------------
+    try:
+        from services.stripe_client import change_subscription_plan
+
+        result = change_subscription_plan(
+            subscription_id=current_subscription_id,
+            new_plan=body.plan,
         )
     except ValueError as e:
-        raise HTTPException(status_code=400, detail={
+        logger.error("Failed to change plan: %s", e)
+        raise HTTPException(status_code=500, detail={
             "error": {
-                "code": "bad_request",
+                "code": "stripe_error",
                 "message": str(e),
                 "request_id": request_id,
                 "timestamp": timestamp,
             }
         })
+
+    # Convert the new period_end to ISO and update our DB so the dashboard
+    # reflects the new plan immediately. The webhook will fire too and
+    # idempotently confirm the same state.
+    period_end_unix = result.get("current_period_end")
+    period_end_iso = None
+    if period_end_unix:
+        period_end_iso = datetime.fromtimestamp(period_end_unix, tz=timezone.utc).isoformat()
+
+    new_plan_limit = _PLAN_LIMITS.get(body.plan, 1000)
+
+    try:
+        from db.client import supabase
+
+        update_payload = {
+            "plan_name": body.plan,
+            "plan_limit": new_plan_limit,
+            "billing_period_start": datetime.now(timezone.utc).isoformat(),
+            "cancel_at_period_end": False,
+        }
+        if period_end_iso:
+            update_payload["current_period_end"] = period_end_iso
+        supabase.table("api_keys").update(update_payload).eq("id", api_key_id).execute()
     except Exception as e:
-        logger.error("Failed to create checkout session: %s", e)
-        raise HTTPException(status_code=500, detail={
-            "error": {
-                "code": "internal_error",
-                "message": "Failed to create checkout session.",
-                "request_id": request_id,
-                "timestamp": timestamp,
-            }
-        })
+        logger.error("Failed to update api_keys after plan change: %s", e)
+
+    logger.info(
+        "Plan changed — key_id=%s %s -> %s",
+        api_key_id, current_plan, body.plan,
+    )
+
+    # Send confirmation email (D026)
+    try:
+        from db.client import supabase
+        from services.email import send_plan_change_email
+
+        profile_result = (
+            supabase.table("api_keys")
+            .select("email, owner_name")
+            .eq("id", api_key_id)
+            .limit(1)
+            .execute()
+        )
+        if profile_result.data:
+            profile = profile_result.data[0]
+            email = profile.get("email")
+            owner_name = profile.get("owner_name") or "there"
+            if email:
+                await send_plan_change_email(
+                    to_email=email,
+                    owner_name=owner_name,
+                    old_plan=current_plan,
+                    new_plan=body.plan,
+                    new_plan_limit=new_plan_limit,
+                    next_billing_iso=period_end_iso,
+                )
+    except Exception as e:
+        logger.error("Failed to send plan change email: %s", e)
 
     return CheckoutResponse(
-        checkout_url=checkout_url,
+        checkout_url=None,
+        change_type="plan_change",
         plan=body.plan,
-        message=f"Redirect to the checkout URL to complete your {body.plan} plan upgrade.",
+        message=f"Your plan has been changed from {current_plan} to {body.plan}. A prorated charge has been issued and your billing cycle has been reset.",
     )
 
 

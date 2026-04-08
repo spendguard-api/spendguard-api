@@ -388,9 +388,30 @@ function apiFetchPost(path, body) {
 function dashboardUpgrade(plan) {
   apiFetchPost('/v1/checkout', { plan: plan })
   .then(function(data) {
-    if (data.checkout_url) window.location.href = data.checkout_url;
+    // Branch 1: Free → paid. Redirect to Stripe Checkout.
+    if (data.checkout_url) {
+      window.location.href = data.checkout_url;
+      return;
+    }
+
+    // Branch 2: Plan change between Pro and Growth. No checkout — refresh
+    // the dashboard and show a confirmation toast.
+    if (data.change_type === 'plan_change') {
+      var planDisplay = plan === 'pro' ? 'Pro' : 'Growth';
+      loadAccount();
+      refreshOverview();
+      showAccountToast('Plan changed to ' + planDisplay + '. A confirmation email is on its way.');
+    }
   })
-  .catch(function(err) { alert('Failed to start checkout: ' + err.message); });
+  .catch(function(err) {
+    // Same-plan case returns 409 with a friendly message — surface it via toast
+    var message = err.message || 'Failed to start checkout.';
+    if (message.indexOf('already on') !== -1) {
+      showAccountToast(message);
+    } else {
+      alert('Failed: ' + message);
+    }
+  });
 }
 
 // ============================================================
@@ -512,7 +533,60 @@ function renderAccount(data) {
     activeState.classList.remove('hidden');
     var next = document.getElementById('account-next-billing');
     if (next) next.textContent = formatPeriodEnd(data.current_period_end);
+
+    // Show plan-switch button labelled with the OTHER plan
+    var switchBtn = document.getElementById('account-switch-btn');
+    if (switchBtn) {
+      if (plan === 'pro') {
+        switchBtn.textContent = 'Switch to Growth — $199/mo';
+        switchBtn.dataset.targetPlan = 'growth';
+        switchBtn.classList.remove('hidden');
+      } else if (plan === 'growth') {
+        switchBtn.textContent = 'Switch to Pro — $49/mo';
+        switchBtn.dataset.targetPlan = 'pro';
+        switchBtn.classList.remove('hidden');
+      } else {
+        switchBtn.classList.add('hidden');
+      }
+    }
   }
+}
+
+function confirmPlanSwitch() {
+  var btn = document.getElementById('account-switch-btn');
+  if (!btn) return;
+  var targetPlan = btn.dataset.targetPlan;
+  if (!targetPlan) return;
+
+  var currentPlan = lastUsageData ? (lastUsageData.plan_name || '').toLowerCase() : 'your plan';
+  var currentDisplay = currentPlan === 'pro' ? 'Pro' : currentPlan === 'growth' ? 'Growth' : 'your plan';
+  var targetDisplay = targetPlan === 'pro' ? 'Pro' : 'Growth';
+  var targetPrice = targetPlan === 'pro' ? '$49/month' : '$199/month';
+
+  var msg = 'Switch from ' + currentDisplay + ' to ' + targetDisplay + ' (' + targetPrice + ')?\n\n' +
+    'Your billing cycle will reset to today and you will be charged the new plan price minus a credit for unused time on your current plan.';
+
+  if (!window.confirm(msg)) return;
+
+  btn.disabled = true;
+  btn.textContent = 'Switching…';
+
+  apiFetchPost('/v1/checkout', { plan: targetPlan })
+  .then(function(data) {
+    if (data.change_type === 'plan_change') {
+      loadAccount();
+      refreshOverview();
+      showAccountToast('Plan changed to ' + targetDisplay + '. A confirmation email is on its way.');
+    } else if (data.checkout_url) {
+      window.location.href = data.checkout_url;
+    }
+  })
+  .catch(function(err) {
+    btn.disabled = false;
+    var label = targetPlan === 'pro' ? 'Switch to Pro — $49/mo' : 'Switch to Growth — $199/mo';
+    btn.textContent = label;
+    alert('Failed to switch plan: ' + (err.message || 'Unknown error'));
+  });
 }
 
 function formatPeriodEnd(iso) {

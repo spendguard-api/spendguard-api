@@ -20,7 +20,7 @@
     }
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/dashboard/css/dashboard.css?v=20260408c">
+  <link rel="stylesheet" href="/dashboard/css/dashboard.css?v=20260408d">
 </head>
 <body class="h-full font-sans bg-[#fafbfc] text-slate-800 antialiased">
 
@@ -292,13 +292,16 @@
             </div>
           </div>
 
-          <!-- State: Paid plan active — show billing info + cancel button -->
+          <!-- State: Paid plan active — show billing info + switch + cancel buttons -->
           <div id="account-state-active" class="hidden pt-5 border-t border-slate-100">
             <div class="mb-5">
               <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Next billing date</p>
               <p id="account-next-billing" class="text-sm font-medium text-slate-900 mt-1">—</p>
             </div>
-            <button type="button" onclick="showCancelModal()" class="cancel-btn">Cancel subscription</button>
+            <div class="account-actions">
+              <button type="button" id="account-switch-btn" onclick="confirmPlanSwitch()" class="account-switch-btn hidden">Switch to Growth</button>
+              <button type="button" onclick="showCancelModal()" class="cancel-btn">Cancel subscription</button>
+            </div>
           </div>
 
           <!-- State: Cancellation scheduled — show warning + reactivate button -->
@@ -407,6 +410,6 @@
   </div>
 </div>
 
-<script src="/dashboard/js/app.js?v=20260408c"></script>
+<script src="/dashboard/js/app.js?v=20260408d"></script>
 </body>
 </html>
