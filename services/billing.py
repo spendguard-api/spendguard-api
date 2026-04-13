@@ -80,10 +80,10 @@ async def check_plan_quota(api_key_id: str) -> dict[str, Any]:
         - stripe_subscription_id: for reporting overage to Stripe
     """
     default_result = {
-        "within_limit": True,
+        "within_limit": False,
         "current_usage": 0,
-        "plan_limit": 10000,
-        "plan_name": "starter",
+        "plan_limit": 1000,
+        "plan_name": "free",
         "overage_enabled": False,
         "is_overage": False,
         "stripe_subscription_id": None,

@@ -184,7 +184,7 @@ function loadPolicies() {
     policies.forEach(function(p) {
       var rules = Array.isArray(p.rules) ? p.rules : [];
       var ruleTypes = rules.map(function(r) { return r.rule_type; });
-      var ruleTags = ruleTypes.map(function(t) { return '<span class="rule-tag">' + t + '</span>'; }).join('');
+      var ruleTags = ruleTypes.map(function(t) { return '<span class="rule-tag">' + escHtml(t) + '</span>'; }).join('');
 
       var card = document.createElement('div');
       card.className = 'policy-card bg-white rounded-xl border border-slate-200 p-5 cursor-pointer';
@@ -205,7 +205,7 @@ function loadPolicies() {
     });
   })
   .catch(function(err) {
-    container.innerHTML = '<p class="text-sm text-red-500">Failed to load policies: ' + err.message + '</p>';
+    container.innerHTML = '<p class="text-sm text-red-500">Failed to load policies: ' + escHtml(err.message) + '</p>';
   });
 }
 
@@ -248,7 +248,7 @@ function loadViolations() {
   apiFetch('/v1/violations?' + params)
   .then(function(data) { renderViolations(data, false); })
   .catch(function(err) {
-    document.getElementById('violations-body').innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-red-500">Failed: ' + err.message + '</td></tr>';
+    document.getElementById('violations-body').innerHTML = '<tr><td colspan="6" class="px-4 py-8 text-center text-red-500">Failed: ' + escHtml(err.message) + '</td></tr>';
   });
 }
 
@@ -409,7 +409,7 @@ function dashboardUpgrade(plan) {
     if (message.indexOf('already on') !== -1) {
       showAccountToast(message);
     } else {
-      alert('Failed: ' + message);
+      showAccountToast('Failed: ' + message);
     }
   });
 }
@@ -494,10 +494,9 @@ function renderAccount(data) {
   document.getElementById('account-name').textContent = data.owner_name || '—';
   document.getElementById('account-email').textContent = data.email || '—';
 
-  // API key — populate masked by default, store full key in dataset for toggle
+  // API key — populate masked by default
   var keyInput = document.getElementById('api-key-display');
   if (keyInput && apiKey) {
-    keyInput.dataset.fullKey = apiKey;
     keyInput.dataset.visible = 'false';
     keyInput.value = maskApiKey(apiKey);
   }
@@ -585,7 +584,7 @@ function confirmPlanSwitch() {
     btn.disabled = false;
     var label = targetPlan === 'pro' ? 'Switch to Pro — $49/mo' : 'Switch to Growth — $199/mo';
     btn.textContent = label;
-    alert('Failed to switch plan: ' + (err.message || 'Unknown error'));
+    showAccountToast('Failed to switch plan: ' + (err.message || 'Unknown error'));
   });
 }
 
@@ -669,7 +668,7 @@ function reactivateSubscription() {
     showAccountToast('Subscription reactivated. Welcome back.');
   })
   .catch(function(e) {
-    alert('Failed to reactivate: ' + (e.message || 'Unknown error'));
+    showAccountToast('Failed to reactivate: ' + (e.message || 'Unknown error'));
   });
 }
 
@@ -690,16 +689,16 @@ function toggleApiKeyVisibility() {
   var input = document.getElementById('api-key-display');
   var label = document.getElementById('api-key-toggle-label');
   var icon = document.getElementById('api-key-eye-icon');
-  if (!input || !input.dataset.fullKey) return;
+  if (!input || !apiKey) return;
 
   var isVisible = input.dataset.visible === 'true';
   if (isVisible) {
-    input.value = maskApiKey(input.dataset.fullKey);
+    input.value = maskApiKey(apiKey);
     input.dataset.visible = 'false';
     if (label) label.textContent = 'Show';
     if (icon) icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
   } else {
-    input.value = input.dataset.fullKey;
+    input.value = apiKey;
     input.dataset.visible = 'true';
     if (label) label.textContent = 'Hide';
     if (icon) icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
@@ -708,14 +707,14 @@ function toggleApiKeyVisibility() {
 
 function copyApiKey() {
   var input = document.getElementById('api-key-display');
-  if (!input || !input.dataset.fullKey) return;
+  if (!input || !apiKey) return;
 
   var btn = document.getElementById('api-key-copy');
   var label = document.getElementById('api-key-copy-label');
   var icon = document.getElementById('api-key-copy-icon');
 
   // Always copy the FULL key, not the masked version
-  navigator.clipboard.writeText(input.dataset.fullKey).then(function() {
+  navigator.clipboard.writeText(apiKey).then(function() {
     if (label) label.textContent = 'Copied';
     if (icon) icon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
     if (btn) btn.classList.add('api-key-btn-success');
@@ -726,10 +725,10 @@ function copyApiKey() {
     }, 2000);
   }).catch(function() {
     // Fallback for older browsers — select + execCommand
-    input.value = input.dataset.fullKey;
+    input.value = apiKey;
     input.select();
     try { document.execCommand('copy'); } catch (e) {}
-    if (input.dataset.visible !== 'true') input.value = maskApiKey(input.dataset.fullKey);
+    if (input.dataset.visible !== 'true') input.value = maskApiKey(apiKey);
     if (label) label.textContent = 'Copied';
     setTimeout(function() { if (label) label.textContent = 'Copy'; }, 2000);
   });

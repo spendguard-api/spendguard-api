@@ -95,7 +95,7 @@ async def stripe_webhook(request: Request) -> JSONResponse:
         # Still return 200 so Stripe doesn't retry endlessly
         return JSONResponse(
             status_code=200,
-            content={"received": True, "error": str(e)},
+            content={"received": True},
         )
 
     return JSONResponse(status_code=200, content={"received": True})
@@ -284,6 +284,8 @@ async def _handle_subscription_deleted(event: dict) -> None:
         "stripe_subscription_id": None,
         "overage_enabled": False,
         "billing_period_start": datetime.now(timezone.utc).isoformat(),
+        "cancel_at_period_end": False,
+        "current_period_end": None,
     }).eq("stripe_customer_id", customer_id).execute()
 
     logger.info("Subscription deleted — customer=%s downgraded to free", customer_id)

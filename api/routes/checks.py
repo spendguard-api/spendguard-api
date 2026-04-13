@@ -70,9 +70,9 @@ async def create_check(request: Request, body: CheckRequest) -> CheckResponse:
                 }
             })
 
-    # 1. Load policy
+    # 1. Load policy (scoped to requesting user)
     try:
-        policy = await get_policy(policy_id=body.policy_id)
+        policy = await get_policy(policy_id=body.policy_id, api_key_id=api_key_id)
     except PolicyNotFoundError:
         raise HTTPException(status_code=404, detail={
             "error": {
@@ -258,15 +258,17 @@ async def create_check(request: Request, body: CheckRequest) -> CheckResponse:
 @router.get("/checks/{check_id}", summary="Get a check by ID")
 async def get_check(request: Request, check_id: str) -> CheckResponse:
     """Retrieves a past authorization check and its decision by ID."""
+    api_key_id = getattr(request.state, "api_key_id", None)
     try:
         from db.client import supabase
-        result = (
+        query = (
             supabase.table("checks")
             .select("*")
             .eq("check_id", check_id)
-            .limit(1)
-            .execute()
         )
+        if api_key_id:
+            query = query.eq("api_key_id", api_key_id)
+        result = query.limit(1).execute()
     except Exception as e:
         logger.error("Failed to look up check: %s", e)
         raise HTTPException(status_code=500, detail={

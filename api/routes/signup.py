@@ -125,7 +125,14 @@ async def signup(request: Request, body: SignupRequest) -> SignupResponse:
         raise
     except Exception as e:
         logger.error("Email duplicate check failed: %s", e)
-        # Fail open — allow signup if check fails
+        raise HTTPException(status_code=503, detail={
+            "error": {
+                "code": "internal_error",
+                "message": "Unable to verify email availability. Please try again in a moment.",
+                "request_id": request_id,
+                "timestamp": timestamp,
+            }
+        })
 
     # Create the API key with free plan
     try:

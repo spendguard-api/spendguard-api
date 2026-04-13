@@ -103,10 +103,11 @@ async def get_usage(request: Request) -> dict:
         )
         checks_today = today_result.count if today_result.count is not None else 0
 
-        # Count violations today
+        # Count violations today (scoped to current user)
         violations_result = (
             supabase.table("violations")
             .select("id", count="exact")
+            .eq("api_key_id", api_key_id)
             .gte("created_at", today_start)
             .execute()
         )

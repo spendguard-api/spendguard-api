@@ -29,6 +29,7 @@ class PolicyNotFoundError(Exception):
 async def get_policy(
     policy_id: str,
     version: int | None = None,
+    api_key_id: str | None = None,
     supabase_client: Any | None = None,
 ) -> dict[str, Any]:
     """
@@ -37,6 +38,7 @@ async def get_policy(
     Args:
         policy_id: The human-readable policy identifier.
         version: Optional specific version number. If None, latest version is returned.
+        api_key_id: If provided, only return policies owned by this key or shared templates.
         supabase_client: Supabase client. If None, imports the singleton.
 
     Returns:
@@ -55,6 +57,10 @@ async def get_policy(
         .select("*")
         .eq("policy_id", policy_id)
     )
+
+    # Scope to the requesting user's policies + shared templates (no owner)
+    if api_key_id is not None:
+        query = query.or_(f"api_key_id.eq.{api_key_id},api_key_id.is.null")
 
     if version is not None:
         # Fetch a specific version

@@ -10,6 +10,7 @@ It uses its own admin key check via the ADMIN_API_KEY env var.
 
 from __future__ import annotations
 
+import hmac
 import logging
 import os
 from datetime import datetime, timezone
@@ -70,7 +71,7 @@ async def create_key(
 
     # Verify admin key
     admin_key = os.environ.get("ADMIN_API_KEY", "")
-    if not admin_key or x_admin_key != admin_key:
+    if not admin_key or not hmac.compare_digest(x_admin_key, admin_key):
         logger.warning("Invalid admin key attempt — request_id=%s", request_id)
         raise HTTPException(status_code=401, detail={
             "error": {

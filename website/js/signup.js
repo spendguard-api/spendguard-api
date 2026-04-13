@@ -31,7 +31,7 @@ function handleSignup() {
     errorEl.classList.remove('hidden');
     return;
   }
-  if (!email || !email.includes('@')) {
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     errorEl.textContent = 'Please enter a valid email.';
     errorEl.classList.remove('hidden');
     return;
@@ -55,6 +55,7 @@ function handleSignup() {
   })
   .then(function(data) {
     _signupApiKey = data.api_key;
+    localStorage.setItem('sg_api_key', data.api_key);
     document.getElementById('signup-key-display').textContent = data.api_key;
     document.getElementById('signup-step-form').classList.add('hidden');
     document.getElementById('signup-step-key').classList.remove('hidden');
