@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Privacy Policy — SpendGuard</title>
   <meta name="description" content="How SpendGuard handles your data, your rights, and our security practices.">
-  <meta name="robots" content="noindex">
   <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
@@ -46,7 +45,7 @@
   <div class="container">
     <div class="legal-content">
       <h1>Privacy Policy</h1>
-      <p class="legal-updated">Last updated: April 1, 2026</p>
+      <p class="legal-updated">Last updated: April 13, 2026</p>
 
       <h2>1. Information We Collect</h2>
       <p>When you use SpendGuard, we collect the following types of information:</p>
@@ -91,8 +90,10 @@
       <p>SpendGuard uses the following third-party services to operate:</p>
       <ul>
         <li><strong>Supabase:</strong> Database hosting and management (PostgreSQL)</li>
-        <li><strong>Stripe:</strong> Payment processing and subscription management</li>
+        <li><strong>Stripe:</strong> Payment processing and subscription management. Stripe handles all card data directly — SpendGuard never sees or stores card numbers</li>
         <li><strong>Railway:</strong> Application hosting and infrastructure</li>
+        <li><strong>Resend:</strong> Transactional email delivery (welcome, upgrade, and billing emails). Your email address is shared with Resend solely to deliver these messages</li>
+        <li><strong>Cloudflare:</strong> DNS, content delivery, and incoming email routing for support@spendguardapi.com</li>
         <li><strong>OpenAI:</strong> Text embeddings for semantic classification only — no financial data, amounts, or customer identifiers are sent to OpenAI. Only ambiguous action description text is processed</li>
       </ul>
 
@@ -116,7 +117,7 @@
         <li><strong>Right to Portability:</strong> Request your data in a machine-readable format</li>
         <li><strong>Right to Object:</strong> Object to processing of your data</li>
       </ul>
-      <p>To exercise any of these rights, contact us at <a href="mailto:privacy@spendguardapi.com">privacy@spendguardapi.com</a>.</p>
+      <p>To exercise any of these rights, contact us at <a href="mailto:support@spendguardapi.com">support@spendguardapi.com</a>.</p>
 
       <h2>8. Your Rights (CCPA)</h2>
       <p>If you are a California resident, you have the right to:</p>
@@ -134,7 +135,7 @@
       <p>We may update this Privacy Policy from time to time. We will notify you of material changes via email or a prominent notice on our website. Continued use of the Service after changes constitutes acceptance of the updated policy.</p>
 
       <h2>11. Contact</h2>
-      <p>For questions about this Privacy Policy or to exercise your data rights, contact us at <a href="mailto:privacy@spendguardapi.com">privacy@spendguardapi.com</a>.</p>
+      <p>For questions about this Privacy Policy or to exercise your data rights, contact us at <a href="mailto:support@spendguardapi.com">support@spendguardapi.com</a>.</p>
     </div>
   </div>
 </section>

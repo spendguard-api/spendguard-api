@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Terms of Service — SpendGuard</title>
   <meta name="description" content="Terms and conditions for using the SpendGuard API authorization service.">
-  <meta name="robots" content="noindex">
   <link rel="icon" type="image/svg+xml" href="/assets/logo.svg">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css">
@@ -46,13 +45,16 @@
   <div class="container">
     <div class="legal-content">
       <h1>Terms of Service</h1>
-      <p class="legal-updated">Last updated: April 1, 2026</p>
+      <p class="legal-updated">Last updated: April 13, 2026</p>
 
       <h2>1. Acceptance of Terms</h2>
       <p>By accessing or using the SpendGuard API ("Service"), you agree to be bound by these Terms of Service. If you do not agree to these terms, do not use the Service.</p>
 
       <h2>2. Description of Service</h2>
       <p>SpendGuard is a real-time authorization API for AI agent financial actions. The Service evaluates planned financial actions (refunds, credits, discounts, vendor payments) against user-defined policies and returns one of three decisions: allow, block, or escalate.</p>
+
+      <h2>2a. Eligibility</h2>
+      <p>You must be at least 18 years old to use the Service. By using the Service, you represent and warrant that you are at least 18 years old, have the legal capacity to enter into these Terms, and are not prohibited from using the Service under applicable law.</p>
 
       <h2>3. Nature of Service and Accuracy Disclaimer</h2>
       <p>SpendGuard is an automated authorization service that evaluates financial actions against user-defined policies. The Service employs deterministic, rule-based logic as its primary decision engine, supplemented by an AI-assisted semantic classification layer for ambiguous inputs.</p>
@@ -80,7 +82,12 @@
       <p>You are responsible for maintaining the security of your API key. SpendGuard stores only SHA-256 hashes of API keys — raw keys are never stored and cannot be retrieved after initial creation. You must notify us immediately if you suspect unauthorized use of your API key.</p>
 
       <h2>6. Billing and Payments</h2>
-      <p>Plans are billed monthly via Stripe. The Free tier includes 1,000 checks per month at no cost. Paid plans (Pro and Growth) are charged monthly. Overages on the Pro plan are billed at $0.005 per check above the plan limit. Non-payment may result in service suspension.</p>
+      <p>Plans are billed monthly via Stripe. The Free tier includes 1,000 checks per month at no cost. Paid plans — Pro ($49/month for 10,000 checks) and Growth ($199/month for 100,000 checks) — are charged monthly in advance. Overage on paid plans is billed at $0.005 per check above the plan limit, and must be enabled explicitly by the customer.</p>
+      <p><strong>Plan changes.</strong> You may upgrade or downgrade between paid plans at any time. When you change plans, your billing cycle resets to the date of the change, and we charge the new plan's full price minus a prorated credit for unused time on your previous plan.</p>
+      <p><strong>Failed payments.</strong> If a recurring payment fails, Stripe will automatically retry for approximately three weeks. Your account remains active during this retry period. If all retries fail, your account will be downgraded to the Free plan.</p>
+
+      <h2>6a. Refund Policy</h2>
+      <p><strong>7-day money-back guarantee.</strong> If you are not satisfied with a paid subscription, you may request a full refund within 7 days of your initial payment by emailing <a href="mailto:support@spendguardapi.com">support@spendguardapi.com</a>. After 7 days, all payments are final. When you cancel a subscription, cancellation takes effect at the end of your current billing period, and you retain full access until that date.</p>
 
       <h2>7. Service Availability</h2>
       <p>SpendGuard provides the Service on a best-effort basis. We aim for high availability but do not guarantee uninterrupted service. We will make reasonable efforts to notify customers of planned maintenance windows in advance.</p>
@@ -102,14 +109,22 @@
       <p class="legal-caps">THE TOTAL LIABILITY OF SPENDGUARD FOR ANY CLAIMS ARISING FROM THE USE OF THE SERVICE SHALL NOT EXCEED THE AMOUNT PAID BY THE CUSTOMER IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM.</p>
       <p>Customers acknowledge that SpendGuard serves as one layer in a comprehensive financial control framework and agree to maintain appropriate additional safeguards commensurate with the risk profile of their financial operations.</p>
 
+      <h2>9a. Indemnification</h2>
+      <p>You agree to defend, indemnify, and hold harmless SpendGuard and its owners from any claims, damages, losses, or expenses (including reasonable attorneys' fees) arising from: (a) your use of the Service; (b) your violation of these Terms; (c) your violation of any third-party rights; or (d) any financial action you or your agent take based on Service output.</p>
+
       <h2>10. Termination</h2>
       <p>Either party may terminate the Service at any time. SpendGuard may suspend or terminate access for violation of these terms or abuse of the Service. Upon termination, your API key will be deactivated. Audit log data will be retained per the applicable plan terms.</p>
 
       <h2>11. Changes to Terms</h2>
-      <p>We may update these Terms from time to time. We will notify you of material changes via email or a notice on our website. Continued use of the Service after changes constitutes acceptance of the updated terms.</p>
+      <p>We may update these Terms from time to time. We will notify you of material changes via email or a notice on our website at least 14 days before the changes take effect. Continued use of the Service after changes constitutes acceptance of the updated terms.</p>
 
       <h2>12. Governing Law</h2>
       <p>These Terms shall be governed by and construed in accordance with the laws of the State of California, United States, without regard to its conflict of law provisions.</p>
+
+      <h2>12a. Dispute Resolution</h2>
+      <p><strong>Informal resolution first.</strong> If a dispute arises, you agree to first contact us at <a href="mailto:support@spendguardapi.com">support@spendguardapi.com</a> and attempt in good faith to resolve the dispute informally. Most disputes can be resolved this way.</p>
+      <p><strong>Binding arbitration.</strong> If we cannot resolve a dispute informally within 60 days, you and SpendGuard agree that any unresolved dispute will be settled by binding arbitration administered by the American Arbitration Association (AAA) under its Commercial Arbitration Rules. The arbitration will be conducted in California, in English, by a single arbitrator. Judgment on the award may be entered in any court of competent jurisdiction.</p>
+      <p>Notwithstanding the above, either party may bring an action in small-claims court for any qualifying dispute, and either party may seek injunctive relief in court for intellectual property infringement.</p>
 
       <h2>13. Contact</h2>
       <p>For questions about these Terms, contact us at <a href="mailto:support@spendguardapi.com">support@spendguardapi.com</a>.</p>
